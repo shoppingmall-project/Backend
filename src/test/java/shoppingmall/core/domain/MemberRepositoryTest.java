@@ -9,29 +9,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class UserRepositoryTest {
+public class MemberRepositoryTest {
 
     @Autowired
-    UserRepository userRepository;
+    MemberRepository memberRepository;
 
     @AfterEach
     public void cleanUp() {
-        userRepository.deleteAll();
+        memberRepository.deleteAll();
 
     }
 
     @Test
-    @DisplayName("유저 저장")
-    public void saveUser() {
+    @DisplayName("유저 생성 및 조회")
+    public void saveMember() {
         //given
         String account = "test";
         String password = "1234";
@@ -40,27 +36,30 @@ public class UserRepositoryTest {
         String name = "test";
         String role = "Manager";
 
-        userRepository.save(User.builder()
-                .account(account)
-                .password(password)
-                .gender(gender)
-                .email(email)
-                .name(name)
-                .role(role)
-                .build());
-
+        if (memberRepository.findByAccount(account).isEmpty()) {
+            memberRepository.save(Member.builder()
+                    .account(account)
+                    .password(password)
+                    .gender(gender)
+                    .email(email)
+                    .name(name)
+                    .role(role)
+                    .build());
+        } else {
+            System.out.println("이미 존재하는 아이디입니다.");
+        }
         //when
-        List<User> userList = userRepository.findAll();
+        List<Member> memberList = memberRepository.findAll();
 
         //then
-        User user = userList.get(0);
-        Assertions.assertThat(user.getAccount()).isEqualTo(account);
-        Assertions.assertThat(user.getPassword()).isEqualTo(password);
+        Member member = memberList.get(0);
+        Assertions.assertThat(member.getAccount()).isEqualTo(account);
+        Assertions.assertThat(member.getPassword()).isEqualTo(password);
     }
 
     @Test
     @DisplayName("유저 삭제")
-    public void deleteUser() {
+    public void deleteMember() {
         //given
         String account = "test";
         String password = "1234";
@@ -69,7 +68,7 @@ public class UserRepositoryTest {
         String name = "test";
         String role = "Manager";
 
-        userRepository.save(User.builder()
+        memberRepository.save(Member.builder()
                 .account(account)
                 .password(password)
                 .gender(gender)
@@ -80,15 +79,15 @@ public class UserRepositoryTest {
 
 
         //when
-        if (userRepository.findByAccount("test").isPresent()) {
+        if (memberRepository.findByAccount("test").isPresent()) {
             System.out.println("account = " + account);
-            userRepository.deleteByAccount("test");
+            memberRepository.deleteByAccount("test");
         } else {
             System.out.println("해당 계정이 없습니다");
 
         }
         //then
-        Assertions.assertThat(userRepository.findByAccount("test")).isEmpty();
+        Assertions.assertThat(memberRepository.findByAccount("test")).isEmpty();
     }
-
 }
+
