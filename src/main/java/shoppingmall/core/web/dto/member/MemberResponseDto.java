@@ -2,7 +2,7 @@ package shoppingmall.core.web.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shoppingmall.core.domain.Member;
+import shoppingmall.core.domain.member.Member;
 
 @Getter
 @NoArgsConstructor
