@@ -41,7 +41,7 @@ public class MemberApiController {
                 .email(user.getEmail())
                 .gender(user.getGender())
                 .role(user.getRole())
-                .roles(Collections.singletonList("Role_"+ user.getRole()))
+                .roles(Collections.singletonList("Role_" + user.getRole()))
                 .build()).getId();
 
     }
@@ -60,7 +60,7 @@ public class MemberApiController {
 
     @GetMapping("/member")
     public List<Member> findMember() {
-        return memberRepository.findAll();
+        return memberRepository.findAllMember();
     }
 
     @GetMapping("/student")
