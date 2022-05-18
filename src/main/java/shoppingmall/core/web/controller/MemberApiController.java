@@ -6,9 +6,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import shoppingmall.core.config.JwtTokenProvider;
-import shoppingmall.core.domain.Member;
-import shoppingmall.core.domain.MemberRepository;
+import shoppingmall.core.domain.member.Member;
+import shoppingmall.core.domain.member.MemberRepository;
 import shoppingmall.core.web.dto.*;
+import shoppingmall.core.web.dto.member.MemberCreateRequestDto;
+import shoppingmall.core.web.dto.member.MemberResponseDto;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;

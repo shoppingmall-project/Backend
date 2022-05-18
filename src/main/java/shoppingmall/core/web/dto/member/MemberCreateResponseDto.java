@@ -1,4 +1,4 @@
-package shoppingmall.core.web.dto;
+package shoppingmall.core.web.dto.member;
 
 import lombok.Builder;
 

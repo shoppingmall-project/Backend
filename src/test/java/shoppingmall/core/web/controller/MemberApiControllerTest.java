@@ -13,8 +13,8 @@
 //import org.springframework.http.HttpStatus;
 //import org.springframework.http.ResponseEntity;
 //import org.springframework.test.context.junit.jupiter.SpringExtension;
-//import shoppingmall.core.domain.Member;
-//import shoppingmall.core.domain.MemberRepository;
+//import shoppingmall.core.domain.member.Member;
+//import shoppingmall.core.domain.member.MemberRepository;
 //import shoppingmall.core.web.dto.*;
 //
 //import java.util.Collections;

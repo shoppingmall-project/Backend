@@ -1,13 +1,10 @@
-package shoppingmall.core.service;
+package shoppingmall.core.service.login;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.domain.member.MemberRepository;
-import shoppingmall.core.web.dto.LoginRequestDto;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
