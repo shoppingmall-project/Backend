@@ -32,6 +32,7 @@ public class GoodsApiController {
     public ResponseDto findGoods(@PathVariable Long id) {
         return goodsService.findGoods(id);
     }
+
     //상품 전체 조회
     @GetMapping("/goodslist")
     public List<Goods> findAllGoods() {
