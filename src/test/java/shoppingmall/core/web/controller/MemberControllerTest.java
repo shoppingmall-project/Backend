@@ -84,7 +84,7 @@ class MemberControllerTest {
         String name = "test";
         String role = "Manager";
 
-        memberRepository.save(Member.builder()
+        Member member = memberRepository.save(Member.builder()
                 .account(account)
                 .password(password)
                 .gender(gender)
@@ -94,11 +94,11 @@ class MemberControllerTest {
                 .build());
 
         //when
-        mvc.perform(delete("/auth/" + account))
+        mvc.perform(delete("/auth/" + member.getId()))
                 .andExpect(status().isOk());
 
         //then
-        Assertions.assertThat(memberRepository.findByAccount(account).isEmpty());
+        Assertions.assertThat(memberRepository.findById(member.getId())).isEmpty();
 //    }
     }
 
@@ -119,7 +119,7 @@ class MemberControllerTest {
         String new_password = "123";
         String new_role = "User";
 
-        memberRepository.save(Member.builder()
+        Member member = memberRepository.save(Member.builder()
                 .account(account)
                 .password(password)
                 .gender(gender)
@@ -136,15 +136,17 @@ class MemberControllerTest {
                 .build()
         );
 
+        System.out.println("member_id = " + member.getId());
+
         //when
-        mvc.perform(put("/auth/"+ account)
+        mvc.perform(put("/auth/" + member.getId())
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
         //then
                 .andExpect(status().isOk());
-        Assertions.assertThat(memberRepository.findByAccount(account)).isPresent();
-
+        Assertions.assertThat(memberRepository.findById(member.getId()).isPresent());
+        Assertions.assertThat(member.getEmail()).isEqualTo(new_email);
 
     }
 }
