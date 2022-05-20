@@ -1,9 +1,9 @@
-package shoppingmall.core.web.dto;
+package shoppingmall.core.web.dto.member;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shoppingmall.core.domain.Member;
+import shoppingmall.core.domain.member.Member;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
