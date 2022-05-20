@@ -27,10 +27,13 @@ public class MemberServiceImpl implements MemberService {
     public ResponseDto login(LoginRequestDto user) {
         Member member = memberRepository.findByAccount(user.getAccount())
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 아이디 입니다."));
+        System.out.println("가입되지 않은 member = " + member);
         if (!passwordEncoder.matches(user.getPassword(), member.getPassword())) {
+            System.out.println("잘못된 비밀번호 ");
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
         TokenDto tokenDto = new TokenDto(member, jwtTokenProvider.createToken(member.getUsername(), member.getRoles()));
+        System.out.println("로그인 성공~");
         return new ResponseDto("SUCCESS", tokenDto);
     }
 

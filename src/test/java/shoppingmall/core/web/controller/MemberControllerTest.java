@@ -1,6 +1,7 @@
 package shoppingmall.core.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,11 +20,14 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import shoppingmall.core.config.JwtTokenProvider;
+import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.domain.member.MemberRepository;
 import shoppingmall.core.service.login.MemberService;
 
+import shoppingmall.core.web.dto.LoginRequestDto;
 import shoppingmall.core.web.dto.member.MemberCreateRequestDto;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -34,6 +38,7 @@ class MemberControllerTest {
 
     @Autowired
     MemberRepository memberRepository;
+    MemberService memberService;
 
     @Autowired
     ObjectMapper mapper;
@@ -70,11 +75,40 @@ class MemberControllerTest {
 
         //then
         mvc.perform(post("/signup")
-                .content(body)
-                .contentType(MediaType.APPLICATION_JSON)
-        )
+                        .content(body)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().isOk())
                 .andExpect(content().string(account));
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴")
+    void memberDelete() throws Exception{
+        //given
+        String account = "test";
+        String password = "1234";
+        String gender = "M";
+        String email = "test@naver.com";
+        String name = "test";
+        String role = "Manager";
+
+        memberRepository.save(Member.builder()
+                .account(account)
+                .password(password)
+                .gender(gender)
+                .email(email)
+                .name(name)
+                .role(role)
+                .build());
+
+        //when
+        mvc.perform(delete("/auth/"+account+"/delete"))
+                .andExpect(status().isOk());
+
+        //then
+        Assertions.assertThat(memberRepository.findByAccount(account).isEmpty());
+//    }
     }
 }
 
