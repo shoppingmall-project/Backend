@@ -3,32 +3,23 @@ package shoppingmall.core.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.filter.CharacterEncodingFilter;
-import shoppingmall.core.config.JwtTokenProvider;
 import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.domain.member.MemberRepository;
-import shoppingmall.core.service.login.MemberService;
+import shoppingmall.core.service.member.MemberService;
 
-import shoppingmall.core.web.dto.LoginRequestDto;
 import shoppingmall.core.web.dto.member.MemberCreateRequestDto;
+import shoppingmall.core.web.dto.member.MemberUpdateRequestDto;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import javax.transaction.Transactional;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -53,7 +44,7 @@ class MemberControllerTest {
 
     @Test
     @DisplayName("회원가입")
-    void memberSignup() throws Exception {
+    void createMember() throws Exception {
         //given
         String account = "test";
         String password = "1234";
@@ -84,7 +75,7 @@ class MemberControllerTest {
 
     @Test
     @DisplayName("회원 탈퇴")
-    void memberDelete() throws Exception{
+    void deleteMember() throws Exception {
         //given
         String account = "test";
         String password = "1234";
@@ -103,12 +94,58 @@ class MemberControllerTest {
                 .build());
 
         //when
-        mvc.perform(delete("/auth/"+account+"/delete"))
+        mvc.perform(delete("/auth/" + account))
                 .andExpect(status().isOk());
 
         //then
         Assertions.assertThat(memberRepository.findByAccount(account).isEmpty());
 //    }
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("회원 정보 수정")
+    void updateMember() throws Exception {
+
+        //given
+        String account = "test";
+        String password = "1234";
+        String gender = "M";
+        String email = "test@naver.com";
+        String name = "test";
+        String role = "Manager";
+
+        String new_email = "new_test@naver.com";
+        String new_password = "123";
+        String new_role = "User";
+
+        memberRepository.save(Member.builder()
+                .account(account)
+                .password(password)
+                .gender(gender)
+                .email(email)
+                .name(name)
+                .role(role)
+                .build());
+
+        //when
+        String body = mapper.writeValueAsString(MemberUpdateRequestDto.builder()
+                .password(new_password)
+                .role(new_role)
+                .email(new_email)
+                .build()
+        );
+
+        //when
+        mvc.perform(put("/auth/"+ account)
+                        .content(body)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+        //then
+                .andExpect(status().isOk());
+        Assertions.assertThat(memberRepository.findByAccount(account)).isPresent();
+
+
     }
 }
 

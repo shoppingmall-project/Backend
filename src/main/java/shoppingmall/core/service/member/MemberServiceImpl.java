@@ -1,9 +1,10 @@
-package shoppingmall.core.service.login;
+package shoppingmall.core.service.member;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shoppingmall.core.config.JwtTokenProvider;
 import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.domain.member.MemberRepository;
@@ -11,6 +12,7 @@ import shoppingmall.core.web.dto.LoginRequestDto;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.TokenDto;
 import shoppingmall.core.web.dto.member.MemberCreateRequestDto;
+import shoppingmall.core.web.dto.member.MemberUpdateRequestDto;
 
 import java.util.Collections;
 
@@ -27,22 +29,30 @@ public class MemberServiceImpl implements MemberService {
     public ResponseDto login(LoginRequestDto user) {
         Member member = memberRepository.findByAccount(user.getAccount())
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 아이디 입니다."));
-        System.out.println("가입되지 않은 member = " + member);
+
         if (!passwordEncoder.matches(user.getPassword(), member.getPassword())) {
-            System.out.println("잘못된 비밀번호 ");
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
+
         TokenDto tokenDto = new TokenDto(member, jwtTokenProvider.createToken(member.getUsername(), member.getRoles()));
-        System.out.println("로그인 성공~");
         return new ResponseDto("SUCCESS", tokenDto);
     }
 
     @Override
     public ResponseDto deleteMember(Long id) {
         memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
-
         memberRepository.deleteById(id);;
 
+        return new ResponseDto("SUCCESS");
+    }
+
+    @Override
+    @Transactional
+    public ResponseDto updateMember(Long id, MemberUpdateRequestDto requestDto) {
+        Member member = memberRepository.findById(id).orElseThrow(()
+                -> new IllegalArgumentException("해당 유저가 없습니다."));
+        member.update(passwordEncoder.encode(requestDto.getPassword()), requestDto.getRole(), requestDto.getEmail());
+        System.out.println("requestDto.getEmail() = " + requestDto.getEmail());
         return new ResponseDto("SUCCESS");
     }
 
