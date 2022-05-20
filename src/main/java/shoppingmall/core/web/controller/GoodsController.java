@@ -6,7 +6,6 @@ import shoppingmall.core.config.JwtTokenProvider;
 import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.Goods.GoodsRepository;
 import shoppingmall.core.service.GoodsService;
-import shoppingmall.core.service.GoodsServiceImpl;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.goods.GoodsCreateRequestDto;
 
@@ -15,7 +14,7 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @RestController
-public class GoodsApiController {
+public class GoodsController {
 
     private final GoodsService goodsService;
     private final GoodsRepository goodsRepository;

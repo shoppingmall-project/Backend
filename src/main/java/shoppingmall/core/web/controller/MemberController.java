@@ -1,7 +1,6 @@
 package shoppingmall.core.web.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,14 +17,12 @@ import shoppingmall.core.web.dto.member.MemberResponseDto;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @RestController
-public class MemberApiController {
+public class MemberController {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final PasswordEncoder passwordEncoder;
@@ -36,7 +33,7 @@ public class MemberApiController {
 
     // 회원가입
     @PostMapping("/signup")
-    public Long join(@Valid @RequestBody MemberCreateRequestDto user) throws Exception {
+    public String join(@Valid @RequestBody MemberCreateRequestDto user) throws Exception {
         log.info("signup");
         return memberService.createMember(user);
     }

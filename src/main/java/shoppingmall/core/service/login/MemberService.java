@@ -10,7 +10,7 @@ public interface MemberService {
 
     ResponseDto deleteMember(Long id);
 
-    Long createMember(MemberCreateRequestDto requestDto) throws Exception;
+    String createMember(MemberCreateRequestDto requestDto) throws Exception;
 }
 
 

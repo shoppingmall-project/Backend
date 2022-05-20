@@ -4,10 +4,10 @@ import lombok.Builder;
 
 public class MemberCreateResponseDto {
 
-    Long memberId;
+    String account;
 
     @Builder
-    public MemberCreateResponseDto(Long memberId) {
-        this.memberId = memberId;
+    public MemberCreateResponseDto(String account) {
+        this.account = account;
     }
 }
