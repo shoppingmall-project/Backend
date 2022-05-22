@@ -1,4 +1,4 @@
-package shoppingmall.core.service;
+package shoppingmall.core.service.goods;
 
 import shoppingmall.core.web.dto.goods.GoodsCreateRequestDto;
 import shoppingmall.core.web.dto.ResponseDto;
@@ -11,4 +11,7 @@ public interface GoodsService {
 
     ResponseDto updateGoods(Long id, GoodsUpdateRequestDto requestDto);
 
+    ResponseDto findGoodsList();
+
+    ResponseDto findGoodsById(Long id);
 }

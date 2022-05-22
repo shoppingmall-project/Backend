@@ -14,6 +14,10 @@ public interface MemberService {
     ResponseDto updateMember(Long id, MemberUpdateRequestDto requestDto);
 
     String createMember(MemberCreateRequestDto requestDto) throws Exception;
+
+    ResponseDto findMemberList();
+
+    ResponseDto findMemberById(Long id);
 }
 
 

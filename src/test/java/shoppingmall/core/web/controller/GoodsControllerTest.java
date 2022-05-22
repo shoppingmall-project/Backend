@@ -2,6 +2,7 @@ package shoppingmall.core.web.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,13 +13,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.Goods.GoodsRepository;
-import shoppingmall.core.service.GoodsService;
+import shoppingmall.core.service.goods.GoodsService;
 import shoppingmall.core.web.dto.goods.GoodsCreateRequestDto;
 import shoppingmall.core.web.dto.goods.GoodsUpdateRequestDto;
 
 import javax.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -66,7 +68,7 @@ public class GoodsControllerTest {
         );
 
         //then
-        mvc.perform(post("/goods/create")
+        mvc.perform(post("/goods")
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -177,10 +179,9 @@ public class GoodsControllerTest {
                 .country("Korea")
                 .build());
 
-        mvc.perform(get("/goodslist"))
+        mvc.perform(get("/goods"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("test1 wine"))
-                .andExpect(jsonPath("$[1].name").value("test2 wine"));
+                .andExpect(jsonPath("$.data.length()", equalTo(2)));
 
     }
 }

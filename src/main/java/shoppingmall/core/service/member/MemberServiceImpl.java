@@ -15,6 +15,7 @@ import shoppingmall.core.web.dto.member.MemberCreateRequestDto;
 import shoppingmall.core.web.dto.member.MemberUpdateRequestDto;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -70,6 +71,19 @@ public class MemberServiceImpl implements MemberService {
                 .role(requestDto.getRole())
                 .roles(Collections.singletonList("Role_" + requestDto.getRole()))
                 .build()).getAccount();
+    }
+
+    @Override
+    public ResponseDto findMemberList() {
+        List<Member> memberList = memberRepository.findMemberList();
+        return new ResponseDto("SUCCESS", memberList);
+    }
+
+    @Override
+    public ResponseDto findMemberById(Long id) {
+        memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다."));
+        Member member = memberRepository.findMemberById(id);
+        return new ResponseDto("SUCCESS", member);
     }
 
 }
