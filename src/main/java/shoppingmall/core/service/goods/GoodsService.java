@@ -1,4 +1,4 @@
-package shoppingmall.core.service;
+package shoppingmall.core.service.goods;
 
 import shoppingmall.core.web.dto.goods.GoodsCreateRequestDto;
 import shoppingmall.core.web.dto.ResponseDto;

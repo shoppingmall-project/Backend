@@ -2,10 +2,9 @@ package shoppingmall.core.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import shoppingmall.core.config.JwtTokenProvider;
 import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.Goods.GoodsRepository;
-import shoppingmall.core.service.GoodsService;
+import shoppingmall.core.service.goods.GoodsService;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.goods.GoodsCreateRequestDto;
 import shoppingmall.core.web.dto.goods.GoodsUpdateRequestDto;
