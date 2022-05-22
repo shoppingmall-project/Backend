@@ -182,6 +182,5 @@ public class GoodsControllerTest {
                 .andExpect(jsonPath("$[0].name").value("test1 wine"))
                 .andExpect(jsonPath("$[1].name").value("test2 wine"));
 
-
     }
 }
