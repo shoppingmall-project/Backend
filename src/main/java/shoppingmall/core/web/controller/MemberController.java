@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import shoppingmall.core.config.JwtTokenProvider;
 import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.domain.member.MemberRepository;
-import shoppingmall.core.service.login.MemberService;
+import shoppingmall.core.service.member.MemberService;
 import shoppingmall.core.web.dto.*;
 import shoppingmall.core.web.dto.member.MemberCreateRequestDto;
 import shoppingmall.core.web.dto.member.MemberResponseDto;
+import shoppingmall.core.web.dto.member.MemberUpdateRequestDto;
+import shoppingmall.core.web.dto.member.MemberUpdateResponseDto;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +27,6 @@ import java.util.List;
 public class MemberController {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
     private final MemberService memberService;
@@ -38,11 +39,18 @@ public class MemberController {
         return memberService.createMember(user);
     }
     // 회원 탈퇴
-    @DeleteMapping("/auth/{id}/delete")
+    @DeleteMapping("/auth/{id}")
     public ResponseDto deleteMember(@PathVariable Long id) {
         log.info("delete");
         return memberService.deleteMember(id);
     }
+
+    // 회원 수정
+    @PutMapping("/auth/{id}")
+    public ResponseDto updateMember(@PathVariable Long id, @Valid @RequestBody MemberUpdateRequestDto requestDto){
+        return memberService.updateMember(id, requestDto);
+    }
+
     // 로그인
     @PostMapping("/auth/login")
     public ResponseDto login(@Valid @RequestBody LoginRequestDto user) {
