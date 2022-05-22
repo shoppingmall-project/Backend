@@ -11,6 +11,7 @@ import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.goods.GoodsUpdateRequestDto;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +44,18 @@ public class GoodsServiceImpl implements GoodsService {
         return new ResponseDto("SUCCESS");
     }
 
+    @Override
+    public ResponseDto findGoodsList() {
+        List<Goods> goodsList = goodsRepository.findGoodsList();
 
+        return new ResponseDto("SUCCESS", goodsList);
+    }
+
+    @Override
+    public ResponseDto findGoodsById(Long id) {
+        goodsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
+        Goods goods = goodsRepository.findGoodsById(id);
+
+        return new ResponseDto("SUCCESS", goods);
+    }
 }

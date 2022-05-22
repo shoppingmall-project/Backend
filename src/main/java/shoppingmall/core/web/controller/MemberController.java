@@ -14,7 +14,6 @@ import shoppingmall.core.web.dto.*;
 import shoppingmall.core.web.dto.member.MemberCreateRequestDto;
 import shoppingmall.core.web.dto.member.MemberResponseDto;
 import shoppingmall.core.web.dto.member.MemberUpdateRequestDto;
-import shoppingmall.core.web.dto.member.MemberUpdateResponseDto;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +27,6 @@ public class MemberController {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final JwtTokenProvider jwtTokenProvider;
-    private final MemberRepository memberRepository;
     private final MemberService memberService;
     private final UserDetailsService userDetailsService;
 
@@ -59,16 +57,22 @@ public class MemberController {
     }
 
     // 회원 리스트 조회
-    @GetMapping("/member")
-    public List<Member> findMember() {
+    @GetMapping("/memberlist")
+    public ResponseDto findMemberList() {
         log.info("member list");
-        return memberRepository.findAllMember();
+        return memberService.findMemberList();
     }
 
+    // 회원 조회
+    @GetMapping("/member/{id}")
+    public ResponseDto findMemberById(@PathVariable Long id) {
+        return memberService.findMemberById(id);
+    }
 
     // 사실 뭔지 잘 모르겠음. --------------------
     @GetMapping("/user")
     public ResponseDto userInfo(ServletRequest request) {
+
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
         Member member = (Member) userDetailsService.loadUserByUsername(jwtTokenProvider.getUserPk(token));
         MemberResponseDto memberResponseDto = new MemberResponseDto(member);

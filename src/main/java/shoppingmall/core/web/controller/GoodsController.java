@@ -19,7 +19,6 @@ import java.util.Optional;
 public class GoodsController {
 
     private final GoodsService goodsService;
-    private final GoodsRepository goodsRepository;
 
     //상품 등록
     @PostMapping("/goods/create")
@@ -29,14 +28,14 @@ public class GoodsController {
 
     //상품 id로 조회
     @GetMapping("/goods/{id}")
-    public Optional<Goods> findGoodsById(@PathVariable Long id) {
-        return goodsRepository.findById(id);
+    public ResponseDto findGoodsById(@PathVariable Long id) {
+        return goodsService.findGoodsById(id);
     }
 
     //상품 전체 조회
     @GetMapping("/goodslist")
-    public List<Goods> findAllGoods() {
-        return goodsRepository.findAllGoods();
+    public ResponseDto findGoodsList() {
+        return goodsService.findGoodsList();
     }
 
     //상품 삭제

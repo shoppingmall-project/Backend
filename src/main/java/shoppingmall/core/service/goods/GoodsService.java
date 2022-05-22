@@ -11,4 +11,7 @@ public interface GoodsService {
 
     ResponseDto updateGoods(Long id, GoodsUpdateRequestDto requestDto);
 
+    ResponseDto findGoodsList();
+
+    ResponseDto findGoodsById(Long id);
 }

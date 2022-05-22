@@ -36,4 +36,9 @@ public class Board {
         this.content = content;
         this.views = views;
     }
+
+    public void updateBoard(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }

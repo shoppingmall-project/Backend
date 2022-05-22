@@ -10,8 +10,11 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByAccount(String account);
 
+    @Query(value = "select * from member where id = ?", nativeQuery = true)
+    Member findMemberById(Long id);
+
     @Query(value = "select * from member", nativeQuery = true)
-    List<Member> findAllMember();
+    List<Member> findMemberList();
 
     @Transactional
     void deleteByAccount(String account);
