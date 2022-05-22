@@ -49,7 +49,7 @@ public class BoardControllerTest {
 
     @Test
     @DisplayName("게시글 추가")
-    void crateGoods() throws Exception {
+    void crateBoard() throws Exception {
         //given
         String title = "test";
         String author = "박민우";
@@ -78,7 +78,7 @@ public class BoardControllerTest {
 
     @Test
     @DisplayName("게시글 삭제")
-    void deleteGoods() throws Exception {
+    void deleteBoard() throws Exception {
         //given
         String title = "test";
         String author = "박민우";
@@ -103,8 +103,8 @@ public class BoardControllerTest {
 
     @Transactional
     @Test
-    @DisplayName("상품 수정")
-    void updateGoods() throws Exception {
+    @DisplayName("게시글 수정")
+    void updateBoard() throws Exception {
         //given
         String title = "test";
         String author = "박민우";
@@ -139,8 +139,8 @@ public class BoardControllerTest {
     }
 
     @Test
-    @DisplayName("상품 리스트 조회")
-    void findAllGoods() throws Exception {
+    @DisplayName("게시글 리스트 조회")
+    void findAllBoard() throws Exception {
 
         boardRepository.save(Board.builder()
                 .title("test1")
