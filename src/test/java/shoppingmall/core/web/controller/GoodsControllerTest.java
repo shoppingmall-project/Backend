@@ -20,7 +20,7 @@ import javax.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -150,6 +150,38 @@ public class GoodsControllerTest {
         System.out.println("goods = "+ goods.getName());
         assertThat(!goodsRepository.findAll().isEmpty());
         assertThat(goods.getName()).isEqualTo("new_wine");
+
+    }
+
+    @Test
+    @DisplayName("상품 리스트 조회")
+    void findAllGoods() throws Exception {
+
+        goodsRepository.save(Goods.builder()
+                .category("wine")
+                .name("test1 wine")
+                .price("50000")
+                .stock("123")
+                .description("조금 더 비싼 와인입니다")
+                .brand("브랜드 1")
+                .country("Korea")
+                .build());
+
+        goodsRepository.save(Goods.builder()
+                .category("wine")
+                .name("test2 wine")
+                .price("30000")
+                .stock("234")
+                .description("조금 더 싼 와인입니다.")
+                .brand("브랜드 2")
+                .country("Korea")
+                .build());
+
+        mvc.perform(get("/goodslist"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("test1 wine"))
+                .andExpect(jsonPath("$[1].name").value("test2 wine"));
+
 
     }
 }
