@@ -3,7 +3,7 @@ package shoppingmall.core.web.dto.board;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shoppingmall.core.domain.Board;
+import shoppingmall.core.domain.board.Board;
 
 import javax.validation.constraints.NotEmpty;
 

@@ -1,10 +1,10 @@
-package shoppingmall.core.service;
+package shoppingmall.core.service.board;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import shoppingmall.core.domain.Board;
-import shoppingmall.core.domain.BoardRepository;
+import shoppingmall.core.domain.board.Board;
+import shoppingmall.core.domain.board.BoardRepository;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.board.BoardCreateRequestDto;
 import shoppingmall.core.web.dto.board.BoardCreateResponseDto;

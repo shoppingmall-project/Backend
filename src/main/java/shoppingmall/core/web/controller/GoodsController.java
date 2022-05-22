@@ -2,16 +2,12 @@ package shoppingmall.core.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import shoppingmall.core.domain.Goods.Goods;
-import shoppingmall.core.domain.Goods.GoodsRepository;
 import shoppingmall.core.service.goods.GoodsService;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.goods.GoodsCreateRequestDto;
 import shoppingmall.core.web.dto.goods.GoodsUpdateRequestDto;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package shoppingmall.core.domain;
+package shoppingmall.core.domain.board;
 
 import lombok.Builder;
 import lombok.Getter;

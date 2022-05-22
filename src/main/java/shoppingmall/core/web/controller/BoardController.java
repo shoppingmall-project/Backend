@@ -2,8 +2,7 @@ package shoppingmall.core.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import shoppingmall.core.domain.BoardRepository;
-import shoppingmall.core.service.BoardService;
+import shoppingmall.core.service.board.BoardService;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.board.BoardCreateRequestDto;
 import shoppingmall.core.web.dto.board.BoardUpdateRequestDto;

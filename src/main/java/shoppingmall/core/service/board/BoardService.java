@@ -1,4 +1,4 @@
-package shoppingmall.core.service;
+package shoppingmall.core.service.board;
 
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.board.BoardCreateRequestDto;

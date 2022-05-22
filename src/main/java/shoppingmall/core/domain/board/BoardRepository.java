@@ -1,4 +1,4 @@
-package shoppingmall.core.domain;
+package shoppingmall.core.domain.board;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

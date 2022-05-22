@@ -9,15 +9,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import shoppingmall.core.domain.Board;
-import shoppingmall.core.domain.BoardRepository;
-import shoppingmall.core.domain.Goods.Goods;
-import shoppingmall.core.domain.Goods.GoodsRepository;
-import shoppingmall.core.service.goods.GoodsService;
+import shoppingmall.core.domain.board.Board;
+import shoppingmall.core.domain.board.BoardRepository;
 import shoppingmall.core.web.dto.board.BoardCreateRequestDto;
 import shoppingmall.core.web.dto.board.BoardUpdateRequestDto;
-import shoppingmall.core.web.dto.goods.GoodsCreateRequestDto;
-import shoppingmall.core.web.dto.goods.GoodsUpdateRequestDto;
 
 import javax.transaction.Transactional;
 

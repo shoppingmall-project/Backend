@@ -39,7 +39,8 @@ public class GoodsServiceImpl implements GoodsService {
     @Transactional
     public ResponseDto updateGoods(Long id, GoodsUpdateRequestDto requestDto) {
         Goods goods = goodsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
-        goods.updateGoods(requestDto.getCategory(), requestDto.getName(), requestDto.getPrice(), requestDto.getStock(), requestDto.getDescription(), requestDto.getBrand(), requestDto.getCountry());
+        goods.updateGoods(requestDto.getCategory(), requestDto.getName(), requestDto.getPrice(), requestDto.getStock(),
+                requestDto.getDescription(), requestDto.getBrand(), requestDto.getCountry());
 
         return new ResponseDto("SUCCESS");
     }
