@@ -18,11 +18,11 @@ import shoppingmall.core.web.dto.member.MemberUpdateRequestDto;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/auth")
 public class MemberController {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -31,40 +31,40 @@ public class MemberController {
     private final UserDetailsService userDetailsService;
 
     // 회원가입
-    @PostMapping("/signup")
+    @PostMapping()
     public String join(@Valid @RequestBody MemberCreateRequestDto user) throws Exception {
         log.info("signup");
         return memberService.createMember(user);
     }
     // 회원 탈퇴
-    @DeleteMapping("/auth/{id}")
+    @DeleteMapping("/{id}")
     public ResponseDto deleteMember(@PathVariable Long id) {
         log.info("delete");
         return memberService.deleteMember(id);
     }
 
     // 회원 수정
-    @PutMapping("/auth/{id}")
+    @PutMapping("/{id}")
     public ResponseDto updateMember(@PathVariable Long id, @Valid @RequestBody MemberUpdateRequestDto requestDto){
         return memberService.updateMember(id, requestDto);
     }
 
     // 로그인
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public ResponseDto login(@Valid @RequestBody LoginRequestDto user) {
         log.info("login");
         return memberService.login(user);
     }
 
     // 회원 리스트 조회
-    @GetMapping("/memberlist")
+    @GetMapping()
     public ResponseDto findMemberList() {
         log.info("member list");
         return memberService.findMemberList();
     }
 
     // 회원 조회
-    @GetMapping("/member/{id}")
+    @GetMapping("/{id}")
     public ResponseDto findMemberById(@PathVariable Long id) {
         return memberService.findMemberById(id);
     }

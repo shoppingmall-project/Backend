@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.domain.member.MemberRepository;
 import shoppingmall.core.service.member.MemberService;
@@ -19,6 +20,7 @@ import shoppingmall.core.web.dto.member.MemberUpdateRequestDto;
 
 import javax.transaction.Transactional;
 
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -65,7 +67,7 @@ class MemberControllerTest {
         );
 
         //then
-        mvc.perform(post("/signup")
+        mvc.perform(post("/auth")
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -145,6 +147,34 @@ class MemberControllerTest {
                 .andExpect(status().isOk());
         Assertions.assertThat(memberRepository.findById(member.getId()).isPresent());
         Assertions.assertThat(member.getEmail()).isEqualTo(new_email);
+    }
+
+    @Test
+    @DisplayName("멤버 리스트 조회")
+    void findAllGoods() throws Exception {
+
+        memberRepository.save(Member.builder()
+                .name("박민우")
+                .role("M")
+                .email("alsdndia789@naver.com")
+                .gender("M")
+                .password("1234")
+                .account("test")
+                .build());
+
+        memberRepository.save(Member.builder()
+                .name("최영원")
+                .role("M")
+                .email("choi@naver.com")
+                .gender("M")
+                .password("5678")
+                .account("test2")
+                .build());
+
+        mvc.perform(get("/auth"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.length()", equalTo(2)));
+
     }
 }
 

@@ -47,7 +47,6 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public ResponseDto findGoodsList() {
         List<Goods> goodsList = goodsRepository.findGoodsList();
-
         return new ResponseDto("SUCCESS", goodsList);
     }
 

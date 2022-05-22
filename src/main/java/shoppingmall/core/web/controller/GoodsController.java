@@ -16,36 +16,37 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/goods")
 public class GoodsController {
 
     private final GoodsService goodsService;
 
     //상품 등록
-    @PostMapping("/goods/create")
+    @PostMapping()
     public ResponseDto createGoods(@RequestBody GoodsCreateRequestDto requestDto) {
         return goodsService.createGoods(requestDto);
     }
 
     //상품 id로 조회
-    @GetMapping("/goods/{id}")
+    @GetMapping("/{id}")
     public ResponseDto findGoodsById(@PathVariable Long id) {
         return goodsService.findGoodsById(id);
     }
 
     //상품 전체 조회
-    @GetMapping("/goodslist")
+    @GetMapping()
     public ResponseDto findGoodsList() {
         return goodsService.findGoodsList();
     }
 
     //상품 삭제
-    @DeleteMapping("/goods/{id}")
+    @DeleteMapping("/{id}")
     public ResponseDto deleteGoods(@PathVariable Long id) {
         return goodsService.deleteGoods(id);
     }
 
     //상품 수정
-    @PutMapping("/goods/{id}")
+    @PutMapping("/{id}")
     public ResponseDto updateGoods(@PathVariable Long id, @Valid @RequestBody GoodsUpdateRequestDto requestDto) {
         return goodsService.updateGoods(id, requestDto);
     }
