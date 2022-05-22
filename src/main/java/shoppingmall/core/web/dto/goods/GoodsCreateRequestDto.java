@@ -3,7 +3,6 @@ package shoppingmall.core.web.dto.goods;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shoppingmall.core.domain.Country;
 import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.Product;
 
