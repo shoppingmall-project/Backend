@@ -80,7 +80,7 @@ public class Member implements UserDetails {
         return true;
     }
 
-    public void update(String password, String role, String email) {
+    public void updateMember(String password, String role, String email) {
         this.password = password;
         this.role = role;
         this.email = email;

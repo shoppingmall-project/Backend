@@ -136,8 +136,6 @@ class MemberControllerTest {
                 .build()
         );
 
-        System.out.println("member_id = " + member.getId());
-
         //when
         mvc.perform(put("/auth/" + member.getId())
                         .content(body)
@@ -147,7 +145,6 @@ class MemberControllerTest {
                 .andExpect(status().isOk());
         Assertions.assertThat(memberRepository.findById(member.getId()).isPresent());
         Assertions.assertThat(member.getEmail()).isEqualTo(new_email);
-
     }
 }
 
