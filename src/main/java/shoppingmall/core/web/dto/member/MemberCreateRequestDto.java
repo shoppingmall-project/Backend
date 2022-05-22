@@ -19,7 +19,6 @@ public class MemberCreateRequestDto {
     private String password;
     @NotEmpty
     private String role;
-    @NotEmpty
     @Email
     private String email;
     @NotEmpty

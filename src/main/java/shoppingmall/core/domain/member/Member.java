@@ -37,7 +37,7 @@ public class Member implements UserDetails {
     @Column(length = 30, nullable = false)
     private String role;
 
-    @Column(length = 30, nullable = false)
+    @Column(length = 30, nullable = true)
     private String email;
 
     @Column(length = 30, nullable = false)
@@ -78,5 +78,11 @@ public class Member implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void update(String password, String role, String email) {
+        this.password = password;
+        this.role = role;
+        this.email = email;
     }
 }
