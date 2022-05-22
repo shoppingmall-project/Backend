@@ -9,19 +9,28 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
 
 @Getter
 @NoArgsConstructor
 public class GoodsCreateRequestDto {
 
+    @NotEmpty
     private String category;
+    @NotEmpty
     private String name;
+    @NotEmpty
     private String price;
+    @NotEmpty
     private String stock;
+    @NotEmpty
     private String description;
+    @NotEmpty
     private String brand;
+    @NotEmpty
     private String country;
 
+    @Builder
     public GoodsCreateRequestDto(String category, String name, String price, String stock, String description, String brand, String country) {
         this.category = category;
         this.name = name;
@@ -31,8 +40,6 @@ public class GoodsCreateRequestDto {
         this.brand = brand;
         this.country = country;
     }
-
-    @Builder
 
 
     public Goods toEntity() {
