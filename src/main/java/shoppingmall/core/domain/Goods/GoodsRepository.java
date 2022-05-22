@@ -9,4 +9,7 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
 
     @Query(value = "Select * from goods", nativeQuery = true)
     List<Goods> findAllGoods();
+
+    @Query(value = "Select * from goods where id = ?", nativeQuery = true)
+    void findGoodsById(Long id);
 }

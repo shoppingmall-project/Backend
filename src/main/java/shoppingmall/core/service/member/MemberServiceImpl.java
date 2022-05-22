@@ -51,8 +51,7 @@ public class MemberServiceImpl implements MemberService {
     public ResponseDto updateMember(Long id, MemberUpdateRequestDto requestDto) {
         Member member = memberRepository.findById(id).orElseThrow(()
                 -> new IllegalArgumentException("해당 유저가 없습니다."));
-        member.update(passwordEncoder.encode(requestDto.getPassword()), requestDto.getRole(), requestDto.getEmail());
-        System.out.println("requestDto.getEmail() = " + requestDto.getEmail());
+        member.updateMember(passwordEncoder.encode(requestDto.getPassword()), requestDto.getRole(), requestDto.getEmail());
         return new ResponseDto("SUCCESS");
     }
 

@@ -48,4 +48,14 @@ public class Goods {
         this.brand = brand;
         this.country = country;
     }
+
+    public void updateGoods(String category, String name, String price, String stock, String description, String brand, String country) {
+        this.category = category;
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+        this.description = description;
+        this.brand = brand;
+        this.country = country;
+    }
 }

@@ -4,37 +4,46 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shoppingmall.core.domain.Goods.Goods;
-import shoppingmall.core.domain.Product;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Getter
 @NoArgsConstructor
 public class GoodsCreateRequestDto {
 
-    private Product product;
-    private Country country;
+    private String category;
     private String name;
     private String price;
-    private String vintage;
-    private String rating;
+    private String stock;
+    private String description;
+    private String brand;
+    private String country;
 
-    @Builder
-    public GoodsCreateRequestDto(Product product, Country country, String name, String price, String vintage, String rating) {
-        this.product = product;
-        this.country = country;
+    public GoodsCreateRequestDto(String category, String name, String price, String stock, String description, String brand, String country) {
+        this.category = category;
         this.name = name;
         this.price = price;
-        this.vintage = vintage;
-        this.rating = rating;
+        this.stock = stock;
+        this.description = description;
+        this.brand = brand;
+        this.country = country;
     }
+
+    @Builder
+
 
     public Goods toEntity() {
         return Goods.builder()
-                .product(product)
-                .country(country)
+                .category(category)
                 .name(name)
                 .price(price)
-                .vintage(vintage)
-                .rating(rating)
+                .stock(stock)
+                .description(description)
+                .brand(brand)
+                .country(country)
                 .build();
 
     }
