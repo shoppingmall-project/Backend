@@ -31,7 +31,6 @@ class MemberControllerTest {
 
     @Autowired
     MemberRepository memberRepository;
-    MemberService memberService;
 
     @Autowired
     ObjectMapper mapper;
@@ -145,7 +144,7 @@ class MemberControllerTest {
                 )
         //then
                 .andExpect(status().isOk());
-        Assertions.assertThat(memberRepository.findById(member.getId()).isPresent());
+        Assertions.assertThat(memberRepository.findById(member.getId())).isNotEmpty();
         Assertions.assertThat(member.getEmail()).isEqualTo(new_email);
     }
 

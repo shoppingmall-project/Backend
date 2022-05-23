@@ -44,7 +44,9 @@ public class GoodsServiceImpl implements GoodsService {
         goods.updateGoods(requestDto.getCategory(), requestDto.getName(), requestDto.getPrice(), requestDto.getStock(),
                 requestDto.getDescription(), requestDto.getBrand(), requestDto.getCountry());
 
-        return new ResponseDto("SUCCESS");
+        GoodsCreateResponseDto responseDto = new GoodsCreateResponseDto(goods.getId());
+
+        return new ResponseDto("SUCCESS", responseDto);
     }
 
     @Override

@@ -36,7 +36,6 @@ public class GoodsControllerTest {
 
     @Autowired
     GoodsRepository goodsRepository;
-    GoodsService goodsService;
 
     @AfterEach
     void cleanup() {
@@ -74,7 +73,7 @@ public class GoodsControllerTest {
                 )
                 .andExpect(status().isOk());
 
-        assertThat(!goodsRepository.findAll().isEmpty());
+        assertThat(goodsRepository.findAll()).isNotEmpty();
     }
 
     @Test
@@ -104,7 +103,7 @@ public class GoodsControllerTest {
                 .andExpect(status().isOk());
 
         //then
-        assertThat(goodsRepository.findAll().isEmpty());
+        assertThat(goodsRepository.findAll()).isEmpty();
     }
 
     @Transactional
@@ -150,7 +149,7 @@ public class GoodsControllerTest {
 
         //when
         System.out.println("goods = "+ goods.getName());
-        assertThat(!goodsRepository.findAll().isEmpty());
+        assertThat(goodsRepository.findAll()).isNotEmpty();
         assertThat(goods.getName()).isEqualTo("new_wine");
 
     }

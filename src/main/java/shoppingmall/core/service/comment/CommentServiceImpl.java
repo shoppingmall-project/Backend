@@ -80,6 +80,8 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다."));
         comment.updateComment(requestDto.getContent());
 
-        return new ResponseDto("SUCCESS");
+        CommentCreateResponseDto responseDto = new CommentCreateResponseDto(comment.getId());
+
+        return new ResponseDto("SUCCESS", responseDto);
     }
 }

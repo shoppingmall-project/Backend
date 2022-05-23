@@ -36,7 +36,8 @@ public class BoardServiceImpl implements BoardService{
     public ResponseDto updateBoard(Long id, BoardUpdateRequestDto requestDto) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다"));
         board.updateBoard(requestDto.getTitle(), requestDto.getContent());
-        return new ResponseDto("SUCCESS");
+        BoardCreateResponseDto responseDto = new BoardCreateResponseDto(board.getId());
+        return new ResponseDto("SUCCESS", responseDto);
     }
 
     @Override
