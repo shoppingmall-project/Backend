@@ -64,15 +64,21 @@ public class CommentControllerTest {
         String content = "asdasdasd";
 
         //when
-        String body = mapper.writeValueAsString(CommentCreateRequestDto.builder()
-                .author(author)
-                .content(content)
-                .build());
+//        ## JSON 형식일 때 데이터 보내는 방법
+//        String body = mapper.writeValueAsString(CommentCreateRequestDto.builder()
+//                .author(author)
+//                .content(content)
+//                .build());
+//
+//        mvc.perform(post("/board/" +board.getId()+ "/comment")
+//                        .content(body)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                )
+//                .andExpect(status().isOk());
 
-        mvc.perform(post("/board/" +board.getId()+ "/comment")
-                        .content(body)
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
+        mvc.perform(post("/board/" + board.getId() + "/comment")
+                        .param("author", author)
+                        .param("content", content))
                 .andExpect(status().isOk());
 
         //then
@@ -135,9 +141,8 @@ public class CommentControllerTest {
                 .build()
         );
 
-        mvc.perform(put("/board/" + board.getId() +"/comment/" +comment.getId())
-                        .content(body)
-                        .contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(put("/board/" + board.getId() + "/comment/" + comment.getId())
+                        .param("content", "new_content"))
                 .andExpect(status().isOk());
 
         //then
