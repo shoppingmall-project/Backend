@@ -8,9 +8,11 @@ import shoppingmall.core.domain.Goods.GoodsRepository;
 import shoppingmall.core.web.dto.goods.GoodsCreateRequestDto;
 import shoppingmall.core.web.dto.goods.GoodsCreateResponseDto;
 import shoppingmall.core.web.dto.ResponseDto;
+import shoppingmall.core.web.dto.goods.GoodsFindResponseDto;
 import shoppingmall.core.web.dto.goods.GoodsUpdateRequestDto;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -42,20 +44,29 @@ public class GoodsServiceImpl implements GoodsService {
         goods.updateGoods(requestDto.getCategory(), requestDto.getName(), requestDto.getPrice(), requestDto.getStock(),
                 requestDto.getDescription(), requestDto.getBrand(), requestDto.getCountry());
 
-        return new ResponseDto("SUCCESS");
+        GoodsCreateResponseDto responseDto = new GoodsCreateResponseDto(goods.getId());
+
+        return new ResponseDto("SUCCESS", responseDto);
     }
 
     @Override
     public ResponseDto findGoodsList() {
-        List<Goods> goodsList = goodsRepository.findGoodsList();
-        return new ResponseDto("SUCCESS", goodsList);
+        List<Goods> goodsList = goodsRepository.findAll();
+        List<GoodsFindResponseDto> responseDtoList = new ArrayList<>();
+
+        for(Goods goods : goodsList) {
+            GoodsFindResponseDto responseDto = GoodsFindResponseDto.toResponseDto(goods);
+
+            responseDtoList.add(responseDto);
+        }
+        return new ResponseDto("SUCCESS", responseDtoList);
     }
 
     @Override
     public ResponseDto findGoodsById(Long id) {
-        goodsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
-        Goods goods = goodsRepository.findGoodsById(id);
+        Goods goods = goodsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
+        GoodsFindResponseDto responseDto = GoodsFindResponseDto.toResponseDto(goods);
 
-        return new ResponseDto("SUCCESS", goods);
+        return new ResponseDto("SUCCESS", responseDto);
     }
 }

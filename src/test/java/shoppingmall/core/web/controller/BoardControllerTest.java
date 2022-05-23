@@ -49,7 +49,7 @@ public class BoardControllerTest {
         String title = "test";
         String author = "박민우";
         String content = "test 내용내용";
-        Integer views = 50;
+        int views = 50;
 
 
         //when
@@ -68,7 +68,7 @@ public class BoardControllerTest {
                 )
                 .andExpect(status().isOk());
 
-        assertThat(!boardRepository.findAll().isEmpty());
+        assertThat(boardRepository.findAll()).isNotEmpty();
     }
 
     @Test
@@ -78,7 +78,7 @@ public class BoardControllerTest {
         String title = "test";
         String author = "박민우";
         String content = "test 내용내용";
-        Integer views = 50;
+        int views = 50;
 
 
         Board board = boardRepository.save(Board.builder()
@@ -93,7 +93,7 @@ public class BoardControllerTest {
                 .andExpect(status().isOk());
 
         //then
-        assertThat(boardRepository.findAll().isEmpty());
+        assertThat(boardRepository.findAll()).isEmpty();
     }
 
     @Transactional
@@ -104,7 +104,7 @@ public class BoardControllerTest {
         String title = "test";
         String author = "박민우";
         String content = "test 내용내용";
-        Integer views = 50;
+        int views = 50;
 
 
         Board board = boardRepository.save(Board.builder()
@@ -128,7 +128,7 @@ public class BoardControllerTest {
                 .andExpect(status().isOk());
 
         //when
-        assertThat(!boardRepository.findAll().isEmpty());
+        assertThat(boardRepository.findAll()).isNotEmpty();
         assertThat(board.getTitle()).isEqualTo("change title");
 
     }
