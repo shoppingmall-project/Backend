@@ -5,12 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import shoppingmall.core.domain.board.Board;
 import shoppingmall.core.domain.board.BoardRepository;
+import shoppingmall.core.domain.comment.Comment;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.board.BoardCreateRequestDto;
 import shoppingmall.core.web.dto.board.BoardCreateResponseDto;
+import shoppingmall.core.web.dto.board.BoardFindResponseDto;
 import shoppingmall.core.web.dto.board.BoardUpdateRequestDto;
+import shoppingmall.core.web.dto.comment.CommentFindResponseDto;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,15 +49,21 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public ResponseDto findBoardById(Long id) {
-        boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다"));
-        Board board = boardRepository.findBoardById(id);
+        Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다"));
 
-        return new ResponseDto("SUCCESS", board);
+        BoardFindResponseDto responseDto = BoardFindResponseDto.toResponseDto(board);
+        return new ResponseDto("SUCCESS", responseDto);
     }
 
     @Override
     public ResponseDto findBoardList() {
-        List<Board> boardList = boardRepository.findBoardList();
-        return new ResponseDto("SUCCESS", boardList);
+        List<Board> boardList = boardRepository.findAll();
+
+        List<BoardFindResponseDto> responseDtoList = new ArrayList<>();
+        for(Board board : boardList) {
+            BoardFindResponseDto responseDto = BoardFindResponseDto.toResponseDto(board);
+            responseDtoList.add(responseDto);
+        }
+        return new ResponseDto("SUCCESS", responseDtoList);
     }
 }

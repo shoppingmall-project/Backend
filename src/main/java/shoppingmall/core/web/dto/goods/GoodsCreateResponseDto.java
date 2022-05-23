@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GoodsCreateResponseDto {
 
-    private Long goodsId;
+    private Long id;
 
     @Builder
-    public GoodsCreateResponseDto(Long goodsId) {
-        this.goodsId = goodsId;
+    public GoodsCreateResponseDto(Long id) {
+        this.id = id;
     }
 }
