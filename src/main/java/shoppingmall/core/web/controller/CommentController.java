@@ -1,8 +1,12 @@
 package shoppingmall.core.web.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import shoppingmall.core.service.comment.CommentService;
+import shoppingmall.core.service.storage.StorageService;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.comment.CommentCreateRequestDto;
 import shoppingmall.core.web.dto.comment.CommentUpdateRequestDto;
@@ -15,12 +19,14 @@ import javax.validation.Valid;
 @RequestMapping("/board/{boardId}/comment")
 public class CommentController {
 
-    private final CommentService commentService;
+    @Autowired
+    CommentService commentService;
 
     //댓글 생성
     @PostMapping()
-    public ResponseDto createComment(@PathVariable Long boardId, @Valid @RequestBody CommentCreateRequestDto requestDto) {
-        return commentService.createComment(boardId, requestDto);
+    public ResponseDto createComment(@PathVariable Long boardId, @ModelAttribute CommentCreateRequestDto requestDto,
+                                     @RequestParam(value = "file", required = false) MultipartFile file) throws Exception{
+        return commentService.createComment(boardId, requestDto, file);
     }
 
     //댓글 리스트 조회
@@ -37,13 +43,15 @@ public class CommentController {
 
     //댓글 삭제
     @DeleteMapping("/{id}")
-    public ResponseDto deleteComment(@PathVariable Long boardId, @PathVariable Long id) {
+    public ResponseDto deleteComment(@PathVariable Long boardId, @PathVariable Long id) throws Exception {
         return commentService.deleteComment(boardId, id);
     }
 
     //댓글 수정
     @PutMapping("/{id}")
-    public ResponseDto updateComment(@PathVariable Long boardId, @PathVariable Long id, @Valid @RequestBody CommentUpdateRequestDto requestDto) {
-        return commentService.updateComment(boardId, id, requestDto);
+    public ResponseDto updateComment(@PathVariable Long boardId, @PathVariable Long id,
+                                     @Valid @ModelAttribute CommentUpdateRequestDto requestDto,
+                                     @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
+        return commentService.updateComment(boardId, id, requestDto, file);
     }
 }

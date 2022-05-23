@@ -3,10 +3,10 @@ package shoppingmall.core.domain.comment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Cascade;
 import shoppingmall.core.domain.board.Board;
 
 import javax.persistence.*;
+
 
 @Getter
 @NoArgsConstructor
@@ -27,12 +27,16 @@ public class Comment {
     @Column(length = 200, nullable = false)
     private String content;
 
+    @Column(length = 200)
+    private String imageUrl;
+
     @Builder
-    public Comment(Long id, Board board, String author, String content) {
+    public Comment(Long id, Board board, String author, String content, String imageUrl) {
         this.id = id;
         this.board = board;
         this.author = author;
         this.content = content;
+        this.imageUrl = imageUrl;
     }
 
     public void setBoard(Board board) {
@@ -41,5 +45,9 @@ public class Comment {
 
     public void updateComment(String content) {
         this.content = content;
+    }
+
+    public void updateUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

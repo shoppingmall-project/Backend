@@ -13,13 +13,15 @@ public class CommentFindResponseDto {
     private Long commentId;
     private String author;
     private String content;
+    private String imageUrl;
 
     @Builder
-    public CommentFindResponseDto(Long boardId, Long commentId, String author, String content) {
+    public CommentFindResponseDto(Long boardId, Long commentId, String author, String content, String imageUrl) {
         this.boardId = boardId;
         this.commentId = commentId;
         this.author = author;
         this.content = content;
+        this.imageUrl = imageUrl;
     }
 
     public static CommentFindResponseDto toResponseDto(Comment entity) {
@@ -28,6 +30,11 @@ public class CommentFindResponseDto {
                 .commentId(entity.getId())
                 .author(entity.getAuthor())
                 .content(entity.getContent())
+                .imageUrl(entity.getImageUrl())
                 .build();
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
