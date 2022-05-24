@@ -12,8 +12,11 @@ import shoppingmall.core.web.dto.LoginRequestDto;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.TokenDto;
 import shoppingmall.core.web.dto.member.MemberCreateRequestDto;
+import shoppingmall.core.web.dto.member.MemberCreateResponseDto;
+import shoppingmall.core.web.dto.member.MemberFindResponseDto;
 import shoppingmall.core.web.dto.member.MemberUpdateRequestDto;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,7 +32,6 @@ public class MemberServiceImpl implements MemberService {
     public ResponseDto login(LoginRequestDto user) {
         Member member = memberRepository.findByAccount(user.getAccount())
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 아이디 입니다."));
-
         if (!passwordEncoder.matches(user.getPassword(), member.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
@@ -58,12 +60,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public String createMember(MemberCreateRequestDto requestDto) throws Exception {
-        if (memberRepository.findByAccount(requestDto.getAccount()).isPresent()) {
+    public ResponseDto createMember(MemberCreateRequestDto requestDto) throws Exception {
+        if (memberRepository.existsByAccount(requestDto.getAccount())) {
             throw new IllegalArgumentException(requestDto.getAccount() + "는 이미 존재하는 아이디입니다.");
         }
-
-        return memberRepository.save(Member.builder()
+        Member member = memberRepository.save(Member.builder()
                 .account(requestDto.getAccount())
                 .name(requestDto.getName())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
@@ -71,20 +72,32 @@ public class MemberServiceImpl implements MemberService {
                 .gender(requestDto.getGender())
                 .role(requestDto.getRole())
                 .roles(Collections.singletonList("Role_" + requestDto.getRole()))
-                .build()).getAccount();
+                .build());
+
+        MemberCreateResponseDto responseDto = new MemberCreateResponseDto(member.getId(), member.getAccount());
+
+        return new ResponseDto("SUCCESS", responseDto);
+
     }
 
     @Override
     public ResponseDto findMemberList() {
-        List<Member> memberList = memberRepository.findMemberList();
-        return new ResponseDto("SUCCESS", memberList);
+        List<Member> memberList = memberRepository.findAll();
+
+        List<MemberFindResponseDto> responseDtoList = new ArrayList<>();
+        for (Member member : memberList) {
+            MemberFindResponseDto responseDto = MemberFindResponseDto.toResponseDto(member);
+            responseDtoList.add(responseDto);
+        }
+        return new ResponseDto("SUCCESS", responseDtoList);
     }
 
     @Override
     public ResponseDto findMemberById(Long id) {
-        memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다."));
-        Member member = memberRepository.findMemberById(id);
-        return new ResponseDto("SUCCESS", member);
+        Member member = memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다."));
+
+        MemberFindResponseDto responseDto = MemberFindResponseDto.toResponseDto(member);
+        return new ResponseDto("SUCCESS", responseDto);
     }
 
 }

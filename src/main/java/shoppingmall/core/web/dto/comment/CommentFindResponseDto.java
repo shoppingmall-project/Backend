@@ -33,8 +33,4 @@ public class CommentFindResponseDto {
                 .imageUrl(entity.getImageUrl())
                 .build();
     }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 }

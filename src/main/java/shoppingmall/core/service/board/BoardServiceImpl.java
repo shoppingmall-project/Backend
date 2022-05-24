@@ -49,7 +49,7 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public ResponseDto findBoardById(Long id) throws Exception {
+    public ResponseDto findBoardById(Long id) throws IllegalArgumentException {
         Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다"));
 
         BoardFindResponseDto responseDto = BoardFindResponseDto.toResponseDto(board);
