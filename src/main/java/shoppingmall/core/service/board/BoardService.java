@@ -12,7 +12,7 @@ public interface BoardService {
 
     ResponseDto deleteBoard(Long id);
 
-    ResponseDto findBoardById(Long id);
+    ResponseDto findBoardById(Long id) throws Exception;
 
     ResponseDto findBoardList();
 }

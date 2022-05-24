@@ -33,7 +33,7 @@ public class BoardController {
     }
 
     @GetMapping("/{id}")
-    public ResponseDto findBoardById(@PathVariable Long id) {
+    public ResponseDto findBoardById(@PathVariable Long id) throws Exception{
         return boardService.findBoardById(id);
     }
 

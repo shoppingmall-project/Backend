@@ -19,9 +19,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GoodsServiceImpl implements GoodsService {
 
-    @Autowired
-    GoodsRepository goodsRepository;
+    private final GoodsRepository goodsRepository;
 
+    @Transactional
     @Override
     public ResponseDto createGoods(GoodsCreateRequestDto requestDto) {
         Goods goods = goodsRepository.save(requestDto.toEntity());
@@ -29,6 +29,7 @@ public class GoodsServiceImpl implements GoodsService {
         return new ResponseDto("SUCCESS", responseDto);
     }
 
+    @Transactional
     @Override
     public ResponseDto deleteGoods(Long id) {
         goodsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다."));

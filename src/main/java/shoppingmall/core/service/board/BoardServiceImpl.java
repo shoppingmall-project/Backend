@@ -5,13 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import shoppingmall.core.domain.board.Board;
 import shoppingmall.core.domain.board.BoardRepository;
-import shoppingmall.core.domain.comment.Comment;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.board.BoardCreateRequestDto;
 import shoppingmall.core.web.dto.board.BoardCreateResponseDto;
 import shoppingmall.core.web.dto.board.BoardFindResponseDto;
 import shoppingmall.core.web.dto.board.BoardUpdateRequestDto;
-import shoppingmall.core.web.dto.comment.CommentFindResponseDto;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -21,9 +19,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService{
 
-    @Autowired
-    BoardRepository boardRepository;
 
+    private final BoardRepository boardRepository;
+
+    @Transactional
     @Override
     public ResponseDto createBoard(BoardCreateRequestDto requestDto) {
         Board board = boardRepository.save(requestDto.toEntity());
@@ -40,6 +39,7 @@ public class BoardServiceImpl implements BoardService{
         return new ResponseDto("SUCCESS", responseDto);
     }
 
+    @Transactional
     @Override
     public ResponseDto deleteBoard(Long id) {
         boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다"));
@@ -49,7 +49,7 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public ResponseDto findBoardById(Long id) {
+    public ResponseDto findBoardById(Long id) throws Exception {
         Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다"));
 
         BoardFindResponseDto responseDto = BoardFindResponseDto.toResponseDto(board);

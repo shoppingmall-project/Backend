@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-@Builder
 public class Board {
 
     @Id

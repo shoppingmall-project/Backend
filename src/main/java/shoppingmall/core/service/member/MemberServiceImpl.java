@@ -23,8 +23,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
-    @Autowired
-    MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public ResponseDto login(LoginRequestDto user) {
@@ -39,6 +38,7 @@ public class MemberServiceImpl implements MemberService {
         return new ResponseDto("SUCCESS", tokenDto);
     }
 
+    @Transactional
     @Override
     public ResponseDto deleteMember(Long id) {
         memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
@@ -56,6 +56,7 @@ public class MemberServiceImpl implements MemberService {
         return new ResponseDto("SUCCESS");
     }
 
+    @Transactional
     @Override
     public String createMember(MemberCreateRequestDto requestDto) throws Exception {
         if (memberRepository.findByAccount(requestDto.getAccount()).isPresent()) {
