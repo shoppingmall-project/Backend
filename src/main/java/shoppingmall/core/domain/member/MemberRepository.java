@@ -9,4 +9,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     boolean existsByAccount(String account);
 
+    void deleteByAccount(String account);
+
 }
