@@ -70,8 +70,10 @@ class MemberControllerTest {
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(status().isOk())
-                .andExpect(content().string(account));
+                .andExpect(status().isOk());
+
+        Assertions.assertThat(memberRepository.findAll()).isNotEmpty();
+
     }
 
     @Test
