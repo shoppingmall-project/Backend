@@ -70,7 +70,7 @@ public class MemberRepositoryTest {
         String name = "test";
         String role = "Manager";
 
-        memberRepository.save(Member.builder()
+        Member member = memberRepository.save(Member.builder()
                 .account(account)
                 .password(password)
                 .gender(gender)
@@ -79,15 +79,8 @@ public class MemberRepositoryTest {
                 .role(role)
                 .build());
 
+        memberRepository.deleteById(member.getId());
 
-        //when
-        if (memberRepository.findByAccount("test").isPresent()) {
-            System.out.println("account = " + account);
-            memberRepository.deleteByAccount("test");
-        } else {
-            System.out.println("해당 계정이 없습니다");
-
-        }
         //then
         Assertions.assertThat(memberRepository.findByAccount("test")).isEmpty();
     }
