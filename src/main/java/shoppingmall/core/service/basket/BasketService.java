@@ -1,8 +1,8 @@
-package shoppingmall.core.service.order;
+package shoppingmall.core.service.basket;
 
 import shoppingmall.core.web.dto.ResponseDto;
-import shoppingmall.core.web.dto.order.BasketCreateRequestDto;
-import shoppingmall.core.web.dto.order.BasketUpdateReqeustDto;
+import shoppingmall.core.web.dto.basket.BasketCreateRequestDto;
+import shoppingmall.core.web.dto.basket.BasketUpdateReqeustDto;
 
 public interface BasketService {
 

@@ -1,4 +1,4 @@
-package shoppingmall.core.web.dto.order;
+package shoppingmall.core.web.dto.basket;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -2,14 +2,14 @@ package shoppingmall.core.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import shoppingmall.core.service.order.BasketService;
+import shoppingmall.core.service.basket.BasketService;
 import shoppingmall.core.web.dto.ResponseDto;
-import shoppingmall.core.web.dto.order.BasketCreateRequestDto;
-import shoppingmall.core.web.dto.order.BasketUpdateReqeustDto;
+import shoppingmall.core.web.dto.basket.BasketCreateRequestDto;
+import shoppingmall.core.web.dto.basket.BasketUpdateReqeustDto;
 
 @RestController
 @RequestMapping("/member/{memberId}/goods/{goodsId}/basket")
-public class OrderController {
+public class BasketController {
 
     @Autowired
     BasketService basketService;

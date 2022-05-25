@@ -1,9 +1,9 @@
-package shoppingmall.core.web.dto.order;
+package shoppingmall.core.web.dto.basket;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shoppingmall.core.domain.order.Basket;
+import shoppingmall.core.domain.basket.Basket;
 
 @Getter
 @NoArgsConstructor

@@ -1,4 +1,4 @@
-package shoppingmall.core.service.order;
+package shoppingmall.core.service.basket;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -7,10 +7,10 @@ import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.Goods.GoodsRepository;
 import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.domain.member.MemberRepository;
-import shoppingmall.core.domain.order.Basket;
-import shoppingmall.core.domain.order.BasketRepository;
+import shoppingmall.core.domain.basket.Basket;
+import shoppingmall.core.domain.basket.BasketRepository;
 import shoppingmall.core.web.dto.ResponseDto;
-import shoppingmall.core.web.dto.order.*;
+import shoppingmall.core.web.dto.basket.*;
 
 import java.util.ArrayList;
 import java.util.List;

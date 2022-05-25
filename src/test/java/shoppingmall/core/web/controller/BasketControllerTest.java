@@ -3,7 +3,6 @@ package shoppingmall.core.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +12,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.Goods.GoodsRepository;
-import shoppingmall.core.domain.board.Board;
-import shoppingmall.core.domain.board.BoardRepository;
 import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.domain.member.MemberRepository;
-import shoppingmall.core.domain.order.Basket;
-import shoppingmall.core.domain.order.BasketRepository;
-import shoppingmall.core.web.dto.board.BoardCreateRequestDto;
-import shoppingmall.core.web.dto.board.BoardUpdateRequestDto;
-import shoppingmall.core.web.dto.order.BasketCreateRequestDto;
-import shoppingmall.core.web.dto.order.BasketUpdateReqeustDto;
+import shoppingmall.core.domain.basket.Basket;
+import shoppingmall.core.domain.basket.BasketRepository;
+import shoppingmall.core.web.dto.basket.BasketCreateRequestDto;
+import shoppingmall.core.web.dto.basket.BasketUpdateReqeustDto;
 
 import javax.transaction.Transactional;
 
@@ -35,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class OrderControllerTest {
+public class BasketControllerTest {
 
 
     @Autowired

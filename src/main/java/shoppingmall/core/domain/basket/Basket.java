@@ -1,4 +1,4 @@
-package shoppingmall.core.domain.order;
+package shoppingmall.core.domain.basket;
 
 import lombok.Builder;
 import lombok.Getter;
