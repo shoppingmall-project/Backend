@@ -14,10 +14,10 @@ import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.Goods.GoodsRepository;
 import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.domain.member.MemberRepository;
-import shoppingmall.core.domain.basket.Basket;
-import shoppingmall.core.domain.basket.BasketRepository;
-import shoppingmall.core.web.dto.basket.BasketCreateRequestDto;
-import shoppingmall.core.web.dto.basket.BasketUpdateReqeustDto;
+import shoppingmall.core.domain.order.Order;
+import shoppingmall.core.domain.order.OrderRepository;
+import shoppingmall.core.web.dto.order.OrderCreateRequestDto;
+import shoppingmall.core.web.dto.order.OrderUpdateRequestDto;
 
 import javax.transaction.Transactional;
 
@@ -30,8 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class BasketControllerTest {
-
+public class OrderControllerTest {
 
     @Autowired
     MockMvc mvc;
@@ -40,7 +39,7 @@ public class BasketControllerTest {
     ObjectMapper mapper;
 
     @Autowired
-    BasketRepository basketRepository;
+    OrderRepository orderRepository;
 
     @Autowired
     GoodsRepository goodsRepository;
@@ -50,14 +49,15 @@ public class BasketControllerTest {
 
     @AfterEach
     void cleanup() {
-        basketRepository.deleteAll();
+        orderRepository.deleteAll();
         goodsRepository.deleteAll();
         memberRepository.deleteAll();
     }
 
     @Test
-    @DisplayName("장바구니 추가")
-    void crateBasket() throws Exception {
+    @Transactional
+    @DisplayName("주문 추가")
+    void crateOrder() throws Exception {
         //given
         Member member = memberRepository.save(Member.builder()
                 .account("test")
@@ -78,27 +78,27 @@ public class BasketControllerTest {
                 .country("Korea")
                 .build());
 
-        int count = 5;
-
 
         //when
-        String body = mapper.writeValueAsString(BasketCreateRequestDto.builder()
-                .count(count)
+        String body = mapper.writeValueAsString(OrderCreateRequestDto.builder()
+                .request("제품은 빠르게 배송해주세요")
+                .payment(1)
                 .build());
 
         //then
-        mvc.perform(post("/member/"+member.getId()+"/goods/"+goods.getId()+"/basket")
+        mvc.perform(post("/member/"+member.getId()+"/goods/"+goods.getId()+"/order")
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk());
 
-        assertThat(basketRepository.findAll()).isNotEmpty();
+        assertThat(orderRepository.findAll()).isNotEmpty();
     }
 
     @Test
-    @DisplayName("장바구니 삭제")
-    void deleteBasket() throws Exception {
+    @Transactional
+    @DisplayName("주문 삭제")
+    void deleteOrder() throws Exception {
         //given
         Member member = memberRepository.save(Member.builder()
                 .account("test")
@@ -119,25 +119,25 @@ public class BasketControllerTest {
                 .country("Korea")
                 .build());
 
-        int count = 4;
-
-        Basket basket = basketRepository.save(Basket.builder()
+        Order order = orderRepository.save(Order.builder()
                 .member(member)
                 .goods(goods)
-                .count(count).build());
+                .request("요청사항")
+                .payment(1)
+                .build());
 
         //when
-        mvc.perform(delete("/member/"+member.getId()+"/goods/"+goods.getId()+"/basket/"+basket.getId()))
+        mvc.perform(delete("/member/"+member.getId()+"/goods/"+goods.getId()+"/order/"+order.getId()))
                 .andExpect(status().isOk());
 
         //then
-        assertThat(basketRepository.findAll()).isEmpty();
+        assertThat(orderRepository.findAll()).isEmpty();
     }
 
     @Transactional
     @Test
-    @DisplayName("장바구니 수정")
-    void updateBasket() throws Exception {
+    @DisplayName("주문 수정")
+    void updateOrder() throws Exception {
         //given
         Member member = memberRepository.save(Member.builder()
                 .account("test")
@@ -158,34 +158,33 @@ public class BasketControllerTest {
                 .country("Korea")
                 .build());
 
-        Basket basket = basketRepository.save(Basket.builder()
+        Order order = orderRepository.save(Order.builder()
                 .member(member)
                 .goods(goods)
-                .count(10)
+                .request("요청사항")
+                .payment(1)
                 .build());
-
-        int count = 4;
-
 
         //when
-        String body = mapper.writeValueAsString(BasketUpdateReqeustDto.builder()
-                .count(count)
+        String body = mapper.writeValueAsString(OrderUpdateRequestDto.builder()
+                .request("수정사항")
+                .payment(2)
                 .build());
 
-        mvc.perform(put("/member/"+member.getId()+"/goods/"+goods.getId()+"/basket/"+basket.getId())
+        mvc.perform(put("/member/"+member.getId()+"/goods/"+goods.getId()+"/order/"+order.getId())
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         //when
-        assertThat(basketRepository.findAll()).isNotEmpty();
-        assertThat(basket.getCount()).isEqualTo(4);
-
+        assertThat(orderRepository.findAll()).isNotEmpty();
+        assertThat(order.getPayment()).isEqualTo(2);
+        assertThat(order.getRequest()).isEqualTo("수정사항");
     }
 
     @Test
-    @DisplayName("장바구니 리스트 조회")
-    void findAllBasket() throws Exception {
+    @DisplayName("주문 리스트 조회")
+    void findAllOrder() throws Exception {
         //given
         Member member = memberRepository.save(Member.builder()
                 .account("test")
@@ -206,19 +205,20 @@ public class BasketControllerTest {
                 .country("Korea")
                 .build());
 
-        basketRepository.save(Basket.builder()
+        orderRepository.save(Order.builder()
                 .member(member)
                 .goods(goods)
-                .count(1)
+                .request("요청 사항")
+                .payment(1)
                 .build());
-
-        basketRepository.save(Basket.builder()
+        orderRepository.save(Order.builder()
                 .member(member)
                 .goods(goods)
-                .count(5)
+                .request("요청 사항 2")
+                .payment(2)
                 .build());
 
-        mvc.perform(get("/member/"+member.getId()+"/goods/"+goods.getId()+"/basket"))
+        mvc.perform(get("/member/"+member.getId()+"/goods/"+goods.getId()+"/order"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.length()", equalTo(2)));
 
@@ -226,8 +226,8 @@ public class BasketControllerTest {
 
 
     @Test
-    @DisplayName("장바구니 조회")
-    void findBasketById() throws Exception {
+    @DisplayName("주문 조회")
+    void findOrderById() throws Exception {
         //given
         Member member = memberRepository.save(Member.builder()
                 .account("test")
@@ -248,16 +248,17 @@ public class BasketControllerTest {
                 .country("Korea")
                 .build());
 
-        Basket basket = basketRepository.save(Basket.builder()
+        Order order = orderRepository.save(Order.builder()
                 .member(member)
                 .goods(goods)
-                .count(1)
+                .request("요청 사항")
+                .payment(2)
                 .build());
 
-        mvc.perform(get("/member/"+member.getId()+"/goods/"+goods.getId()+"/basket/"+basket.getId()))
+        mvc.perform(get("/member/"+member.getId()+"/goods/"+goods.getId()+"/order/"+order.getId()))
                 .andExpect(status().isOk());
 
-        Assertions.assertThat(basketRepository.findById(basket.getId())).isNotEmpty();
+        Assertions.assertThat(orderRepository.findById(order.getId())).isNotEmpty();
 
     }
 }
