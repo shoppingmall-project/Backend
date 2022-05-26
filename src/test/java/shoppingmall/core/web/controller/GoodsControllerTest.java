@@ -183,4 +183,25 @@ public class GoodsControllerTest {
                 .andExpect(jsonPath("$.data.length()", equalTo(2)));
 
     }
+
+    @Test
+    @DisplayName("상품 조회")
+    void findGoodsById() throws Exception {
+
+        Goods goods = goodsRepository.save(Goods.builder()
+                .category("wine")
+                .name("test2 wine")
+                .price("30000")
+                .stock("234")
+                .description("조금 더 싼 와인입니다.")
+                .brand("브랜드 2")
+                .country("Korea")
+                .build());
+
+        mvc.perform(get("/goods/" + goods.getId()))
+                .andExpect(status().isOk());
+
+        Assertions.assertThat(goodsRepository.findById(goods.getId())).isNotEmpty();
+
+    }
 }

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import shoppingmall.core.service.comment.CommentService;
-import shoppingmall.core.service.storage.StorageService;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.comment.CommentCreateRequestDto;
 import shoppingmall.core.web.dto.comment.CommentUpdateRequestDto;

@@ -168,8 +168,8 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("멤버 리스트 조회")
-    void findAllGoods() throws Exception {
+    @DisplayName("회원 리스트 조회")
+    void findAllMember() throws Exception {
 
         memberRepository.save(Member.builder()
                 .name("박민우")
@@ -196,6 +196,26 @@ class MemberControllerTest {
         mvc.perform(get("/auth"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.length()", equalTo(2)));
+
+    }
+
+    @Test
+    @DisplayName("회원 조회")
+    void findMemberById() throws Exception {
+
+        Member member = memberRepository.save(Member.builder()
+                .name("박민우")
+                .role("M")
+                .email("alsdndia789@naver.com")
+                .gender("M")
+                .password("1234")
+                .account("test")
+                .build());
+
+        mvc.perform(get("/auth/"+member.getId()))
+                .andExpect(status().isOk());
+
+        Assertions.assertThat(memberRepository.findById(member.getId())).isNotEmpty();
 
     }
 }

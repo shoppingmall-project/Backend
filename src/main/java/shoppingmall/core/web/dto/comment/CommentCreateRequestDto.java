@@ -15,9 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CommentCreateRequestDto {
 
-    @NotEmpty
     private String author;
-    @NotEmpty
     private String content;
 
     @Builder
