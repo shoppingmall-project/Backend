@@ -38,5 +38,5 @@ public class CommentFindResponseDto {
                 .createdDate(entity.getCreatedDate())
                 .build();
     }
-    
+
 }

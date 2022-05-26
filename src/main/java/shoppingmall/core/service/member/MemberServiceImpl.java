@@ -11,10 +11,7 @@ import shoppingmall.core.domain.member.MemberRepository;
 import shoppingmall.core.web.dto.LoginRequestDto;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.TokenDto;
-import shoppingmall.core.web.dto.member.MemberCreateRequestDto;
-import shoppingmall.core.web.dto.member.MemberCreateResponseDto;
-import shoppingmall.core.web.dto.member.MemberFindResponseDto;
-import shoppingmall.core.web.dto.member.MemberUpdateRequestDto;
+import shoppingmall.core.web.dto.member.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,7 +52,9 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(id).orElseThrow(()
                 -> new IllegalArgumentException("해당 유저가 없습니다."));
         member.updateMember(passwordEncoder.encode(requestDto.getPassword()), requestDto.getRole(), requestDto.getEmail(), requestDto.getAddress(), requestDto.getPhoneNum());
-        return new ResponseDto("SUCCESS");
+
+        MemberUpdateResponseDto responseDto = MemberUpdateResponseDto.builder().account(member.getAccount()).build();
+        return new ResponseDto("SUCCESS",responseDto);
     }
 
     @Transactional
