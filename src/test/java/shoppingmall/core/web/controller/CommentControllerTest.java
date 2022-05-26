@@ -1,6 +1,7 @@
 package shoppingmall.core.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -150,9 +151,8 @@ public class CommentControllerTest {
         assertThat(comment.getContent()).isEqualTo("new_content");
     }
 
-
     @Test
-    @DisplayName("게시글 리스트 조회")
+    @DisplayName("댓글 리스트 조회")
     void findCommentList() throws Exception {
         //given
         Board board = boardRepository.save(Board.builder()
@@ -178,6 +178,30 @@ public class CommentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.length()", equalTo(2)));
     }
+
+    @Test
+    @DisplayName("댓글 조회")
+    void findCommentById() throws Exception {
+        //given
+        Board board = boardRepository.save(Board.builder()
+                .title("board")
+                .author("board_author")
+                .content("게시글 내용")
+                .views(4)
+                .build());
+
+        Comment comment = commentRepository.save(Comment.builder()
+                .board(board)
+                .author("author")
+                .content("content")
+                .build());
+
+        mvc.perform(get("/board/" + board.getId() + "/comment/" + comment.getId()))
+                .andExpect(status().isOk());
+
+        Assertions.assertThat(commentRepository.findById(comment.getId())).isNotEmpty();
+    }
+
     @Test
     @DisplayName("게시글 삭제시 댓글 삭제 여부")
     void deleteCommentWhenDeleteBoard() throws Exception {

@@ -1,6 +1,7 @@
 package shoppingmall.core.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -154,6 +155,24 @@ public class BoardControllerTest {
         mvc.perform(get("/board"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.length()", equalTo(2)));
+
+    }
+
+    @Test
+    @DisplayName("게시글조회")
+    void findBoardById() throws Exception {
+
+        Board board = boardRepository.save(Board.builder()
+                .title("test1")
+                .author("박민우")
+                .content("내용")
+                .views(123)
+                .build());
+
+        mvc.perform(get("/board"))
+                .andExpect(status().isOk());
+
+        Assertions.assertThat(boardRepository.findById(board.getId())).isNotEmpty();
 
     }
 }
