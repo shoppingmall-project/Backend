@@ -12,14 +12,14 @@ public class GoodsFindResponseDto {
     private Long id;
     private String category;
     private String name;
-    private String price;
-    private String stock;
+    private int price;
+    private int stock;
     private String description;
     private String brand;
     private String country;
 
     @Builder
-    public GoodsFindResponseDto(Long id, String category, String name, String price, String stock, String description, String brand, String country) {
+    public GoodsFindResponseDto(Long id, String category, String name, int price, int stock, String description, String brand, String country) {
         this.id = id;
         this.category = category;
         this.name = name;

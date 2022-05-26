@@ -22,10 +22,10 @@ public class Goods {
     private String name;
 
     @Column(length = 30, nullable = false)
-    private String price;
+    private int price;
 
     @Column(length = 30, nullable = false)
-    private String stock;
+    private int stock;
 
     @Column(length = 30, nullable = false)
     private String description;
@@ -37,7 +37,7 @@ public class Goods {
     private String country;
 
     @Builder
-    public Goods(Long id, String category, String name, String price, String stock, String description, String brand, String country) {
+    public Goods(Long id, String category, String name, int price, int stock, String description, String brand, String country) {
         this.id = id;
         this.category = category;
         this.name = name;
@@ -48,7 +48,7 @@ public class Goods {
         this.country = country;
     }
 
-    public void updateGoods(String category, String name, String price, String stock, String description, String brand, String country) {
+    public void updateGoods(String category, String name, int price, int stock, String description, String brand, String country) {
         this.category = category;
         this.name = name;
         this.price = price;

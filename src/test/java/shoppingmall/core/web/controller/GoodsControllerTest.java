@@ -48,8 +48,8 @@ public class GoodsControllerTest {
         //given
         String category = "wine";
         String name = "test_wine";
-        String price = "50000";
-        String stock = "50";
+        int price = 50000;
+        int stock = 50;
         String description = "test용";
         String brand = "ASD";
         String country = "Korea";
@@ -82,8 +82,8 @@ public class GoodsControllerTest {
         //given
         String category = "wine";
         String name = "test_wine";
-        String price = "50000";
-        String stock = "50";
+        int price = 50000;
+        int stock = 50;
         String description = "test용";
         String brand = "ASD";
         String country = "Korea";
@@ -113,8 +113,8 @@ public class GoodsControllerTest {
         //given
         String category = "wine";
         String name = "test_wine";
-        String price = "50000";
-        String stock = "50";
+        int price = 50000;
+        int stock = 50;
         String description = "test용";
         String brand = "ASD";
         String country = "Korea";
@@ -161,8 +161,8 @@ public class GoodsControllerTest {
         goodsRepository.save(Goods.builder()
                 .category("wine")
                 .name("test1 wine")
-                .price("50000")
-                .stock("123")
+                .price(50000)
+                .stock(123)
                 .description("조금 더 비싼 와인입니다")
                 .brand("브랜드 1")
                 .country("Korea")
@@ -171,8 +171,8 @@ public class GoodsControllerTest {
         goodsRepository.save(Goods.builder()
                 .category("wine")
                 .name("test2 wine")
-                .price("30000")
-                .stock("234")
+                .price(30000)
+                .stock(234)
                 .description("조금 더 싼 와인입니다.")
                 .brand("브랜드 2")
                 .country("Korea")

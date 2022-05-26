@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import shoppingmall.core.domain.BaseTimeEntity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Member implements UserDetails {
+public class Member extends BaseTimeEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +44,12 @@ public class Member implements UserDetails {
 
     @Column(length = 30, nullable = false)
     private String gender;
+
+    @Column(length = 30, nullable = false)
+    private String address;
+
+    @Column(length = 30, nullable = false)
+    private String phoneNum;
 
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -80,9 +88,11 @@ public class Member implements UserDetails {
         return true;
     }
 
-    public void updateMember(String password, String role, String email) {
+    public void updateMember(String password, String role, String email, String address, String phoneNum) {
         this.password = password;
         this.role = role;
         this.email = email;
+        this.address = address;
+        this.phoneNum = phoneNum;
     }
 }
