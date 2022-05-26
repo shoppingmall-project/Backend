@@ -1,17 +1,17 @@
-package shoppingmall.core.web.dto.comment;
+package shoppingmall.core.web.dto.review;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shoppingmall.core.domain.comment.Comment;
+import shoppingmall.core.domain.review.Review;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class CommentFindResponseDto {
+public class ReviewFindResponseDto {
 
-    private Long boardId;
+    private Long goodsId;
     private Long commentId;
     private String author;
     private String content;
@@ -19,8 +19,8 @@ public class CommentFindResponseDto {
     private LocalDateTime createdDate;
 
     @Builder
-    public CommentFindResponseDto(Long boardId, Long commentId, String author, String content, String imageUrl, LocalDateTime createdDate) {
-        this.boardId = boardId;
+    public ReviewFindResponseDto(Long goodsId, Long commentId, String author, String content, String imageUrl, LocalDateTime createdDate) {
+        this.goodsId = goodsId;
         this.commentId = commentId;
         this.author = author;
         this.content = content;
@@ -28,9 +28,9 @@ public class CommentFindResponseDto {
         this.createdDate = createdDate;
     }
 
-    public static CommentFindResponseDto toResponseDto(Comment entity) {
-        return CommentFindResponseDto.builder()
-                .boardId(entity.getBoard().getId())
+    public static ReviewFindResponseDto toResponseDto(Review entity) {
+        return ReviewFindResponseDto.builder()
+                .goodsId(entity.getGoods().getId())
                 .commentId(entity.getId())
                 .author(entity.getAuthor())
                 .content(entity.getContent())

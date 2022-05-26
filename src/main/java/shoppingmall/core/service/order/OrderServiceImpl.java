@@ -26,25 +26,24 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public ResponseDto createOrder(Long memberId, Long goodsId, OrderCreateRequestDto requestDto) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
-        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다."));
+        Member member = checkValidMember(memberId);
+        Goods goods = checkValidGoods(goodsId);
 
         Order order = requestDto.toEntity();
-        order.setMember(member);
-        order.setGoods(goods);
+        order.setMemberAndGoods(member,goods);
 
         Order savedOrder = orderRepository.save(order);
 
-        OrderCreateResponseDto responseDto = OrderCreateResponseDto.builder()
-                .id(savedOrder.getId())
-                .build();
+        OrderCreateResponseDto responseDto = new OrderCreateResponseDto(savedOrder.getId());
         return new ResponseDto("SUCCESS", responseDto);
     }
+
 
     @Transactional
     @Override
     public ResponseDto deleteOrder(Long memberId, Long goodsId, Long orderId) {
-        checkValidMemberAndGoods(memberId, goodsId);
+        checkValidMember(memberId);
+        checkValidGoods(goodsId);
         checkValidOrder(orderId);
 
         orderRepository.deleteById(orderId);
@@ -54,7 +53,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public ResponseDto updateOrder(Long memberId, Long goodsId, Long orderId, OrderUpdateRequestDto requestDto) {
-        checkValidMemberAndGoods(memberId, goodsId);
+        checkValidMember(memberId);
+        checkValidGoods(goodsId);
         Order order = checkValidOrder(orderId);
         order.update(requestDto.getRequest(), requestDto.getPayment());
 
@@ -64,7 +64,8 @@ public class OrderServiceImpl implements OrderService {
     }
     @Override
     public ResponseDto findOrderList(Long memberId, Long goodsId) {
-        checkValidMemberAndGoods(memberId, goodsId);
+        checkValidMember(memberId);
+        checkValidGoods(goodsId);
 
         List<Order> orderList = orderRepository.findAllByMemberIdAndGoodsId(memberId, goodsId);
 
@@ -79,7 +80,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseDto findOrderById(Long memberId, Long goodsId, Long orderId) {
-        checkValidMemberAndGoods(memberId, goodsId);
+        checkValidMember(memberId);
+        checkValidGoods(goodsId);
         Order order = checkValidOrder(orderId);
 
         OrderFindResponseDto responseDto = OrderFindResponseDto.toResponseDto(order);
@@ -88,11 +90,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Order checkValidOrder(Long orderId) {
-        return orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("해당되는 주문이 없습니다"));
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("해당되는 주문이 없습니다"));
     }
 
-    private void checkValidMemberAndGoods(Long memberId, Long goodsId) {
-        memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
-        goodsRepository.findById(goodsId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다."));
+    private Goods checkValidGoods(Long goodsId) {
+        return goodsRepository.findById(goodsId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다."));
+    }
+
+    private Member checkValidMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
     }
 }

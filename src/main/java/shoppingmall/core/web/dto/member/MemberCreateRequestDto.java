@@ -29,7 +29,6 @@ public class MemberCreateRequestDto {
     private String phoneNum;
 
     @Builder
-
     public MemberCreateRequestDto(String account, String name, String password, String role, String email, String gender, String address, String phoneNum) {
         this.account = account;
         this.name = name;

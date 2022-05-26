@@ -1,17 +1,13 @@
 package shoppingmall.core.web.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
-import shoppingmall.core.config.JwtTokenProvider;
-import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.service.member.MemberService;
 import shoppingmall.core.web.dto.*;
 import shoppingmall.core.web.dto.member.MemberCreateRequestDto;
 import shoppingmall.core.web.dto.member.MemberUpdateRequestDto;
 
 import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @CrossOrigin(origins = "*")
@@ -20,9 +16,7 @@ import javax.validation.Valid;
 @RequestMapping("/auth")
 public class MemberController {
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
-    private final UserDetailsService userDetailsService;
 
     // 회원가입
     @PostMapping()

@@ -1,4 +1,4 @@
-package shoppingmall.core.web.dto.comment;
+package shoppingmall.core.web.dto.review;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,14 +8,14 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-public class CommentUpdateRequestDto {
+public class ReviewUpdateRequestDto {
 
     private String content;
 
     private String imageUrl;
 
     @Builder
-    public CommentUpdateRequestDto(String content, String imageUrl) {
+    public ReviewUpdateRequestDto(String content, String imageUrl) {
         this.content = content;
         this.imageUrl = imageUrl;
     }

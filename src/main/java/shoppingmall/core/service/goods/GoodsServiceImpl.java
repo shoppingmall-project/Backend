@@ -32,7 +32,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Transactional
     @Override
     public ResponseDto deleteGoods(Long id) {
-        goodsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다."));
+        checkValidGoods(id);
         goodsRepository.deleteById(id);
 
         return new ResponseDto("SUCCESS");
@@ -41,7 +41,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     @Transactional
     public ResponseDto updateGoods(Long id, GoodsUpdateRequestDto requestDto) {
-        Goods goods = goodsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
+        Goods goods = checkValidGoods(id);
         goods.updateGoods(requestDto.getCategory(), requestDto.getName(), requestDto.getPrice(), requestDto.getStock(),
                 requestDto.getDescription(), requestDto.getBrand(), requestDto.getCountry());
 
@@ -65,9 +65,14 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public ResponseDto findGoodsById(Long id) {
-        Goods goods = goodsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
+        Goods goods = checkValidGoods(id);
         GoodsFindResponseDto responseDto = GoodsFindResponseDto.toResponseDto(goods);
 
         return new ResponseDto("SUCCESS", responseDto);
+    }
+
+    private Goods checkValidGoods(Long id) {
+        return goodsRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
     }
 }

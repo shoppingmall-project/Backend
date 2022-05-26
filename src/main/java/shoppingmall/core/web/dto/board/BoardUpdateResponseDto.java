@@ -1,15 +1,15 @@
-package shoppingmall.core.web.dto.order;
+package shoppingmall.core.web.dto.board;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class OrderCreateResponseDto {
+public class BoardUpdateResponseDto {
 
     private Long id;
 
-    public OrderCreateResponseDto(Long id) {
+    public BoardUpdateResponseDto(Long id) {
         this.id = id;
     }
 }

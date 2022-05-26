@@ -26,13 +26,12 @@ public class BasketServiceImpl implements BasketService {
     @Transactional
     @Override
     public ResponseDto createBasket(Long memberId, Long goodsId, BasketCreateRequestDto requestDto) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다"));
-        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
+        Member member = checkValidMember(memberId);
+        Goods goods = checkValidGoods(goodsId);
 
         Basket basket = requestDto.toEntity();
         basket.setGoods(goods);
         basket.setMember(member);
-
         Basket savedBasket = basketRepository.save(basket);
 
         BasketCreateResponseDto responseDto = BasketCreateResponseDto.builder()
@@ -45,21 +44,20 @@ public class BasketServiceImpl implements BasketService {
     @Transactional
     @Override
     public ResponseDto deleteBasket(Long memberId, Long goodsId, Long basketId) {
-        memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다"));
-        goodsRepository.findById(goodsId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
-        basketRepository.findById(basketId).orElseThrow(() -> new IllegalArgumentException("해당 장바구니가 없습니다"));
+        checkValidMember(memberId);
+        checkValidGoods(goodsId);
+        checkValidBasket(basketId);
 
         basketRepository.deleteById(basketId);
-
         return new ResponseDto("SUCCESS");
     }
 
     @Transactional
     @Override
     public ResponseDto updateBasket(Long memberId, Long goodsId, Long basketId, BasketUpdateReqeustDto requestDto) {
-        memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다"));
-        goodsRepository.findById(goodsId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
-        Basket basket = basketRepository.findById(basketId).orElseThrow(() -> new IllegalArgumentException("해당 장바구니가 없습니다"));
+        checkValidMember(memberId);
+        checkValidGoods(goodsId);
+        Basket basket = checkValidBasket(basketId);
 
         basket.update(requestDto.getCount());
 
@@ -70,8 +68,8 @@ public class BasketServiceImpl implements BasketService {
 
     @Override
     public ResponseDto findBasketList(Long memberId, Long goodsId) {
-        memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다"));
-        goodsRepository.findById(goodsId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
+        checkValidMember(memberId);
+        checkValidGoods(goodsId);
 
         List<Basket> basketList = basketRepository.findAllByMemberIdAndGoodsId(memberId, goodsId);
 
@@ -85,13 +83,26 @@ public class BasketServiceImpl implements BasketService {
 
     @Override
     public ResponseDto findBasketById(Long memberId, Long goodsId, Long basketId) {
-        memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다"));
-        goodsRepository.findById(goodsId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
-        Basket basket = basketRepository.findById(basketId).orElseThrow(() -> new IllegalArgumentException("해당 장바구니가 없습니다"));
+        checkValidMember(memberId);
+        checkValidGoods(goodsId);
+        Basket basket = checkValidBasket(basketId);
 
         BasketFindResponseDto responseDto = BasketFindResponseDto.toResponseDto(basket);
 
         return new ResponseDto("SUCCESS", responseDto);
 
     }
+
+    private Basket checkValidBasket(Long basketId) {
+        return basketRepository.findById(basketId).orElseThrow(() -> new IllegalArgumentException("해당 장바구니가 없습니다"));
+    }
+
+    private Member checkValidMember(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다"));
+    }
+
+    private Goods checkValidGoods(Long goodsId) {
+        return goodsRepository.findById(goodsId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
+    }
+
 }

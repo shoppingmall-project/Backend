@@ -6,10 +6,7 @@ import org.springframework.stereotype.Service;
 import shoppingmall.core.domain.board.Board;
 import shoppingmall.core.domain.board.BoardRepository;
 import shoppingmall.core.web.dto.ResponseDto;
-import shoppingmall.core.web.dto.board.BoardCreateRequestDto;
-import shoppingmall.core.web.dto.board.BoardCreateResponseDto;
-import shoppingmall.core.web.dto.board.BoardFindResponseDto;
-import shoppingmall.core.web.dto.board.BoardUpdateRequestDto;
+import shoppingmall.core.web.dto.board.*;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -33,16 +30,16 @@ public class BoardServiceImpl implements BoardService{
     @Transactional
     @Override
     public ResponseDto updateBoard(Long id, BoardUpdateRequestDto requestDto) {
-        Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다"));
+        Board board = checkValidBoard(id);
         board.updateBoard(requestDto.getTitle(), requestDto.getContent());
-        BoardCreateResponseDto responseDto = new BoardCreateResponseDto(board.getId());
+        BoardUpdateResponseDto responseDto = new BoardUpdateResponseDto(board.getId());
         return new ResponseDto("SUCCESS", responseDto);
     }
 
     @Transactional
     @Override
     public ResponseDto deleteBoard(Long id) {
-        boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다"));
+        checkValidBoard(id);
         boardRepository.deleteById(id);
 
         return new ResponseDto("SUCCESS");
@@ -50,7 +47,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public ResponseDto findBoardById(Long id) throws IllegalArgumentException {
-        Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다"));
+        Board board = checkValidBoard(id);
 
         BoardFindResponseDto responseDto = BoardFindResponseDto.toResponseDto(board);
         return new ResponseDto("SUCCESS", responseDto);
@@ -66,5 +63,9 @@ public class BoardServiceImpl implements BoardService{
             responseDtoList.add(responseDto);
         }
         return new ResponseDto("SUCCESS", responseDtoList);
+    }
+
+    private Board checkValidBoard(Long id) {
+        return boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다"));
     }
 }

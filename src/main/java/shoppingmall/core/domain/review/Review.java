@@ -1,9 +1,10 @@
-package shoppingmall.core.domain.comment;
+package shoppingmall.core.domain.review;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shoppingmall.core.domain.BaseTimeEntity;
+import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.board.Board;
 
 import javax.persistence.*;
@@ -12,15 +13,15 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Comment extends BaseTimeEntity {
+public class Review extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "board_id")
-    private Board board;
+    @JoinColumn(name = "goods_id")
+    private Goods goods;
 
     @Column(length = 30, nullable = false)
     private String author;
@@ -32,19 +33,19 @@ public class Comment extends BaseTimeEntity {
     private String imageUrl;
 
     @Builder
-    public Comment(Long id, Board board, String author, String content, String imageUrl) {
+    public Review(Long id, Goods goods, String author, String content, String imageUrl) {
         this.id = id;
-        this.board = board;
+        this.goods = goods;
         this.author = author;
         this.content = content;
         this.imageUrl = imageUrl;
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
+    public void setGoods(Goods goods) {
+        this.goods = goods;
     }
 
-    public void updateComment(String content) {
+    public void updateReview(String content) {
         this.content = content;
     }
 

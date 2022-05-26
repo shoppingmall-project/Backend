@@ -22,7 +22,7 @@ public class Order {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "goods_id")
     private Goods goods;
 
@@ -42,16 +42,13 @@ public class Order {
         this.payment = payment;
     }
 
-    public void setMember(Member member) {
+    public void setMemberAndGoods(Member member, Goods goods) {
         this.member = member;
+        this.goods = goods;
     }
 
     public void update(String request, int payment) {
         this.request = request;
         this.payment = payment;
-    }
-
-    public void setGoods(Goods goods) {
-        this.goods = goods;
     }
 }

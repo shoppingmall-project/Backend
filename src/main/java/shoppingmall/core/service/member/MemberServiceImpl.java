@@ -40,7 +40,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public ResponseDto deleteMember(Long id) {
-        memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
+        checkValidMember(id);
         memberRepository.deleteById(id);;
 
         return new ResponseDto("SUCCESS");
@@ -49,9 +49,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public ResponseDto updateMember(Long id, MemberUpdateRequestDto requestDto) {
-        Member member = memberRepository.findById(id).orElseThrow(()
-                -> new IllegalArgumentException("해당 유저가 없습니다."));
-        member.updateMember(passwordEncoder.encode(requestDto.getPassword()), requestDto.getRole(), requestDto.getEmail(), requestDto.getAddress(), requestDto.getPhoneNum());
+        Member member = checkValidMember(id);
+        member.updateMember(passwordEncoder.encode(requestDto.getPassword()), requestDto.getRole(),
+                requestDto.getEmail(), requestDto.getAddress(), requestDto.getPhoneNum());
 
         MemberUpdateResponseDto responseDto = MemberUpdateResponseDto.builder().account(member.getAccount()).build();
         return new ResponseDto("SUCCESS",responseDto);
@@ -95,10 +95,15 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public ResponseDto findMemberById(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다."));
+        Member member = checkValidMember(id);
 
         MemberFindResponseDto responseDto = MemberFindResponseDto.toResponseDto(member);
         return new ResponseDto("SUCCESS", responseDto);
+    }
+
+    private Member checkValidMember(Long id) {
+        return memberRepository.findById(id).orElseThrow(()
+                -> new IllegalArgumentException("해당 유저가 없습니다."));
     }
 
 }
