@@ -37,6 +37,8 @@ public class MemberRepositoryTest {
         String email = "test@naver.com";
         String name = "test";
         String role = "Manager";
+        String address = "주소주소";
+        String phoneNum = "01023411234";
 
         if (memberRepository.findByAccount(account).isEmpty()) {
             memberRepository.save(Member.builder()
@@ -46,6 +48,8 @@ public class MemberRepositoryTest {
                     .email(email)
                     .name(name)
                     .role(role)
+                    .address(address)
+                    .phoneNum(phoneNum)
                     .build());
         } else {
             System.out.println("이미 존재하는 아이디입니다.");
@@ -69,6 +73,8 @@ public class MemberRepositoryTest {
         String email = "test@naver.com";
         String name = "test";
         String role = "Manager";
+        String address = "주소주소";
+        String phoneNum = "01023411234";
 
         Member member = memberRepository.save(Member.builder()
                 .account(account)
@@ -77,6 +83,8 @@ public class MemberRepositoryTest {
                 .email(email)
                 .name(name)
                 .role(role)
+                .address(address)
+                .phoneNum(phoneNum)
                 .build());
 
         memberRepository.deleteById(member.getId());
