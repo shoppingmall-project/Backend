@@ -39,7 +39,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Column(length = 30, nullable = false)
     private String role;
 
-    @Column(length = 30, nullable = true)
+    @Column(length = 30)
     private String email;
 
     @Column(length = 30, nullable = false)
