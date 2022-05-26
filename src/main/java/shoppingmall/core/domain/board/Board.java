@@ -3,13 +3,14 @@ package shoppingmall.core.domain.board;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shoppingmall.core.domain.BaseTimeEntity;
 
 import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
 @Entity
-public class Board {
+public class Board extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

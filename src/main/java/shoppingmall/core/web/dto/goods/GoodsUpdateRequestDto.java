@@ -11,14 +11,14 @@ public class GoodsUpdateRequestDto {
 
     private String category;
     private String name;
-    private String price;
-    private String stock;
+    private int price;
+    private int stock;
     private String description;
     private String brand;
     private String country;
 
     @Builder
-    public GoodsUpdateRequestDto(String category, String name, String price, String stock, String description, String brand, String country) {
+    public GoodsUpdateRequestDto(String category, String name, int price, int stock, String description, String brand, String country) {
         this.category = category;
         this.name = name;
         this.price = price;

@@ -3,6 +3,7 @@ package shoppingmall.core.domain.comment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shoppingmall.core.domain.BaseTimeEntity;
 import shoppingmall.core.domain.board.Board;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Comment {
+public class Comment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

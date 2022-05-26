@@ -53,6 +53,8 @@ class MemberControllerTest {
         String email = "test@naver.com";
         String name = "test";
         String role = "Manager";
+        String address = "개포로";
+        String phoneNum = "010231312341";
 
         //when
         String body = mapper.writeValueAsString(MemberCreateRequestDto.builder()
@@ -62,6 +64,8 @@ class MemberControllerTest {
                 .email(email)
                 .name(name)
                 .role(role)
+                .address(address)
+                .phoneNum(phoneNum)
                 .build()
         );
 
@@ -86,6 +90,8 @@ class MemberControllerTest {
         String email = "test@naver.com";
         String name = "test";
         String role = "Manager";
+        String address = "개포로";
+        String phoneNum = "010231312341";
 
         Member member = memberRepository.save(Member.builder()
                 .account(account)
@@ -94,6 +100,8 @@ class MemberControllerTest {
                 .email(email)
                 .name(name)
                 .role(role)
+                .address(address)
+                .phoneNum(phoneNum)
                 .build());
 
         //when
@@ -117,10 +125,14 @@ class MemberControllerTest {
         String email = "test@naver.com";
         String name = "test";
         String role = "Manager";
+        String address = "개포로";
+        String phoneNum = "010231312341";
 
         String new_email = "new_test@naver.com";
         String new_password = "123";
         String new_role = "User";
+        String new_address = "개포로 110길";
+        String new_phoneNum = "01026844510";
 
         Member member = memberRepository.save(Member.builder()
                 .account(account)
@@ -129,6 +141,8 @@ class MemberControllerTest {
                 .email(email)
                 .name(name)
                 .role(role)
+                .address(address)
+                .phoneNum(phoneNum)
                 .build());
 
         //when
@@ -136,6 +150,8 @@ class MemberControllerTest {
                 .password(new_password)
                 .role(new_role)
                 .email(new_email)
+                .address(new_address)
+                .phoneNum(new_phoneNum)
                 .build()
         );
 
@@ -148,6 +164,7 @@ class MemberControllerTest {
                 .andExpect(status().isOk());
         Assertions.assertThat(memberRepository.findById(member.getId())).isNotEmpty();
         Assertions.assertThat(member.getEmail()).isEqualTo(new_email);
+        Assertions.assertThat(member.getPhoneNum()).isEqualTo(new_phoneNum);
     }
 
     @Test
@@ -161,6 +178,8 @@ class MemberControllerTest {
                 .gender("M")
                 .password("1234")
                 .account("test")
+                .address("개포로110길")
+                .phoneNum("01026844510")
                 .build());
 
         memberRepository.save(Member.builder()
@@ -170,6 +189,8 @@ class MemberControllerTest {
                 .gender("M")
                 .password("5678")
                 .account("test2")
+                .address("개포로110길")
+                .phoneNum("01026844510")
                 .build());
 
         mvc.perform(get("/auth"))

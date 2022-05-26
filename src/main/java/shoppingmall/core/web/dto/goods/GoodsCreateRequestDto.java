@@ -15,9 +15,9 @@ public class GoodsCreateRequestDto {
     @NotEmpty
     private String name;
     @NotEmpty
-    private String price;
+    private int price;
     @NotEmpty
-    private String stock;
+    private int stock;
     @NotEmpty
     private String description;
     @NotEmpty
@@ -26,7 +26,7 @@ public class GoodsCreateRequestDto {
     private String country;
 
     @Builder
-    public GoodsCreateRequestDto(String category, String name, String price, String stock, String description, String brand, String country) {
+    public GoodsCreateRequestDto(String category, String name, int price, int stock, String description, String brand, String country) {
         this.category = category;
         this.name = name;
         this.price = price;
