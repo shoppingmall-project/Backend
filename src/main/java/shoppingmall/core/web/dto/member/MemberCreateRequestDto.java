@@ -23,7 +23,9 @@ public class MemberCreateRequestDto {
     private String email;
     @NotEmpty
     private String gender;
+    @NotEmpty
     private String address;
+    @NotEmpty
     private String phoneNum;
 
     @Builder
