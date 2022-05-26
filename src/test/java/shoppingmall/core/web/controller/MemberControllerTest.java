@@ -210,6 +210,8 @@ class MemberControllerTest {
                 .gender("M")
                 .password("1234")
                 .account("test")
+                .address("개포로110길")
+                .phoneNum("01026844510")
                 .build());
 
         mvc.perform(get("/auth/"+member.getId()))
