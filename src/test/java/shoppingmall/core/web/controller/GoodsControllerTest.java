@@ -54,25 +54,34 @@ public class GoodsControllerTest {
         String brand = "ASD";
         String country = "Korea";
 
-        //when
-        String body = mapper.writeValueAsString(GoodsCreateRequestDto.builder()
-                .category(category)
-                .name(name)
-                .price(price)
-                .stock(stock)
-                .description(description)
-                .brand(brand)
-                .country(country)
-                .build()
-        );
+//        //when
+//        String body = mapper.writeValueAsString(GoodsCreateRequestDto.builder()
+//                .category(category)
+//                .name(name)
+//                .price(price)
+//                .stock(stock)
+//                .description(description)
+//                .brand(brand)
+//                .country(country)
+//                .build()
+//        );
+//
+//        //then
+//        mvc.perform(post("/goods")
+//                        .content(body)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                )
+//                .andExpect(status().isOk());
 
-        //then
-        mvc.perform(post("/goods")
-                        .content(body)
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
+        mvc.perform(post("/goods/")
+                        .param("category", category)
+                        .param("name", name)
+                        .param("price", String.valueOf(price))
+                        .param("stock", String.valueOf(stock))
+                        .param("description", description)
+                        .param("brand", brand)
+                        .param("country", country))
                 .andExpect(status().isOk());
-
         assertThat(goodsRepository.findAll()).isNotEmpty();
     }
 
@@ -127,30 +136,39 @@ public class GoodsControllerTest {
                 .description(description)
                 .brand(brand)
                 .country(country)
+                .imageUrl(null)
                 .build());
 
 
-        //when
-        String body = mapper.writeValueAsString(GoodsUpdateRequestDto.builder()
-                .category("wine")
-                .name("new_wine")
-                .price(price)
-                .stock(stock)
-                .description(description)
-                .brand(brand)
-                .country(country)
-                .build()
-        );
+//        //when
+//        String body = mapper.writeValueAsString(GoodsUpdateRequestDto.builder()
+//                .category("wine")
+//                .name("new_wine")
+//                .price(price)
+//                .stock(stock)
+//                .description(description)
+//                .brand(brand)
+//                .country(country)
+//                .build()
+//        );
+//
+//        mvc.perform(put("/goods/" + goods.getId())
+//                        .content(body)
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk());
 
         mvc.perform(put("/goods/" + goods.getId())
-                        .content(body)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .param("category", "wine")
+                        .param("name", "new_wine")
+                        .param("price", String.valueOf(price))
+                        .param("stock", String.valueOf(stock))
+                        .param("description", description)
+                        .param("brand", brand)
+                        .param("country", country))
                 .andExpect(status().isOk());
-
-        //when
-        System.out.println("goods = "+ goods.getName());
-        assertThat(goodsRepository.findAll()).isNotEmpty();
+        //then
         assertThat(goods.getName()).isEqualTo("new_wine");
+        assertThat(goods.getCategory()).isEqualTo("wine");
 
     }
 
