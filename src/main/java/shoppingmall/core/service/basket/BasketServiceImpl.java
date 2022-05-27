@@ -25,9 +25,10 @@ public class BasketServiceImpl implements BasketService {
 
     @Transactional
     @Override
-    public ResponseDto createBasket(Long memberId, Long goodsId, BasketCreateRequestDto requestDto) {
+    public ResponseDto createBasket(Long memberId, BasketCreateRequestDto requestDto) {
+        checkValidGoods(requestDto.getGoods_id());
         Member member = checkValidMember(memberId);
-        Goods goods = checkValidGoods(goodsId);
+        Goods goods = goodsRepository.findByGoodsId(requestDto.getGoods_id());
 
         Basket basket = requestDto.toEntity();
         basket.setGoods(goods);
@@ -43,9 +44,8 @@ public class BasketServiceImpl implements BasketService {
 
     @Transactional
     @Override
-    public ResponseDto deleteBasket(Long memberId, Long goodsId, Long basketId) {
+    public ResponseDto deleteBasket(Long memberId, Long basketId) {
         checkValidMember(memberId);
-        checkValidGoods(goodsId);
         checkValidBasket(basketId);
 
         basketRepository.deleteById(basketId);
@@ -54,9 +54,8 @@ public class BasketServiceImpl implements BasketService {
 
     @Transactional
     @Override
-    public ResponseDto updateBasket(Long memberId, Long goodsId, Long basketId, BasketUpdateReqeustDto requestDto) {
+    public ResponseDto updateBasket(Long memberId, Long basketId, BasketUpdateReqeustDto requestDto) {
         checkValidMember(memberId);
-        checkValidGoods(goodsId);
         Basket basket = checkValidBasket(basketId);
 
         basket.update(requestDto.getCount());
@@ -67,11 +66,10 @@ public class BasketServiceImpl implements BasketService {
     }
 
     @Override
-    public ResponseDto findBasketList(Long memberId, Long goodsId) {
+    public ResponseDto findBasketList(Long memberId) {
         checkValidMember(memberId);
-        checkValidGoods(goodsId);
 
-        List<Basket> basketList = basketRepository.findAllByMemberIdAndGoodsId(memberId, goodsId);
+        List<Basket> basketList = basketRepository.findAllByMemberId(memberId);
 
         List<BasketFindResponseDto> responseDtoList = new ArrayList<>();
         for (Basket basket : basketList) {
@@ -82,9 +80,8 @@ public class BasketServiceImpl implements BasketService {
     }
 
     @Override
-    public ResponseDto findBasketById(Long memberId, Long goodsId, Long basketId) {
+    public ResponseDto findBasketById(Long memberId, Long basketId) {
         checkValidMember(memberId);
-        checkValidGoods(goodsId);
         Basket basket = checkValidBasket(basketId);
 
         BasketFindResponseDto responseDto = BasketFindResponseDto.toResponseDto(basket);
@@ -101,8 +98,8 @@ public class BasketServiceImpl implements BasketService {
         return memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다"));
     }
 
-    private Goods checkValidGoods(Long goodsId) {
-        return goodsRepository.findById(goodsId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
+    private void checkValidGoods(Long goodsId) {
+        goodsRepository.findById(goodsId).orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
     }
 
 }

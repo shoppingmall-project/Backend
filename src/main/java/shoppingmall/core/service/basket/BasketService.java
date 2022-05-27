@@ -6,15 +6,15 @@ import shoppingmall.core.web.dto.basket.BasketUpdateReqeustDto;
 
 public interface BasketService {
 
-    ResponseDto createBasket(Long memberId, Long goodsId, BasketCreateRequestDto requestDto);
+    ResponseDto createBasket(Long memberId, BasketCreateRequestDto requestDto);
 
-    ResponseDto deleteBasket(Long memberId, Long goodsId, Long basketId);
+    ResponseDto deleteBasket(Long memberId, Long basketId);
 
-    ResponseDto updateBasket(Long memberId, Long goodsId, Long basketId, BasketUpdateReqeustDto requestDto);
+    ResponseDto updateBasket(Long memberId, Long basketId, BasketUpdateReqeustDto requestDto);
 
-    ResponseDto findBasketList(Long memberId, Long goodsId);
+    ResponseDto findBasketList(Long memberId);
 
-    ResponseDto findBasketById(Long memberId, Long goodsId, Long basketId);
+    ResponseDto findBasketById(Long memberId, Long basketId);
 
 
 }

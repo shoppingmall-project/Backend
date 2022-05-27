@@ -8,7 +8,7 @@ import shoppingmall.core.web.dto.basket.BasketCreateRequestDto;
 import shoppingmall.core.web.dto.basket.BasketUpdateReqeustDto;
 
 @RestController
-@RequestMapping("/member/{memberId}/goods/{goodsId}/basket")
+@RequestMapping("/member/{memberId}/basket")
 public class BasketController {
 
     @Autowired
@@ -16,31 +16,31 @@ public class BasketController {
 
     //장바구니 생성
     @PostMapping()
-    public ResponseDto createBasket(@PathVariable Long memberId, @PathVariable Long goodsId, @RequestBody BasketCreateRequestDto requestDto) {
-        return basketService.createBasket(memberId, goodsId, requestDto);
+    public ResponseDto createBasket(@PathVariable Long memberId, @RequestBody BasketCreateRequestDto requestDto) {
+        return basketService.createBasket(memberId, requestDto);
     }
 
     //장바구니 리스트 조회
     @GetMapping()
-    public ResponseDto findBasketList(@PathVariable Long memberId, @PathVariable Long goodsId) {
-        return basketService.findBasketList(memberId, goodsId);
+    public ResponseDto findBasketList(@PathVariable Long memberId) {
+        return basketService.findBasketList(memberId);
     }
 
     //장바구니 조회
     @GetMapping("/{basketId}")
-    public ResponseDto findBaksetById(@PathVariable Long memberId, @PathVariable Long goodsId, @PathVariable Long basketId) {
-        return basketService.findBasketById(memberId, goodsId, basketId);
+    public ResponseDto findBaksetById(@PathVariable Long memberId, @PathVariable Long basketId) {
+        return basketService.findBasketById(memberId, basketId);
     }
 
     //장바구니 수정
     @PutMapping("/{basketId}")
-    public ResponseDto updateBasket(@PathVariable Long memberId, @PathVariable Long goodsId, @PathVariable Long basketId, @RequestBody BasketUpdateReqeustDto reqeustDto) {
-        return basketService.updateBasket(memberId, goodsId, basketId, reqeustDto);
+    public ResponseDto updateBasket(@PathVariable Long memberId, @PathVariable Long basketId, @RequestBody BasketUpdateReqeustDto reqeustDto) {
+        return basketService.updateBasket(memberId, basketId, reqeustDto);
     }
 
     //장바구니 삭제
     @DeleteMapping("/{basketId}")
-    public ResponseDto deleteBasket(@PathVariable Long memberId, @PathVariable Long goodsId, @PathVariable Long basketId) {
-        return basketService.deleteBasket(memberId, goodsId, basketId);
+    public ResponseDto deleteBasket(@PathVariable Long memberId, @PathVariable Long basketId) {
+        return basketService.deleteBasket(memberId, basketId);
     }
 }

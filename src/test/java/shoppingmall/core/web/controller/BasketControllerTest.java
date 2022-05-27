@@ -85,11 +85,12 @@ public class BasketControllerTest {
 
         //when
         String body = mapper.writeValueAsString(BasketCreateRequestDto.builder()
+                .goods_id(goods.getId())
                 .count(count)
                 .build());
 
         //then
-        mvc.perform(post("/member/"+member.getId()+"/goods/"+goods.getId()+"/basket")
+        mvc.perform(post("/member/"+member.getId()+"/basket")
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -131,7 +132,7 @@ public class BasketControllerTest {
                 .count(count).build());
 
         //when
-        mvc.perform(delete("/member/"+member.getId()+"/goods/"+goods.getId()+"/basket/"+basket.getId()))
+        mvc.perform(delete("/member/"+member.getId()+"/basket/"+basket.getId()))
                 .andExpect(status().isOk());
 
         //then
@@ -178,7 +179,7 @@ public class BasketControllerTest {
                 .count(count)
                 .build());
 
-        mvc.perform(put("/member/"+member.getId()+"/goods/"+goods.getId()+"/basket/"+basket.getId())
+        mvc.perform(put("/member/"+member.getId()+"/basket/"+basket.getId())
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -226,7 +227,7 @@ public class BasketControllerTest {
                 .count(5)
                 .build());
 
-        mvc.perform(get("/member/"+member.getId()+"/goods/"+goods.getId()+"/basket"))
+        mvc.perform(get("/member/"+member.getId()+"/basket"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.length()", equalTo(2)));
 
@@ -264,7 +265,7 @@ public class BasketControllerTest {
                 .count(1)
                 .build());
 
-        mvc.perform(get("/member/"+member.getId()+"/goods/"+goods.getId()+"/basket/"+basket.getId()))
+        mvc.perform(get("/member/"+member.getId()+"/basket/"+basket.getId()))
                 .andExpect(status().isOk());
 
         Assertions.assertThat(basketRepository.findById(basket.getId())).isNotEmpty();
