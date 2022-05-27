@@ -10,34 +10,34 @@ import shoppingmall.core.web.dto.order.OrderUpdateRequestDto;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/member/{memberId}/goods/{goodsId}/order")
+@RequestMapping("/member/{memberId}/order")
 public class OrderController {
 
     @Autowired
     OrderService orderService;
 
     @PostMapping()
-    public ResponseDto createOrder(@PathVariable Long memberId, @PathVariable Long goodsId, @RequestBody OrderCreateRequestDto requestDto) {
-        return orderService.createOrder(memberId, goodsId, requestDto);
+    public ResponseDto createOrder(@PathVariable Long memberId, @RequestBody OrderCreateRequestDto requestDto) {
+        return orderService.createOrder(memberId, requestDto);
     }
 
     @GetMapping()
-    public ResponseDto findOrderList(@PathVariable Long memberId, @PathVariable Long goodsId) {
-        return orderService.findOrderList(memberId, goodsId);
+    public ResponseDto findOrderList(@PathVariable Long memberId) {
+        return orderService.findOrderList(memberId);
     }
 
     @GetMapping("/{orderId}")
-    public ResponseDto findOrderById(@PathVariable Long memberId, @PathVariable Long goodsId, @PathVariable Long orderId) {
-        return orderService.findOrderById(memberId, goodsId, orderId);
+    public ResponseDto findOrderById(@PathVariable Long memberId, @PathVariable Long orderId) {
+        return orderService.findOrderById(memberId, orderId);
     }
 
     @PutMapping("/{orderId}")
-    public ResponseDto updateOrder(@PathVariable Long memberId, @PathVariable Long goodsId, @PathVariable Long orderId, @RequestBody OrderUpdateRequestDto requestDto) {
-        return orderService.updateOrder(memberId, goodsId, orderId, requestDto);
+    public ResponseDto updateOrder(@PathVariable Long memberId, @PathVariable Long orderId, @RequestBody OrderUpdateRequestDto requestDto) {
+        return orderService.updateOrder(memberId, orderId, requestDto);
     }
 
     @DeleteMapping("/{orderId}")
-    public ResponseDto deleteOrder(@PathVariable Long memberId, @PathVariable Long goodsId, @PathVariable Long orderId) {
-        return orderService.deleteOrder(memberId, goodsId, orderId);
+    public ResponseDto deleteOrder(@PathVariable Long memberId, @PathVariable Long orderId) {
+        return orderService.deleteOrder(memberId, orderId);
     }
 }

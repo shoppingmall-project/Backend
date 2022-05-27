@@ -83,12 +83,13 @@ public class OrderControllerTest {
 
         //when
         String body = mapper.writeValueAsString(OrderCreateRequestDto.builder()
+                .goods_id(goods.getId())
                 .request("제품은 빠르게 배송해주세요")
                 .payment(1)
                 .build());
 
         //then
-        mvc.perform(post("/member/"+member.getId()+"/goods/"+goods.getId()+"/order")
+        mvc.perform(post("/member/"+member.getId()+"/order")
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -131,7 +132,7 @@ public class OrderControllerTest {
                 .build());
 
         //when
-        mvc.perform(delete("/member/"+member.getId()+"/goods/"+goods.getId()+"/order/"+order.getId()))
+        mvc.perform(delete("/member/"+member.getId()+"/order/"+order.getId()))
                 .andExpect(status().isOk());
 
         //then
@@ -177,7 +178,7 @@ public class OrderControllerTest {
                 .payment(2)
                 .build());
 
-        mvc.perform(put("/member/"+member.getId()+"/goods/"+goods.getId()+"/order/"+order.getId())
+        mvc.perform(put("/member/"+member.getId()+"/order/"+order.getId())
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -226,7 +227,7 @@ public class OrderControllerTest {
                 .payment(2)
                 .build());
 
-        mvc.perform(get("/member/"+member.getId()+"/goods/"+goods.getId()+"/order"))
+        mvc.perform(get("/member/"+member.getId()+"/order"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.length()", equalTo(2)));
 
@@ -265,7 +266,7 @@ public class OrderControllerTest {
                 .payment(2)
                 .build());
 
-        mvc.perform(get("/member/"+member.getId()+"/goods/"+goods.getId()+"/order/"+order.getId()))
+        mvc.perform(get("/member/"+member.getId()+"/order/"+order.getId()))
                 .andExpect(status().isOk());
 
         Assertions.assertThat(orderRepository.findById(order.getId())).isNotEmpty();

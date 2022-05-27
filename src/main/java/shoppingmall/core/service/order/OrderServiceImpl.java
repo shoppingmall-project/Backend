@@ -25,12 +25,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public ResponseDto createOrder(Long memberId, Long goodsId, OrderCreateRequestDto requestDto) {
+    public ResponseDto createOrder(Long memberId, OrderCreateRequestDto requestDto) {
         Member member = checkValidMember(memberId);
-        Goods goods = checkValidGoods(goodsId);
-
+        Goods goods = goodsRepository.findByGoodsId(requestDto.getGoods_id());
         Order order = requestDto.toEntity();
-        order.setMemberAndGoods(member,goods);
+        order.setGoods(goods);
+        order.setMember(member);
+        checkValidGoods(order.getGoods().getId());
 
         Order savedOrder = orderRepository.save(order);
 
@@ -41,9 +42,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public ResponseDto deleteOrder(Long memberId, Long goodsId, Long orderId) {
+    public ResponseDto deleteOrder(Long memberId, Long orderId) {
         checkValidMember(memberId);
-        checkValidGoods(goodsId);
         checkValidOrder(orderId);
 
         orderRepository.deleteById(orderId);
@@ -52,22 +52,22 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public ResponseDto updateOrder(Long memberId, Long goodsId, Long orderId, OrderUpdateRequestDto requestDto) {
+    public ResponseDto updateOrder(Long memberId, Long orderId, OrderUpdateRequestDto requestDto) {
         checkValidMember(memberId);
-        checkValidGoods(goodsId);
         Order order = checkValidOrder(orderId);
-        order.update(requestDto.getRequest(), requestDto.getPayment());
+        checkValidGoods(order.getGoods().getId());
+        Goods goods = goodsRepository.findByGoodsId(requestDto.getGoods_id());
+        order.update(goods, requestDto.getRequest(), requestDto.getPayment());
 
         OrderUpdateResponseDto responseDto = new OrderUpdateResponseDto(order.getId());
 
         return new ResponseDto("SUCCESS", responseDto);
     }
     @Override
-    public ResponseDto findOrderList(Long memberId, Long goodsId) {
+    public ResponseDto findOrderList(Long memberId) {
         checkValidMember(memberId);
-        checkValidGoods(goodsId);
 
-        List<Order> orderList = orderRepository.findAllByMemberIdAndGoodsId(memberId, goodsId);
+        List<Order> orderList = orderRepository.findAllByMemberId(memberId);
 
         List<OrderFindResponseDto> responseDtoList = new ArrayList<>();
         for(Order order : orderList) {
@@ -79,10 +79,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseDto findOrderById(Long memberId, Long goodsId, Long orderId) {
+    public ResponseDto findOrderById(Long memberId, Long orderId) {
         checkValidMember(memberId);
-        checkValidGoods(goodsId);
         Order order = checkValidOrder(orderId);
+        checkValidGoods(order.getGoods().getId());
 
         OrderFindResponseDto responseDto = OrderFindResponseDto.toResponseDto(order);
 
@@ -94,8 +94,8 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new IllegalArgumentException("해당되는 주문이 없습니다"));
     }
 
-    private Goods checkValidGoods(Long goodsId) {
-        return goodsRepository.findById(goodsId)
+    private void checkValidGoods(Long goodsId) {
+        goodsRepository.findById(goodsId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다."));
     }
 

@@ -42,12 +42,16 @@ public class Order {
         this.payment = payment;
     }
 
-    public void setMemberAndGoods(Member member, Goods goods) {
+    public void setMember(Member member) {
         this.member = member;
+    }
+
+    public void setGoods(Goods goods) {
         this.goods = goods;
     }
 
-    public void update(String request, int payment) {
+    public void update(Goods goods, String request, int payment) {
+        this.goods = goods;
         this.request = request;
         this.payment = payment;
     }
