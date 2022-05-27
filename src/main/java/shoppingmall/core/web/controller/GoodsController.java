@@ -2,6 +2,7 @@ package shoppingmall.core.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import shoppingmall.core.service.goods.GoodsService;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.goods.GoodsCreateRequestDto;
@@ -19,14 +20,14 @@ public class GoodsController {
 
     //상품 등록
     @PostMapping()
-    public ResponseDto createGoods(@RequestBody GoodsCreateRequestDto requestDto) {
-        return goodsService.createGoods(requestDto);
+    public ResponseDto createGoods(@Valid @ModelAttribute GoodsCreateRequestDto requestDto, @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
+        return goodsService.createGoods(requestDto, file);
     }
 
     //상품 id로 조회
-    @GetMapping("/{id}")
-    public ResponseDto findGoodsById(@PathVariable Long id) {
-        return goodsService.findGoodsById(id);
+    @GetMapping("/{goodsId}")
+    public ResponseDto findGoodsById(@PathVariable Long goodsId) {
+        return goodsService.findGoodsById(goodsId);
     }
 
     //상품 전체 조회
@@ -36,14 +37,14 @@ public class GoodsController {
     }
 
     //상품 삭제
-    @DeleteMapping("/{id}")
-    public ResponseDto deleteGoods(@PathVariable Long id) {
-        return goodsService.deleteGoods(id);
+    @DeleteMapping("/{goodsId}")
+    public ResponseDto deleteGoods(@PathVariable Long goodsId) throws Exception {
+        return goodsService.deleteGoods(goodsId);
     }
 
     //상품 수정
-    @PutMapping("/{id}")
-    public ResponseDto updateGoods(@PathVariable Long id, @Valid @RequestBody GoodsUpdateRequestDto requestDto) {
-        return goodsService.updateGoods(id, requestDto);
+    @PutMapping("/{goodsId}")
+    public ResponseDto updateGoods(@PathVariable Long goodsId, @Valid @ModelAttribute GoodsUpdateRequestDto requestDto, @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
+        return goodsService.updateGoods(goodsId, requestDto, file);
     }
 }

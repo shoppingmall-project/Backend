@@ -113,11 +113,11 @@ public class ReviewServiceImpl implements ReviewService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다."));
     }
 
-    private void saveFileAndUrl(Long goodsId, MultipartFile file, Review savedReview) throws Exception {
-        String path = "/goods_" + goodsId + "/comment_" + savedReview.getId() + "/image";
+    private void saveFileAndUrl(Long goodsId, MultipartFile file, Review review) throws Exception {
+        String path = "/goods_" + goodsId + "/comment_" + review.getId() + "/image";
         String uploadedFilePath = storageService.store(path, file);
 
-        savedReview.updateUrl(uploadedFilePath);
+        review.updateUrl(uploadedFilePath);
     }
 
     private Review checkValidReview(Long reviewId) {

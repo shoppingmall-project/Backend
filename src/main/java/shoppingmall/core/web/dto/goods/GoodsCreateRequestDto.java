@@ -3,9 +3,11 @@ package shoppingmall.core.web.dto.goods;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import shoppingmall.core.domain.Goods.Goods;
 import javax.validation.constraints.NotEmpty;
 
+@Setter
 @Getter
 @NoArgsConstructor
 public class GoodsCreateRequestDto {
@@ -14,9 +16,7 @@ public class GoodsCreateRequestDto {
     private String category;
     @NotEmpty
     private String name;
-    @NotEmpty
     private int price;
-    @NotEmpty
     private int stock;
     @NotEmpty
     private String description;
@@ -25,12 +25,13 @@ public class GoodsCreateRequestDto {
     @NotEmpty
     private String country;
 
+
     @Builder
-    public GoodsCreateRequestDto(String category, String name, int price, int stock, String description, String brand, String country) {
+    public GoodsCreateRequestDto(String category, String name, String price, String stock, String description, String brand, String country) {
         this.category = category;
         this.name = name;
-        this.price = price;
-        this.stock = stock;
+        this.price = Integer.parseInt(price);
+        this.stock = Integer.parseInt(stock);
         this.description = description;
         this.brand = brand;
         this.country = country;

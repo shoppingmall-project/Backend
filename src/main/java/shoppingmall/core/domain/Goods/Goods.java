@@ -36,8 +36,11 @@ public class Goods {
     @Column(length = 30)
     private String country;
 
+    @Column(length = 200)
+    private String imageUrl;
+
     @Builder
-    public Goods(Long id, String category, String name, int price, int stock, String description, String brand, String country) {
+    public Goods(Long id, String category, String name, int price, int stock, String description, String brand, String country, String imageUrl) {
         this.id = id;
         this.category = category;
         this.name = name;
@@ -46,6 +49,7 @@ public class Goods {
         this.description = description;
         this.brand = brand;
         this.country = country;
+        this.imageUrl = imageUrl;
     }
 
     public void updateGoods(String category, String name, int price, int stock, String description, String brand, String country) {
@@ -56,5 +60,9 @@ public class Goods {
         this.description = description;
         this.brand = brand;
         this.country = country;
+    }
+
+    public void updateUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
