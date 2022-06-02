@@ -24,15 +24,15 @@ public class MemberController {
         return memberService.createMember(user);
     }
     // 회원 탈퇴
-    @DeleteMapping("/{id}")
-    public ResponseDto deleteMember(@PathVariable Long id) {
-        return memberService.deleteMember(id);
+    @DeleteMapping("/{memberId}")
+    public ResponseDto deleteMember(@PathVariable Long memberId) {
+        return memberService.deleteMember(memberId);
     }
 
     // 회원 수정
-    @PutMapping("/{id}")
-    public ResponseDto updateMember(@PathVariable Long id, @Valid @RequestBody MemberUpdateRequestDto requestDto){
-        return memberService.updateMember(id, requestDto);
+    @PutMapping("/{memberId}")
+    public ResponseDto updateMember(@PathVariable Long memberId, @Valid @RequestBody MemberUpdateRequestDto requestDto){
+        return memberService.updateMember(memberId, requestDto);
     }
 
     // 로그인
@@ -48,9 +48,9 @@ public class MemberController {
     }
 
     // 회원 조회
-    @GetMapping("/{id}")
-    public ResponseDto findMemberById(@PathVariable Long id) {
-        return memberService.findMemberById(id);
+    @GetMapping("/{memberId}")
+    public ResponseDto findMemberById(@PathVariable Long memberId) {
+        return memberService.findMemberById(memberId);
     }
 
     // 사실 뭔지 잘 모르겠음. --------------------

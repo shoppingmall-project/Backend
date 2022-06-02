@@ -22,19 +22,19 @@ public class BoardController {
         return boardService.createBoard(requestDto);
     }
 
-    @PutMapping("/{id}")
-    public ResponseDto updateBoard(@PathVariable Long id, @Valid @RequestBody BoardUpdateRequestDto requestDto) {
-        return boardService.updateBoard(id, requestDto);
+    @PutMapping("/{boardId}")
+    public ResponseDto updateBoard(@PathVariable Long boardId, @Valid @RequestBody BoardUpdateRequestDto requestDto) {
+        return boardService.updateBoard(boardId, requestDto);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseDto deleteBoard(@PathVariable Long id) {
-        return boardService.deleteBoard(id);
+    @DeleteMapping("/{boardId}")
+    public ResponseDto deleteBoard(@PathVariable Long boardId) {
+        return boardService.deleteBoard(boardId);
     }
 
-    @GetMapping("/{id}")
-    public ResponseDto findBoardById(@PathVariable Long id) throws Exception{
-        return boardService.findBoardById(id);
+    @GetMapping("/{boardId}")
+    public ResponseDto findBoardById(@PathVariable Long boardId) throws Exception{
+        return boardService.findBoardById(boardId);
     }
 
     @GetMapping()
