@@ -41,4 +41,8 @@ public class Board extends BaseTimeEntity {
         this.title = title;
         this.content = content;
     }
+
+    public void setViews(int views) {
+        this.views = views;
+    }
 }
