@@ -9,7 +9,6 @@ public class QuestionCreateResponseDto {
 
     private Long id;
 
-    @Builder
     public QuestionCreateResponseDto(Long id) {
         this.id = id;
     }

@@ -14,19 +14,15 @@ public class AnswerCreateRequestDto {
     @NotEmpty
     private String content;
 
-    @NotEmpty
-    private String password;
 
     @Builder
-    public AnswerCreateRequestDto(String content, String password) {
+    public AnswerCreateRequestDto(String content) {
         this.content = content;
-        this.password = password;
     }
 
     public Answer toEntity() {
         return Answer.builder()
                 .content(content)
-                .password(password)
                 .build();
     }
 }

@@ -18,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnswerServiceImpl implements AnswerService {
 
-    private final PasswordEncoder passwordEncoder;
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
 
@@ -28,7 +27,6 @@ public class AnswerServiceImpl implements AnswerService {
         Question question = checkValidQuestionId(question_id);
         question.setAnswerNum(question.getAnswerNum() + 1);
         Answer answer = requestDto.toEntity();
-        answer.setPassword(passwordEncoder.encode(requestDto.getPassword()));
         answer.setQuestion(question);
         Answer savedAnswer = answerRepository.save(answer);
 
@@ -53,9 +51,6 @@ public class AnswerServiceImpl implements AnswerService {
     public ResponseDto updateAnswer(Long question_id, Long answer_id, AnswerUpdateRequestDto requestDto) {
         checkValidQuestionId(question_id);
         Answer answer = checkValidAnswerId(answer_id);
-        if (!passwordEncoder.matches(requestDto.getPassword(),answer.getPassword())) {
-            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
-        }
         answer.updateAnswer(requestDto.getContent());
 
         AnswerUpdateResponseDto responseDto = new AnswerUpdateResponseDto(answer.getId());
