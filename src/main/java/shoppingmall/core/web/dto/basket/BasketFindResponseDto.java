@@ -13,14 +13,16 @@ public class BasketFindResponseDto {
     private Long memberId;
     private Long goodsId;
     private String goodsName;
+    private int goodsPrice;
     private int count;
 
     @Builder
-    public BasketFindResponseDto(Long id, Long memberId, Long goodsId, String goodsName, int count) {
+    public BasketFindResponseDto(Long id, Long memberId, Long goodsId, String goodsName, int goodsPrice, int count) {
         this.id = id;
         this.memberId = memberId;
         this.goodsId = goodsId;
         this.goodsName = goodsName;
+        this.goodsPrice = goodsPrice;
         this.count = count;
     }
 
@@ -30,6 +32,7 @@ public class BasketFindResponseDto {
                 .memberId(entity.getMember().getId())
                 .goodsId(entity.getGoods().getId())
                 .goodsName(entity.getGoods().getName())
+                .goodsPrice(entity.getGoods().getPrice())
                 .count(entity.getCount())
                 .build();
     }
