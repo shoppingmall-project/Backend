@@ -33,6 +33,7 @@ public class BoardCreateRequestDto {
                 .author(author)
                 .content(content)
                 .views(views)
+                .views(0)
                 .build();
     }
 }

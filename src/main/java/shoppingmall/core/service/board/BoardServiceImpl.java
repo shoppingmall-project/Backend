@@ -48,6 +48,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ResponseDto findBoardById(Long id) throws IllegalArgumentException {
         Board board = checkValidBoard(id);
+        board.setViews(board.getViews() + 1);
 
         BoardFindResponseDto responseDto = BoardFindResponseDto.toResponseDto(board);
         return new ResponseDto("SUCCESS", responseDto);
