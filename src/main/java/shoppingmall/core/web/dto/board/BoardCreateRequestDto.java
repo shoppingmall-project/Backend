@@ -20,7 +20,7 @@ public class BoardCreateRequestDto {
 
     @Builder
     public BoardCreateRequestDto(String title, String author, String content) {
-        this.title = titit le;
+        this.title = title;
         this.author = author;
         this.content = content;
     }
