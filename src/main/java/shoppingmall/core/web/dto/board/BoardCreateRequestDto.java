@@ -17,14 +17,12 @@ public class BoardCreateRequestDto {
     private String author;
     @NotEmpty
     private String content;
-    private int views;
 
     @Builder
-    public BoardCreateRequestDto(String title, String author, String content, int views) {
-        this.title = title;
+    public BoardCreateRequestDto(String title, String author, String content) {
+        this.title = titit le;
         this.author = author;
         this.content = content;
-        this.views = views;
     }
 
     public Board toEntity() {
@@ -32,7 +30,6 @@ public class BoardCreateRequestDto {
                 .title(title)
                 .author(author)
                 .content(content)
-                .views(views)
                 .views(0)
                 .build();
     }

@@ -45,6 +45,7 @@ public class BoardServiceImpl implements BoardService{
         return new ResponseDto("SUCCESS");
     }
 
+    @Transactional
     @Override
     public ResponseDto findBoardById(Long id) throws IllegalArgumentException {
         Board board = checkValidBoard(id);
