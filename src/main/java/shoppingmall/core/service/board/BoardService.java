@@ -6,13 +6,13 @@ import shoppingmall.core.web.dto.board.BoardUpdateRequestDto;
 
 public interface BoardService {
 
-    ResponseDto createBoard(BoardCreateRequestDto requestDto);
+    ResponseDto createBoard(BoardCreateRequestDto requestDto, Long memberId);
 
-    ResponseDto updateBoard(Long id, BoardUpdateRequestDto requestDto);
+    ResponseDto updateBoard(Long boardId, BoardUpdateRequestDto requestDto, Long memberId);
 
-    ResponseDto deleteBoard(Long id);
+    ResponseDto deleteBoard(Long boardId);
 
-    ResponseDto findBoardById(Long id) throws Exception;
+    ResponseDto findBoardById(Long boardId) throws Exception;
 
     ResponseDto findBoardList();
 }

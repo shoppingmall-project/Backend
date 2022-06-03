@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shoppingmall.core.domain.BaseTimeEntity;
+import shoppingmall.core.domain.member.Member;
 
 import javax.persistence.*;
 
@@ -16,11 +17,12 @@ public class Board extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 30, nullable = false)
-    private String title;
+    @OneToOne
+    @JoinColumn(name = "memberId")
+    private Member member;
 
     @Column(length = 30, nullable = false)
-    private String author;
+    private String title;
 
     @Column(nullable = false)
     private String content;
@@ -29,10 +31,10 @@ public class Board extends BaseTimeEntity {
     private int views;
 
     @Builder
-    public Board(Long id, String title, String author, String content, int views) {
+    public Board(Long id, String title, Member member, String author, String content, int views) {
         this.id = id;
         this.title = title;
-        this.author = author;
+        this.member = member;
         this.content = content;
         this.views = views;
     }
@@ -44,5 +46,9 @@ public class Board extends BaseTimeEntity {
 
     public void setViews(int views) {
         this.views = views;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 }

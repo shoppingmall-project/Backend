@@ -7,6 +7,7 @@ import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.board.BoardCreateRequestDto;
 import shoppingmall.core.web.dto.board.BoardUpdateRequestDto;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @CrossOrigin(origins = "*")
@@ -18,13 +19,22 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping()
-    public ResponseDto createBoard(@Valid @RequestBody BoardCreateRequestDto requestDto) {
-        return boardService.createBoard(requestDto);
+    public ResponseDto createBoard(@Valid @RequestBody BoardCreateRequestDto requestDto, HttpSession session) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
+        Long memberId = (Long) session.getAttribute("memberId");
+        return boardService.createBoard(requestDto, memberId);
     }
 
     @PutMapping("/{boardId}")
-    public ResponseDto updateBoard(@PathVariable Long boardId, @Valid @RequestBody BoardUpdateRequestDto requestDto) {
-        return boardService.updateBoard(boardId, requestDto);
+    public ResponseDto updateBoard(@PathVariable Long boardId, @Valid @RequestBody BoardUpdateRequestDto requestDto, HttpSession session) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
+
+        Long memberId = (Long) session.getAttribute("memberId");
+        return boardService.updateBoard(boardId, requestDto, memberId);
     }
 
     @DeleteMapping("/{boardId}")
