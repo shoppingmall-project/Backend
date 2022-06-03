@@ -9,7 +9,6 @@ import shoppingmall.core.domain.basket.Basket;
 @NoArgsConstructor
 public class BasketCreateRequestDto {
     private Long goods_id;
-
     private int count;
 
     @Builder

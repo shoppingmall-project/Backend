@@ -7,8 +7,10 @@ import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.basket.BasketCreateRequestDto;
 import shoppingmall.core.web.dto.basket.BasketUpdateReqeustDto;
 
+import javax.servlet.http.HttpSession;
+
 @RestController
-@RequestMapping("/member/{memberId}/basket")
+@RequestMapping("/basket")
 public class BasketController {
 
     @Autowired
@@ -16,31 +18,39 @@ public class BasketController {
 
     //장바구니 생성
     @PostMapping()
-    public ResponseDto createBasket(@PathVariable Long memberId, @RequestBody BasketCreateRequestDto requestDto) {
-        return basketService.createBasket(memberId, requestDto);
+    public ResponseDto createBasket(@RequestBody BasketCreateRequestDto requestDto, HttpSession session) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
+        Long memberId = (Long) session.getAttribute("memberId");
+        return basketService.createBasket(requestDto, memberId);
     }
 
     //장바구니 리스트 조회
     @GetMapping()
-    public ResponseDto findBasketList(@PathVariable Long memberId) {
+    public ResponseDto findBasketList(HttpSession session) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
+        Long memberId = (Long) session.getAttribute("memberId");
         return basketService.findBasketList(memberId);
     }
 
     //장바구니 조회
     @GetMapping("/{basketId}")
-    public ResponseDto findBaksetById(@PathVariable Long memberId, @PathVariable Long basketId) {
-        return basketService.findBasketById(memberId, basketId);
+    public ResponseDto findBasketById(@PathVariable Long basketId) {
+        return basketService.findBasketById(basketId);
     }
 
     //장바구니 수정
     @PutMapping("/{basketId}")
-    public ResponseDto updateBasket(@PathVariable Long memberId, @PathVariable Long basketId, @RequestBody BasketUpdateReqeustDto reqeustDto) {
-        return basketService.updateBasket(memberId, basketId, reqeustDto);
+    public ResponseDto updateBasket(@PathVariable Long basketId, @RequestBody BasketUpdateReqeustDto requestDto) {
+        return basketService.updateBasket(basketId, requestDto);
     }
 
     //장바구니 삭제
     @DeleteMapping("/{basketId}")
-    public ResponseDto deleteBasket(@PathVariable Long memberId, @PathVariable Long basketId) {
-        return basketService.deleteBasket(memberId, basketId);
+    public ResponseDto deleteBasket(@PathVariable Long basketId) {
+        return basketService.deleteBasket(basketId);
     }
 }

@@ -5,9 +5,13 @@ import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.member.MemberCreateRequestDto;
 import shoppingmall.core.web.dto.member.MemberUpdateRequestDto;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 public interface MemberService {
-    ResponseDto login(LoginRequestDto user);
+    ResponseDto login(LoginRequestDto user, HttpServletRequest request);
+
+    ResponseDto logout(HttpServletRequest request);
 
     ResponseDto deleteMember(Long id);
 
@@ -18,6 +22,7 @@ public interface MemberService {
     ResponseDto findMemberList();
 
     ResponseDto findMemberById(Long id);
+
 }
 
 

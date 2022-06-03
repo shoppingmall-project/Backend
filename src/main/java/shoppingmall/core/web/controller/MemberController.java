@@ -8,6 +8,8 @@ import shoppingmall.core.web.dto.member.MemberCreateRequestDto;
 import shoppingmall.core.web.dto.member.MemberUpdateRequestDto;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @CrossOrigin(origins = "*")
@@ -37,8 +39,13 @@ public class MemberController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseDto login(@Valid @RequestBody LoginRequestDto user) {
-        return memberService.login(user);
+    public ResponseDto login(@Valid @RequestBody LoginRequestDto user, HttpServletRequest request) {
+        return memberService.login(user, request);
+    }
+
+    @PostMapping("/logout")
+    public ResponseDto logout(HttpServletRequest request) {
+        return memberService.logout(request);
     }
 
     // 회원 리스트 조회

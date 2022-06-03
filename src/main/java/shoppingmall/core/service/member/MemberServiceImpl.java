@@ -1,6 +1,7 @@
 package shoppingmall.core.service.member;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,10 +14,12 @@ import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.TokenDto;
 import shoppingmall.core.web.dto.member.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -26,7 +29,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
     @Override
-    public ResponseDto login(LoginRequestDto user) {
+    public ResponseDto login(LoginRequestDto user, HttpServletRequest request) {
         Member member = memberRepository.findByAccount(user.getAccount())
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 아이디 입니다."));
         if (!passwordEncoder.matches(user.getPassword(), member.getPassword())) {
@@ -34,7 +37,23 @@ public class MemberServiceImpl implements MemberService {
         }
 
         TokenDto tokenDto = new TokenDto(member, jwtTokenProvider.createToken(member.getUsername(), member.getRoles()));
+        HttpSession session = request.getSession();
+        session.setAttribute("memberId", member.getId());
+        session.getAttributeNames().asIterator()
+                .forEachRemaining(name -> log.info("session name={}, value={}",
+                        name, session.getAttribute(name)));
+
         return new ResponseDto("SUCCESS", tokenDto);
+    }
+
+    @Override
+    public ResponseDto logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        return new ResponseDto("SUCCESS");
     }
 
     @Transactional
