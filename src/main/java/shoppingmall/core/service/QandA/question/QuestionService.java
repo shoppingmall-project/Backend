@@ -7,9 +7,9 @@ import shoppingmall.core.web.dto.question.QuestionUpdateRequestDto;
 
 public interface QuestionService {
 
-    ResponseDto createQuestion(QuestionCreateRequestDto requestDto);
+    ResponseDto createQuestion(QuestionCreateRequestDto requestDto, Long memberId);
 
-    ResponseDto updateQuestion(Long questionId, QuestionUpdateRequestDto requestDto);
+    ResponseDto updateQuestion(Long questionId, QuestionUpdateRequestDto requestDto, Long memberId);
 
     ResponseDto deleteQuestion(Long questionId);
 

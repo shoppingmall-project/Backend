@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shoppingmall.core.domain.BaseTimeEntity;
+import shoppingmall.core.domain.member.Member;
 
 import javax.persistence.*;
 
@@ -16,8 +17,9 @@ public class Question extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 30)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(length = 30, nullable = false)
     private String title;
@@ -32,18 +34,23 @@ public class Question extends BaseTimeEntity {
     private int answerNum;
 
     @Builder
-    public Question(Long id, String writer, String title, String content, Boolean isAnswered, int answerNum) {
+    public Question(Long id, Member member, String title, String content, Boolean isAnswered, int answerNum) {
         this.id = id;
-        this.writer = writer;
+        this.member = member;
         this.title = title;
         this.content = content;
         this.isAnswered = isAnswered;
         this.answerNum = answerNum;
     }
 
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
     public void updateQuestion(String title, String content) {
         this.title = title;
         this.content = content;
+
     }
 
     public void setAnswered(Boolean answered) {

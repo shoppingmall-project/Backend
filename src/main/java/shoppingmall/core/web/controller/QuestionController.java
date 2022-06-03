@@ -8,6 +8,8 @@ import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.question.QuestionCreateRequestDto;
 import shoppingmall.core.web.dto.question.QuestionUpdateRequestDto;
 
+import javax.servlet.http.HttpSession;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/question")
@@ -17,13 +19,21 @@ public class QuestionController {
     QuestionService questionService;
 
     @PostMapping()
-    public ResponseDto createQuestion(@RequestBody QuestionCreateRequestDto requestDto) {
-        return questionService.createQuestion(requestDto);
+    public ResponseDto createQuestion(@RequestBody QuestionCreateRequestDto requestDto, HttpSession session) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
+        Long memberId = (Long) session.getAttribute("memberId");
+        return questionService.createQuestion(requestDto, memberId);
     }
 
     @PutMapping("/{questionId}")
-    public ResponseDto updateQuestion(@PathVariable Long questionId, @RequestBody QuestionUpdateRequestDto requestDto) {
-        return questionService.updateQuestion(questionId, requestDto);
+    public ResponseDto updateQuestion(@PathVariable Long questionId, @RequestBody QuestionUpdateRequestDto requestDto, HttpSession session) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
+        Long memberId = (Long) session.getAttribute("memberId");
+        return questionService.updateQuestion(questionId, requestDto, memberId);
     }
 
     @DeleteMapping("/{questionId}")

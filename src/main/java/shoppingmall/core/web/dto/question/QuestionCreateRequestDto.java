@@ -11,22 +11,19 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 public class QuestionCreateRequestDto {
 
-    private String writer;
     @NotEmpty
     private String title;
     @NotEmpty
     private String content;
 
     @Builder
-    public QuestionCreateRequestDto(String writer, String title, String content) {
-        this.writer = writer;
+    public QuestionCreateRequestDto(String title, String content) {
         this.title = title;
         this.content = content;
     }
 
     public Question toEntity() {
         return Question.builder()
-                .writer(writer)
                 .title(title)
                 .content(content)
                 .answerNum(0)
