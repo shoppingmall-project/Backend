@@ -18,13 +18,20 @@ public class BasketController {
 
     //장바구니 생성
     @PostMapping()
-    public ResponseDto createBasket(@RequestBody BasketCreateRequestDto requestDto) {
-        return basketService.createBasket(requestDto);
+    public ResponseDto createBasket(@RequestBody BasketCreateRequestDto requestDto, HttpSession session) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
+        Long memberId = (Long) session.getAttribute("memberId");
+        return basketService.createBasket(requestDto, memberId);
     }
 
     //장바구니 리스트 조회
     @GetMapping()
     public ResponseDto findBasketList(HttpSession session) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
         Long memberId = (Long) session.getAttribute("memberId");
         return basketService.findBasketList(memberId);
     }
@@ -37,8 +44,8 @@ public class BasketController {
 
     //장바구니 수정
     @PutMapping("/{basketId}")
-    public ResponseDto updateBasket(@PathVariable Long basketId, @RequestBody BasketUpdateReqeustDto reqeustDto) {
-        return basketService.updateBasket(basketId, reqeustDto);
+    public ResponseDto updateBasket(@PathVariable Long basketId, @RequestBody BasketUpdateReqeustDto requestDto) {
+        return basketService.updateBasket(basketId, requestDto);
     }
 
     //장바구니 삭제

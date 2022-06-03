@@ -9,13 +9,11 @@ import shoppingmall.core.domain.basket.Basket;
 @NoArgsConstructor
 public class BasketCreateRequestDto {
     private Long goods_id;
-    private Long member_id;
     private int count;
 
     @Builder
-    public BasketCreateRequestDto(Long goods_id, Long member_id, int count) {
+    public BasketCreateRequestDto(Long goods_id, int count) {
         this.goods_id = goods_id;
-        this.member_id = member_id;
         this.count = count;
     }
 

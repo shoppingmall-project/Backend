@@ -6,7 +6,7 @@ import shoppingmall.core.web.dto.basket.BasketUpdateReqeustDto;
 
 public interface BasketService {
 
-    ResponseDto createBasket(BasketCreateRequestDto requestDto);
+    ResponseDto createBasket(BasketCreateRequestDto requestDto, Long memberId);
 
     ResponseDto deleteBasket(Long basketId);
 

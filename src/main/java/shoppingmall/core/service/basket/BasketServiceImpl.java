@@ -25,9 +25,9 @@ public class BasketServiceImpl implements BasketService {
 
     @Transactional
     @Override
-    public ResponseDto createBasket(BasketCreateRequestDto requestDto) {
+    public ResponseDto createBasket(BasketCreateRequestDto requestDto, Long memberId) {
         checkValidGoods(requestDto.getGoods_id());
-        Member member = checkValidMember(requestDto.getMember_id());
+        Member member = checkValidMember(memberId);
         Goods goods = checkValidGoods(requestDto.getGoods_id());
 
         Basket basket = requestDto.toEntity();
