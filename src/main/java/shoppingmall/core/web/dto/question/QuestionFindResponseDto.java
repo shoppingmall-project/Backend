@@ -33,7 +33,7 @@ public class QuestionFindResponseDto {
     public static QuestionFindResponseDto toResponseDto(Question entity) {
         return QuestionFindResponseDto.builder()
                 .id(entity.getId())
-                .writer(entity.getWriter())
+                .writer(entity.getMember().getName())
                 .title(entity.getTitle())
                 .content(entity.getContent())
                 .isAnswered(entity.getIsAnswered())

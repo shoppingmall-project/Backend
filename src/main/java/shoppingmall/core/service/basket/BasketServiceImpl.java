@@ -33,11 +33,9 @@ public class BasketServiceImpl implements BasketService {
         Basket basket = requestDto.toEntity();
         basket.setGoods(goods);
         basket.setMember(member);
-        Basket savedBasket = basketRepository.save(basket);
+        basketRepository.save(basket);
 
-        BasketCreateResponseDto responseDto = BasketCreateResponseDto.builder()
-                .id(savedBasket.getId())
-                .build();
+        BasketCreateResponseDto responseDto = new BasketCreateResponseDto(basket.getId());
 
         return new ResponseDto("SUCCESS", responseDto);
     }

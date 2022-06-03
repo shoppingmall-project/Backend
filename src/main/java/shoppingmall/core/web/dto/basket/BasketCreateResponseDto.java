@@ -10,7 +10,6 @@ public class BasketCreateResponseDto {
 
     private Long id;
 
-    @Builder
     public BasketCreateResponseDto(Long id) {
         this.id = id;
     }

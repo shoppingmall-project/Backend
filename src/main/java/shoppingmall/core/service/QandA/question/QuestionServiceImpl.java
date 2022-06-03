@@ -4,32 +4,41 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shoppingmall.core.domain.QandA.question.Question;
 import shoppingmall.core.domain.QandA.question.QuestionRepository;
+import shoppingmall.core.domain.member.Member;
+import shoppingmall.core.domain.member.MemberRepository;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.question.*;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
-
+    private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
     @Transactional
     @Override
-    public ResponseDto createQuestion(QuestionCreateRequestDto requestDto) {
+    public ResponseDto createQuestion(QuestionCreateRequestDto requestDto, Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(()-> new IllegalArgumentException(" 존재하지 않는 유저입니다. "));
         Question question = questionRepository.save(requestDto.toEntity());
         question.setAnswered(Boolean.FALSE);
+        question.setMember(member);
 
         QuestionCreateResponseDto responseDto = new QuestionCreateResponseDto(question.getId());
         return new ResponseDto("SUCCESS", responseDto);
     }
     @Transactional
     @Override
-    public ResponseDto updateQuestion(Long questionId, QuestionUpdateRequestDto requestDto) {
+    public ResponseDto updateQuestion(Long questionId, QuestionUpdateRequestDto requestDto, Long memberId) {
+        memberRepository.findById(memberId).orElseThrow(()-> new IllegalArgumentException(" 존재하지 않는 유저입니다. "));
         Question question = checkValidQuestionId(questionId);
+        if (!Objects.equals(question.getMember().getId(), memberId)) {
+            throw new IllegalArgumentException("질문자와 다른 아이디입니다.");
+        }
         question.updateQuestion(requestDto.getTitle(), requestDto.getContent());
 
         QuestionUpdateResponseDto responseDto = new QuestionUpdateResponseDto(question.getId());

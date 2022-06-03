@@ -10,7 +10,6 @@ public class GoodsCreateResponseDto {
 
     private Long id;
 
-    @Builder
     public GoodsCreateResponseDto(Long id) {
         this.id = id;
     }
