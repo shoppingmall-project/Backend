@@ -40,7 +40,7 @@ public class BoardServiceImpl implements BoardService{
     public ResponseDto updateBoard(Long boardId, BoardUpdateRequestDto requestDto, Long memberId) {
         Board board = checkValidBoard(boardId);
         Member member = checkValidMember(memberId);
-        if (!Objects.equals(board.getMember().getId(), memberId) || !Objects.equals(member.getRole(), "M")) {
+        if (!Objects.equals(board.getMember().getId(), memberId) && !Objects.equals(member.getRole(), "M")) {
             return new ResponseDto("FAIL", "작성자와 다른 아이디입니다.");
         }
         board.updateBoard(requestDto.getTitle(), requestDto.getContent());

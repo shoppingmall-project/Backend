@@ -1,14 +1,17 @@
 package shoppingmall.core.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.aspectj.lang.annotation.Before;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.Goods.GoodsRepository;
@@ -16,6 +19,7 @@ import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.domain.member.MemberRepository;
 import shoppingmall.core.domain.basket.Basket;
 import shoppingmall.core.domain.basket.BasketRepository;
+import shoppingmall.core.service.member.MemberService;
 import shoppingmall.core.web.dto.basket.BasketCreateRequestDto;
 import shoppingmall.core.web.dto.basket.BasketUpdateReqeustDto;
 
@@ -48,11 +52,14 @@ public class BasketControllerTest {
     @Autowired
     MemberRepository memberRepository;
 
+    protected MockHttpSession session;
+
     @AfterEach
     void cleanup() {
         basketRepository.deleteAll();
         goodsRepository.deleteAll();
         memberRepository.deleteAll();
+        session.clearAttributes();
     }
 
     @Test
@@ -70,6 +77,10 @@ public class BasketControllerTest {
                 .phoneNum("01025123123")
                 .build());
 
+        session = new MockHttpSession();
+
+        session.setAttribute("memberId", member.getId());
+
         Goods goods = goodsRepository.save(Goods.builder()
                 .category("wine")
                 .name("test_wine")
@@ -82,15 +93,16 @@ public class BasketControllerTest {
 
         int count = 5;
 
-
         //when
         String body = mapper.writeValueAsString(BasketCreateRequestDto.builder()
                 .goods_id(goods.getId())
                 .count(count)
                 .build());
 
+
         //then
-        mvc.perform(post("/member/"+member.getId()+"/basket")
+        mvc.perform(post("/basket")
+                        .session(session)
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -114,6 +126,10 @@ public class BasketControllerTest {
                 .phoneNum("01025123123")
                 .build());
 
+        session = new MockHttpSession();
+
+        session.setAttribute("memberId", member.getId());
+
         Goods goods = goodsRepository.save(Goods.builder()
                 .category("wine")
                 .name("test_wine")
@@ -132,7 +148,7 @@ public class BasketControllerTest {
                 .count(count).build());
 
         //when
-        mvc.perform(delete("/member/"+member.getId()+"/basket/"+basket.getId()))
+        mvc.perform(delete("/basket/"+basket.getId()))
                 .andExpect(status().isOk());
 
         //then
@@ -154,6 +170,11 @@ public class BasketControllerTest {
                 .address("주소주소")
                 .phoneNum("01025123123")
                 .build());
+
+
+        session = new MockHttpSession();
+
+        session.setAttribute("memberId", member.getId());
 
         Goods goods = goodsRepository.save(Goods.builder()
                 .category("wine")
@@ -179,7 +200,7 @@ public class BasketControllerTest {
                 .count(count)
                 .build());
 
-        mvc.perform(put("/member/"+member.getId()+"/basket/"+basket.getId())
+        mvc.perform(put("/basket/"+basket.getId())
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -205,12 +226,16 @@ public class BasketControllerTest {
                 .phoneNum("01025123123")
                 .build());
 
+        session = new MockHttpSession();
+
+        session.setAttribute("memberId", member.getId());
+
         Goods goods = goodsRepository.save(Goods.builder()
                 .category("wine")
                 .name("test_wine")
                 .price(30000)
                 .stock(234)
-                .description("Test용")
+                .description("Test")
                 .brand("ASD")
                 .country("Korea")
                 .build());
@@ -227,7 +252,8 @@ public class BasketControllerTest {
                 .count(5)
                 .build());
 
-        mvc.perform(get("/member/"+member.getId()+"/basket"))
+        mvc.perform(get("/basket")
+                        .session(session))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.length()", equalTo(2)));
 
@@ -249,6 +275,11 @@ public class BasketControllerTest {
                 .phoneNum("01025123123")
                 .build());
 
+
+        session = new MockHttpSession();
+
+        session.setAttribute("memberId", member.getId());
+        
         Goods goods = goodsRepository.save(Goods.builder()
                 .category("wine")
                 .name("test_wine")
@@ -265,7 +296,7 @@ public class BasketControllerTest {
                 .count(1)
                 .build());
 
-        mvc.perform(get("/member/"+member.getId()+"/basket/"+basket.getId()))
+        mvc.perform(get("/basket/"+basket.getId()))
                 .andExpect(status().isOk());
 
         Assertions.assertThat(basketRepository.findById(basket.getId())).isNotEmpty();

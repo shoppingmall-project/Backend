@@ -43,7 +43,7 @@ public class BoardController {
     }
 
     @GetMapping("/{boardId}")
-    public ResponseDto findBoardById(@PathVariable Long boardId) throws Exception{
+    public ResponseDto findBoardById(@PathVariable Long boardId) throws Exception {
         return boardService.findBoardById(boardId);
     }
 

@@ -1,6 +1,5 @@
 package shoppingmall.core.web.dto.review;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

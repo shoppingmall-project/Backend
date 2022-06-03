@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.Goods.GoodsRepository;
@@ -47,11 +48,14 @@ public class OrderControllerTest {
     @Autowired
     MemberRepository memberRepository;
 
+    protected MockHttpSession session;
+
     @AfterEach
     void cleanup() {
         orderRepository.deleteAll();
         goodsRepository.deleteAll();
         memberRepository.deleteAll();
+        session.clearAttributes();
     }
 
     @Test
@@ -69,6 +73,11 @@ public class OrderControllerTest {
                 .address("주소주소")
                 .phoneNum("01025123123")
                 .build());
+
+
+        session = new MockHttpSession();
+
+        session.setAttribute("memberId", member.getId());
 
         Goods goods = goodsRepository.save(Goods.builder()
                 .category("wine")
@@ -89,7 +98,8 @@ public class OrderControllerTest {
                 .build());
 
         //then
-        mvc.perform(post("/member/"+member.getId()+"/order")
+        mvc.perform(post("/order")
+                        .session(session)
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -114,6 +124,10 @@ public class OrderControllerTest {
                 .phoneNum("01025123123")
                 .build());
 
+        session = new MockHttpSession();
+
+        session.setAttribute("memberId", member.getId());
+
         Goods goods = goodsRepository.save(Goods.builder()
                 .category("wine")
                 .name("test_wine")
@@ -132,7 +146,8 @@ public class OrderControllerTest {
                 .build());
 
         //when
-        mvc.perform(delete("/member/"+member.getId()+"/order/"+order.getId()))
+        mvc.perform(delete("/order/"+order.getId())
+                        .session(session))
                 .andExpect(status().isOk());
 
         //then
@@ -154,6 +169,10 @@ public class OrderControllerTest {
                 .address("주소주소")
                 .phoneNum("01025123123")
                 .build());
+
+        session = new MockHttpSession();
+
+        session.setAttribute("memberId", member.getId());
 
         Goods goods = goodsRepository.save(Goods.builder()
                 .category("wine")
@@ -178,7 +197,8 @@ public class OrderControllerTest {
                 .payment(2)
                 .build());
 
-        mvc.perform(put("/member/"+member.getId()+"/order/"+order.getId())
+        mvc.perform(put("/order/"+order.getId())
+                        .session(session)
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -204,6 +224,10 @@ public class OrderControllerTest {
                 .phoneNum("01025123123")
                 .build());
 
+        session = new MockHttpSession();
+
+        session.setAttribute("memberId", member.getId());
+
         Goods goods = goodsRepository.save(Goods.builder()
                 .category("wine")
                 .name("test_wine")
@@ -227,7 +251,8 @@ public class OrderControllerTest {
                 .payment(2)
                 .build());
 
-        mvc.perform(get("/member/"+member.getId()+"/order"))
+        mvc.perform(get("/order")
+                        .session(session))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.length()", equalTo(2)));
 
@@ -249,6 +274,10 @@ public class OrderControllerTest {
                 .phoneNum("01025123123")
                 .build());
 
+        session = new MockHttpSession();
+
+        session.setAttribute("memberId", member.getId());
+
         Goods goods = goodsRepository.save(Goods.builder()
                 .category("wine")
                 .name("test_wine")
@@ -266,7 +295,8 @@ public class OrderControllerTest {
                 .payment(2)
                 .build());
 
-        mvc.perform(get("/member/"+member.getId()+"/order/"+order.getId()))
+        mvc.perform(get("/order/"+order.getId())
+                        .session(session))
                 .andExpect(status().isOk());
 
         Assertions.assertThat(orderRepository.findById(order.getId())).isNotEmpty();
