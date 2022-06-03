@@ -26,8 +26,10 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ResponseDto createBoard(BoardCreateRequestDto requestDto, Long memberId) {
         Member member = checkValidMember(memberId);
-        Board board = boardRepository.save(requestDto.toEntity());
+        Board board = requestDto.toEntity();
         board.setMember(member);
+
+        boardRepository.save(board);
 
         BoardCreateResponseDto responseDto = new BoardCreateResponseDto(board.getId());
         return new ResponseDto("SUCCESS", responseDto);

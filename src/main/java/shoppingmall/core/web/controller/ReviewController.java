@@ -34,19 +34,19 @@ public class ReviewController {
     }
 
     //댓글 조회
-    @GetMapping("/{id}")
+    @GetMapping("/{reviewId}")
     public ResponseDto findReviewById(@PathVariable Long goodsId, @PathVariable Long reviewId) {
         return reviewService.findReviewById(goodsId, reviewId);
     }
 
     //댓글 삭제
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{reviewId}")
     public ResponseDto deleteReview(@PathVariable Long goodsId, @PathVariable Long reviewId) throws Exception {
         return reviewService.deleteReview(goodsId, reviewId);
     }
 
     //댓글 수정
-    @PutMapping("/{id}")
+    @PutMapping("/{reviewId}")
     public ResponseDto updateReview(@PathVariable Long goodsId, @PathVariable Long reviewId,
                                      @Valid @ModelAttribute ReviewUpdateRequestDto requestDto,
                                      @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {

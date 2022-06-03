@@ -31,10 +31,10 @@ public class Board extends BaseTimeEntity {
     private int views;
 
     @Builder
-    public Board(Long id, String title, Member member, String author, String content, int views) {
+    public Board(Long id, Member member, String title, String content, int views) {
         this.id = id;
-        this.title = title;
         this.member = member;
+        this.title = title;
         this.content = content;
         this.views = views;
     }

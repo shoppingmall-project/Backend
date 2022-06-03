@@ -1,10 +1,11 @@
 package shoppingmall.core.web.dto.question;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@Builder
+@Getter
 public class QuestionCreateResponseDto {
 
     private Long id;

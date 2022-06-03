@@ -48,17 +48,13 @@ public class BoardControllerTest {
     void crateBoard() throws Exception {
         //given
         String title = "test";
-        String author = "박민우";
         String content = "test 내용내용";
-        int views = 50;
 
 
         //when
         String body = mapper.writeValueAsString(BoardCreateRequestDto.builder()
                 .title(title)
-                .author(author)
                 .content(content)
-                .views(views)
                 .build()
         );
 
@@ -77,14 +73,12 @@ public class BoardControllerTest {
     void deleteBoard() throws Exception {
         //given
         String title = "test";
-        String author = "박민우";
         String content = "test 내용내용";
         int views = 50;
 
 
         Board board = boardRepository.save(Board.builder()
                 .title(title)
-                .author(author)
                 .content(content)
                 .views(views)
                 .build());
@@ -103,14 +97,12 @@ public class BoardControllerTest {
     void updateBoard() throws Exception {
         //given
         String title = "test";
-        String author = "박민우";
         String content = "test 내용내용";
         int views = 50;
 
 
         Board board = boardRepository.save(Board.builder()
                 .title(title)
-                .author(author)
                 .content(content)
                 .views(views)
                 .build());
@@ -140,16 +132,14 @@ public class BoardControllerTest {
 
         boardRepository.save(Board.builder()
                 .title("test1")
-                .author("박민우")
                 .content("내용")
-                .views(123)
+                .views(0)
                 .build());
 
         boardRepository.save(Board.builder()
                 .title("test2")
-                .author("최영원")
                 .content("내용2")
-                .views(123)
+                .views(0)
                 .build());
 
         mvc.perform(get("/board"))
@@ -164,7 +154,6 @@ public class BoardControllerTest {
 
         Board board = boardRepository.save(Board.builder()
                 .title("test1")
-                .author("박민우")
                 .content("내용")
                 .views(123)
                 .build());

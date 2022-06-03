@@ -20,6 +20,7 @@ import java.util.Objects;
 public class QuestionServiceImpl implements QuestionService {
     private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
+
     @Transactional
     @Override
     public ResponseDto createQuestion(QuestionCreateRequestDto requestDto, Long memberId) {
@@ -31,6 +32,7 @@ public class QuestionServiceImpl implements QuestionService {
         QuestionCreateResponseDto responseDto = new QuestionCreateResponseDto(question.getId());
         return new ResponseDto("SUCCESS", responseDto);
     }
+
     @Transactional
     @Override
     public ResponseDto updateQuestion(Long questionId, QuestionUpdateRequestDto requestDto, Long memberId) {
