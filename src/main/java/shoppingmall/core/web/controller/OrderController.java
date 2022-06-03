@@ -8,36 +8,58 @@ import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.order.OrderCreateRequestDto;
 import shoppingmall.core.web.dto.order.OrderUpdateRequestDto;
 
+import javax.servlet.http.HttpSession;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/member/{memberId}/order")
+@RequestMapping("/order")
 public class OrderController {
 
     @Autowired
     OrderService orderService;
 
     @PostMapping()
-    public ResponseDto createOrder(@PathVariable Long memberId, @RequestBody OrderCreateRequestDto requestDto) {
+    public ResponseDto createOrder(@RequestBody OrderCreateRequestDto requestDto,  HttpSession session) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
+        Long memberId = (Long) session.getAttribute("memberId");
         return orderService.createOrder(memberId, requestDto);
     }
 
     @GetMapping()
-    public ResponseDto findOrderList(@PathVariable Long memberId) {
+    public ResponseDto findOrderList(HttpSession session) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
+        Long memberId = (Long) session.getAttribute("memberId");
         return orderService.findOrderList(memberId);
     }
 
     @GetMapping("/{orderId}")
-    public ResponseDto findOrderById(@PathVariable Long memberId, @PathVariable Long orderId) {
+    public ResponseDto findOrderById(HttpSession session, @PathVariable Long orderId) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
+        Long memberId = (Long) session.getAttribute("memberId");
         return orderService.findOrderById(memberId, orderId);
     }
 
     @PutMapping("/{orderId}")
-    public ResponseDto updateOrder(@PathVariable Long memberId, @PathVariable Long orderId, @RequestBody OrderUpdateRequestDto requestDto) {
+    public ResponseDto updateOrder(HttpSession session, @PathVariable Long orderId, @RequestBody OrderUpdateRequestDto requestDto) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
+        Long memberId = (Long) session.getAttribute("memberId");
         return orderService.updateOrder(memberId, orderId, requestDto);
     }
 
     @DeleteMapping("/{orderId}")
-    public ResponseDto deleteOrder(@PathVariable Long memberId, @PathVariable Long orderId) {
+    public ResponseDto deleteOrder(HttpSession session, @PathVariable Long orderId) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
+        Long memberId = (Long) session.getAttribute("memberId");
         return orderService.deleteOrder(memberId, orderId);
     }
 }
