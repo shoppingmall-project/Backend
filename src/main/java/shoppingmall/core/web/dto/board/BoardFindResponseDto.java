@@ -13,16 +13,16 @@ public class BoardFindResponseDto {
 
     private Long boardId;
     private String title;
-    private String author;
+    private String writer;
     private String content;
     private int views;
     private LocalDateTime createdDate;
 
     @Builder
-    public BoardFindResponseDto(Long boardId, String title, String author, String content, int views, LocalDateTime createdDate) {
+    public BoardFindResponseDto(Long boardId, String title, String writer, String content, int views, LocalDateTime createdDate) {
         this.boardId = boardId;
         this.title = title;
-        this.author = author;
+        this.writer = writer;
         this.content = content;
         this.views = views;
         this.createdDate = createdDate;
@@ -32,7 +32,7 @@ public class BoardFindResponseDto {
         return BoardFindResponseDto.builder()
                 .boardId(entity.getId())
                 .title(entity.getTitle())
-                .author(entity.getAuthor())
+                .writer(entity.getMember().getName())
                 .content(entity.getContent())
                 .views(entity.getViews())
                 .createdDate(entity.getCreatedDate())
