@@ -11,7 +11,7 @@ import shoppingmall.core.web.dto.board.BoardUpdateRequestDto;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"http://localhost:3000/", "http://54.180.53.149/"}, allowCredentials = "true")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/board")
