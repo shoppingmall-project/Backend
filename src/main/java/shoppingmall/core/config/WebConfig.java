@@ -6,15 +6,14 @@
 //import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 //
 //@Configuration
-//public class WebConfig {
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/myApi").allowedOrigins("http://localhost:3000/", "http://54.180.53.149/").allowCredentials(true);
-//                //.allowCredentials(true) // 필요한 경우
-//            }
-//        };
+//public class WebConfig implements WebMvcConfigurer {
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowedOriginPatterns("https://web.abcd.com")
+//                .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE", "HEAD")
+//                .allowedHeaders("*")
+//                .exposedHeaders("Set-Cookie")
+//                .allowCredentials(true);
 //    }
 //}
