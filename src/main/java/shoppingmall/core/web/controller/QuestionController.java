@@ -10,6 +10,7 @@ import shoppingmall.core.web.dto.question.QuestionUpdateRequestDto;
 
 import javax.servlet.http.HttpSession;
 
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/question")

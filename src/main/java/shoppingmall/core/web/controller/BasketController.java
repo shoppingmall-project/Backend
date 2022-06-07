@@ -1,5 +1,6 @@
 package shoppingmall.core.web.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import shoppingmall.core.service.basket.BasketService;
@@ -9,6 +10,8 @@ import shoppingmall.core.web.dto.basket.BasketUpdateReqeustDto;
 
 import javax.servlet.http.HttpSession;
 
+@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/basket")
 public class BasketController {

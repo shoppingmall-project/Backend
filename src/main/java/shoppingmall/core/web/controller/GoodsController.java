@@ -11,6 +11,7 @@ import shoppingmall.core.web.dto.goods.GoodsUpdateRequestDto;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/goods")

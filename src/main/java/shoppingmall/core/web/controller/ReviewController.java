@@ -12,6 +12,7 @@ import shoppingmall.core.web.dto.review.ReviewUpdateRequestDto;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/goods/{goodsId}/review")

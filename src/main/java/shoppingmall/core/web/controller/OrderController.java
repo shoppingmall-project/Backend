@@ -10,6 +10,7 @@ import shoppingmall.core.web.dto.order.OrderUpdateRequestDto;
 
 import javax.servlet.http.HttpSession;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/order")

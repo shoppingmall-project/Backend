@@ -11,6 +11,7 @@ import shoppingmall.core.web.dto.answer.AnswerUpdateRequestDto;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/question/{questionId}/answer")
