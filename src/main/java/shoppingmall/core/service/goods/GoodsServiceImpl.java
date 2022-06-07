@@ -70,9 +70,9 @@ public class GoodsServiceImpl implements GoodsService {
     @Transactional
     public ResponseDto updateGoods(Long goodsId, GoodsUpdateRequestDto requestDto, MultipartFile file, Long memberId) throws Exception {
         Member member = checkValidMember(memberId);
-        if (!Objects.equals(member.getRole(), "S") && !Objects.equals(member.getRole(), "S")) {
-            return new ResponseDto("FAIL", "권한이 없습니다..");
-        }
+//        if (!Objects.equals(member.getRole(), "S") && !Objects.equals(member.getRole(), "S")) {
+//            return new ResponseDto("FAIL", "권한이 없습니다..");
+//        }
         Goods goods = checkValidGoods(goodsId);
         goods.updateGoods(requestDto.getCategory(), requestDto.getName(), requestDto.getPrice(), requestDto.getStock(),
                 requestDto.getDescription(), requestDto.getBrand(), requestDto.getCountry());
