@@ -10,7 +10,7 @@ public interface BoardService {
 
     ResponseDto updateBoard(Long boardId, BoardUpdateRequestDto requestDto, Long memberId);
 
-    ResponseDto deleteBoard(Long boardId);
+    ResponseDto deleteBoard(Long boardId, Long memberId);
 
     ResponseDto findBoardById(Long boardId) throws Exception;
 

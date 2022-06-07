@@ -24,7 +24,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     @Override
     public ResponseDto createQuestion(QuestionCreateRequestDto requestDto, Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(()-> new IllegalArgumentException(" 존재하지 않는 유저입니다. "));
+        Member member = checkValidMemberId(memberId);
         Question question = questionRepository.save(requestDto.toEntity());
         question.setAnswered(Boolean.FALSE);
         question.setMember(member);
@@ -37,20 +37,26 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public ResponseDto updateQuestion(Long questionId, QuestionUpdateRequestDto requestDto, Long memberId) {
         memberRepository.findById(memberId).orElseThrow(()-> new IllegalArgumentException(" 존재하지 않는 유저입니다. "));
+
         Question question = checkValidQuestionId(questionId);
         if (!Objects.equals(question.getMember().getId(), memberId)) {
-            throw new IllegalArgumentException("질문자와 다른 아이디입니다.");
+            throw new IllegalArgumentException("권한이 없습니다..");
         }
         question.updateQuestion(requestDto.getTitle(), requestDto.getContent());
 
         QuestionUpdateResponseDto responseDto = new QuestionUpdateResponseDto(question.getId());
         return new ResponseDto("SUCCESS", responseDto);
     }
+
     @Transactional
     @Override
-    public ResponseDto deleteQuestion(Long questionId) {
-        checkValidQuestionId(questionId);
+    public ResponseDto deleteQuestion(Long questionId, Long memberId) {
+        Member member = checkValidMemberId(memberId);
+        Question question = checkValidQuestionId(questionId);
 
+        if (!Objects.equals(question.getMember().getId(), memberId) && !Objects.equals(member.getRole(), "M")) {
+            return new ResponseDto("FAIL", "권한이 없습니다..");
+        }
         questionRepository.deleteById(questionId);
         return new ResponseDto("SUCCESS");
     }
@@ -76,5 +82,9 @@ public class QuestionServiceImpl implements QuestionService {
     }
     private Question checkValidQuestionId(Long questionId) {
         return questionRepository.findById(questionId).orElseThrow(() -> new IllegalArgumentException("해당 질문이 없습니다."));
+    }
+
+    private Member checkValidMemberId(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(()-> new IllegalArgumentException(" 존재하지 않는 유저입니다. "));
     }
 }

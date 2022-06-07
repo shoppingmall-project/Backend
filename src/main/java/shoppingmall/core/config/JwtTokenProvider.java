@@ -23,7 +23,7 @@ import java.util.List;
 @Component
 public class JwtTokenProvider {
 
-    private String secretKey = "oneboard";
+    private String secretKey = "shoppingmall";
 
     // 토큰 유효시간 7일
     private long tokenValidTime = 24* 7 * 60 * 60 * 1000L;
@@ -37,9 +37,10 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰 생성
-    public String createToken(String userPk, List<String> roles) {
+    public String createToken(String userPk, List<String> roles, Long memberId) {
         Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위
         claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
+        claims.put("memberId", memberId);
         Date now = new Date();
 
         return Jwts.builder()

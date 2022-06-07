@@ -41,7 +41,7 @@ public class BoardServiceImpl implements BoardService{
         Board board = checkValidBoard(boardId);
         Member member = checkValidMember(memberId);
         if (!Objects.equals(board.getMember().getId(), memberId) && !Objects.equals(member.getRole(), "M")) {
-            return new ResponseDto("FAIL", "작성자와 다른 아이디입니다.");
+            return new ResponseDto("FAIL", "권한이 없습니다..");
         }
         board.updateBoard(requestDto.getTitle(), requestDto.getContent());
         BoardUpdateResponseDto responseDto = new BoardUpdateResponseDto(board.getId());
@@ -50,9 +50,12 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional
     @Override
-    public ResponseDto deleteBoard(Long boardId) {
-
-        checkValidBoard(boardId);
+    public ResponseDto deleteBoard(Long boardId, Long memberId) {
+        Board board = checkValidBoard(boardId);
+        Member member = checkValidMember(memberId);
+        if (!Objects.equals(board.getMember().getId(), memberId) && !Objects.equals(member.getRole(), "M")) {
+            return new ResponseDto("FAIL", "권한이 없습니다..");
+        }
         boardRepository.deleteById(boardId);
 
         return new ResponseDto("SUCCESS");

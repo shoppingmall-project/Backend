@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.Goods.GoodsRepository;
+import shoppingmall.core.domain.member.Member;
+import shoppingmall.core.domain.member.MemberRepository;
 import shoppingmall.core.domain.review.Review;
 import shoppingmall.core.service.storage.StorageService;
 import shoppingmall.core.web.dto.goods.*;
@@ -15,6 +17,7 @@ import shoppingmall.core.web.dto.ResponseDto;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -23,12 +26,18 @@ public class GoodsServiceImpl implements GoodsService {
     @Qualifier("FileStorageService")
     private final GoodsRepository goodsRepository;
     private final StorageService storageService;
+    private final MemberRepository memberRepository;
 
     @Transactional
     @Override
-    public ResponseDto createGoods(GoodsCreateRequestDto requestDto, MultipartFile file) throws Exception {
-
-        Goods goods = goodsRepository.save(requestDto.toEntity());
+    public ResponseDto createGoods(GoodsCreateRequestDto requestDto, MultipartFile file, Long memberId) throws Exception {
+        Member member = checkValidMember(memberId);
+        Goods goods = requestDto.toEntity();
+        goods.setMember(member);
+        goodsRepository.save(goods);
+//        if (!Objects.equals(member.getRole(), "S") && !Objects.equals(member.getRole(), "M") ) {
+//            return new ResponseDto("FAIL", "권한이 없습니다..");
+//        }
 
         if(file != null) {
             saveFileAndUrl(file, goods);
@@ -40,25 +49,31 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Transactional
     @Override
-    public ResponseDto deleteGoods(Long id) throws Exception{
-        checkValidGoods(id);
-        Goods goods = checkValidGoods(id);
+    public ResponseDto deleteGoods(Long goodsId, Long memberId) throws Exception{
+        Member member = checkValidMember(memberId);
+        checkValidGoods(goodsId);
+        Goods goods = checkValidGoods(goodsId);
 
+//        if ((!Objects.equals(goods.getMember().getId(), memberId) && !Objects.equals(member.getRole(), "S")) && !Objects.equals(member.getRole(), "M")) {
+//            return new ResponseDto("FAIL", "권한이 없습니다..");
+//        }
         if(goods.getImageUrl() != null) {
             if (storageService.delete(goods.getImageUrl())) {
                 goods.updateUrl(null);
             }
         }
-
-        goodsRepository.deleteById(id);
-
+        goodsRepository.deleteById(goodsId);
         return new ResponseDto("SUCCESS");
     }
 
     @Override
     @Transactional
-    public ResponseDto updateGoods(Long id, GoodsUpdateRequestDto requestDto, MultipartFile file) throws Exception {
-        Goods goods = checkValidGoods(id);
+    public ResponseDto updateGoods(Long goodsId, GoodsUpdateRequestDto requestDto, MultipartFile file, Long memberId) throws Exception {
+        Member member = checkValidMember(memberId);
+        if (!Objects.equals(member.getRole(), "S") && !Objects.equals(member.getRole(), "S")) {
+            return new ResponseDto("FAIL", "권한이 없습니다..");
+        }
+        Goods goods = checkValidGoods(goodsId);
         goods.updateGoods(requestDto.getCategory(), requestDto.getName(), requestDto.getPrice(), requestDto.getStock(),
                 requestDto.getDescription(), requestDto.getBrand(), requestDto.getCountry());
 
@@ -92,15 +107,15 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public ResponseDto findGoodsById(Long id) {
-        Goods goods = checkValidGoods(id);
+    public ResponseDto findGoodsById(Long goodsId) {
+        Goods goods = checkValidGoods(goodsId);
         GoodsFindResponseDto responseDto = GoodsFindResponseDto.toResponseDto(goods);
 
         return new ResponseDto("SUCCESS", responseDto);
     }
 
-    private Goods checkValidGoods(Long id) {
-        return goodsRepository.findById(id)
+    private Goods checkValidGoods(Long goodsId) {
+        return goodsRepository.findById(goodsId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));
     }
 
@@ -109,5 +124,10 @@ public class GoodsServiceImpl implements GoodsService {
         String uploadedFilePath = storageService.store(path, file);
 
         goods.updateUrl(uploadedFilePath);
+    }
+
+    private Member checkValidMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
     }
 }

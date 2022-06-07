@@ -20,46 +20,38 @@ public class OrderController {
 
     @PostMapping()
     public ResponseDto createOrder(@RequestBody OrderCreateRequestDto requestDto,  HttpSession session) {
-        if (session == null) {
-            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
-        }
-        Long memberId = (Long) session.getAttribute("memberId");
+        Long memberId = createSession(session);
         return orderService.createOrder(memberId, requestDto);
     }
 
     @GetMapping()
     public ResponseDto findOrderList(HttpSession session) {
-        if (session == null) {
-            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
-        }
-        Long memberId = (Long) session.getAttribute("memberId");
+        Long memberId = createSession(session);
         return orderService.findOrderList(memberId);
     }
 
     @GetMapping("/{orderId}")
     public ResponseDto findOrderById(HttpSession session, @PathVariable Long orderId) {
-        if (session == null) {
-            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
-        }
-        Long memberId = (Long) session.getAttribute("memberId");
+        Long memberId = createSession(session);
         return orderService.findOrderById(memberId, orderId);
     }
 
     @PutMapping("/{orderId}")
     public ResponseDto updateOrder(HttpSession session, @PathVariable Long orderId, @RequestBody OrderUpdateRequestDto requestDto) {
-        if (session == null) {
-            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
-        }
-        Long memberId = (Long) session.getAttribute("memberId");
+        Long memberId = createSession(session);
         return orderService.updateOrder(memberId, orderId, requestDto);
     }
 
     @DeleteMapping("/{orderId}")
     public ResponseDto deleteOrder(HttpSession session, @PathVariable Long orderId) {
+        Long memberId = createSession(session);
+        return orderService.deleteOrder(memberId, orderId);
+    }
+
+    private Long createSession(HttpSession session) {
         if (session == null) {
             throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
         }
-        Long memberId = (Long) session.getAttribute("memberId");
-        return orderService.deleteOrder(memberId, orderId);
+        return (Long) session.getAttribute("memberId");
     }
 }

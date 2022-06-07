@@ -19,20 +19,14 @@ public class BasketController {
     //장바구니 생성
     @PostMapping()
     public ResponseDto createBasket(@RequestBody BasketCreateRequestDto requestDto, HttpSession session) {
-        if (session == null) {
-            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
-        }
-        Long memberId = (Long) session.getAttribute("memberId");
+        Long memberId = createSession(session);
         return basketService.createBasket(requestDto, memberId);
     }
 
     //장바구니 리스트 조회
     @GetMapping()
     public ResponseDto findBasketList(HttpSession session) {
-        if (session == null) {
-            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
-        }
-        Long memberId = (Long) session.getAttribute("memberId");
+        Long memberId = createSession(session);
         return basketService.findBasketList(memberId);
     }
 
@@ -52,5 +46,12 @@ public class BasketController {
     @DeleteMapping("/{basketId}")
     public ResponseDto deleteBasket(@PathVariable Long basketId) {
         return basketService.deleteBasket(basketId);
+    }
+
+    private Long createSession(HttpSession session) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
+        return (Long) session.getAttribute("memberId");
     }
 }

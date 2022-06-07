@@ -36,7 +36,7 @@ public class MemberServiceImpl implements MemberService {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
 
-        TokenDto tokenDto = new TokenDto(member, jwtTokenProvider.createToken(member.getUsername(), member.getRoles()));
+        TokenDto tokenDto = new TokenDto(member, jwtTokenProvider.createToken(member.getUsername(), member.getRoles(), member.getId()));
         HttpSession session = request.getSession();
         session.setAttribute("memberId", member.getId());
         session.getAttributeNames().asIterator()

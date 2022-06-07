@@ -60,27 +60,32 @@ public class BoardControllerTest {
         session.clearAttributes();
     }
 
+    private void setSession(Member member) {
+        session = new MockHttpSession();
+        session.setAttribute("memberId", member.getId());
+    }
+
+    private Member getMember() {
+        return memberRepository.save(Member.builder()
+                .account("test")
+                .password("1234")
+                .gender("M")
+                .email("test@naver.com")
+                .name("test")
+                .role("M")
+                .address("주소주소")
+                .phoneNum("01025123123")
+                .build());
+    }
+
     @Test
     @DisplayName("게시글 추가")
     void crateBoard() throws Exception {
         //given
         String title = "test";
         String content = "test 내용내용";
-
-        Member member = memberRepository.save(Member.builder()
-                .account("test")
-                .password("1234")
-                .gender("M")
-                .email("test@naver.com")
-                .name("test")
-                .role("Manager")
-                .address("주소주소")
-                .phoneNum("01025123123")
-                .build());
-
-        session = new MockHttpSession();
-
-        session.setAttribute("memberId", member.getId());
+        Member member = getMember();
+        setSession(member);
 
         //when
         String body = mapper.writeValueAsString(BoardCreateRequestDto.builder()
@@ -100,29 +105,18 @@ public class BoardControllerTest {
         assertThat(boardRepository.findAll()).isNotEmpty();
     }
 
+
     @Test
     @DisplayName("게시글 삭제")
     void deleteBoard() throws Exception {
         //given
         String title = "test";
         String content = "test 내용내용";
-
-        Member member = memberRepository.save(Member.builder()
-                .account("test")
-                .password("1234")
-                .gender("M")
-                .email("test@naver.com")
-                .name("test")
-                .role("Manager")
-                .address("주소주소")
-                .phoneNum("01025123123")
-                .build());
-
-        session = new MockHttpSession();
-
-        session.setAttribute("memberId", member.getId());
+        Member member = getMember();
+        setSession(member);
 
         Board board = boardRepository.save(Board.builder()
+                .member(member)
                 .title(title)
                 .content(content)
                 .build());
@@ -136,25 +130,14 @@ public class BoardControllerTest {
         assertThat(boardRepository.findAll()).isEmpty();
     }
 
+
     @Transactional
     @Test
     @DisplayName("게시글 수정")
     void updateBoard() throws Exception {
         //given
-        Member member = memberRepository.save(Member.builder()
-                .account("test")
-                .password("1234")
-                .gender("M")
-                .email("test@naver.com")
-                .name("test")
-                .role("Manager")
-                .address("주소주소")
-                .phoneNum("01025123123")
-                .build());
-
-        session = new MockHttpSession();
-
-        session.setAttribute("memberId", member.getId());
+        Member member = getMember();
+        setSession(member);
 
         String title = "test";
         String content = "test 내용내용";
@@ -188,21 +171,10 @@ public class BoardControllerTest {
     @Test
     @DisplayName("게시글 리스트 조회")
     void findAllBoard() throws Exception {
+        //given
+        Member member = getMember();
+        setSession(member);
 
-        Member member = memberRepository.save(Member.builder()
-                .account("test")
-                .password("1234")
-                .gender("M")
-                .email("test@naver.com")
-                .name("test")
-                .role("Manager")
-                .address("주소주소")
-                .phoneNum("01025123123")
-                .build());
-
-        session = new MockHttpSession();
-
-        session.setAttribute("memberId", member.getId());
         boardRepository.save(Board.builder()
                 .member(member)
                 .title("test1")
@@ -215,9 +187,12 @@ public class BoardControllerTest {
                 .content("내용2")
                 .build());
 
+        //when
         mvc.perform(get("/board")
                         .session(session))
                 .andExpect(status().isOk())
+
+        //then
                 .andExpect(jsonPath("$.data.length()", equalTo(2)));
 
     }
@@ -225,31 +200,21 @@ public class BoardControllerTest {
     @Test
     @DisplayName("게시글조회")
     void findBoardById() throws Exception {
-
-        Member member = memberRepository.save(Member.builder()
-                .account("test")
-                .password("1234")
-                .gender("M")
-                .email("test@naver.com")
-                .name("test")
-                .role("Manager")
-                .address("주소주소")
-                .phoneNum("01025123123")
-                .build());
-
-        session = new MockHttpSession();
-
-        session.setAttribute("memberId", member.getId());
+        //given
+        Member member = getMember();
+        setSession(member);
         Board board = boardRepository.save(Board.builder()
                 .member(member)
                 .title("test1")
                 .content("내용")
                 .build());
 
+        //when
         mvc.perform(get("/board/"+board.getId())
                         .session(session))
                 .andExpect(status().isOk());
 
+        //then
         Assertions.assertThat(boardRepository.findById(board.getId())).isNotEmpty();
 
     }

@@ -18,9 +18,10 @@ public class GoodsFindResponseDto {
     private String brand;
     private String country;
     private String imageUrl;
+    private String seller;
 
     @Builder
-    public GoodsFindResponseDto(Long id, String category, String name, int price, int stock, String description, String brand, String country, String imageUrl) {
+    public GoodsFindResponseDto(Long id, String category, String name, int price, int stock, String description, String brand, String country, String imageUrl, String seller) {
         this.id = id;
         this.category = category;
         this.name = name;
@@ -30,6 +31,7 @@ public class GoodsFindResponseDto {
         this.brand = brand;
         this.country = country;
         this.imageUrl = imageUrl;
+        this.seller = seller;
     }
 
     public static GoodsFindResponseDto toResponseDto(Goods entity) {
@@ -43,6 +45,7 @@ public class GoodsFindResponseDto {
                 .brand(entity.getBrand())
                 .country(entity.getCountry())
                 .imageUrl(entity.getImageUrl())
+                .seller(entity.getMember().getName())
                 .build();
     }
 }

@@ -14,6 +14,7 @@ import shoppingmall.core.web.dto.order.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public ResponseDto createOrder(Long memberId, OrderCreateRequestDto requestDto) {
+
         Member member = checkValidMember(memberId);
         Goods goods = goodsRepository.findByGoodsId(requestDto.getGoods_id());
         Order order = requestDto.toEntity();
@@ -44,7 +46,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public ResponseDto deleteOrder(Long memberId, Long orderId) {
         checkValidMember(memberId);
-        checkValidOrder(orderId);
+        Order order = checkValidOrder(orderId);
+        if (!Objects.equals(order.getMember().getId(), memberId)) {
+            return new ResponseDto("FAIL", "권한이 없습니다..");
+        }
 
         orderRepository.deleteById(orderId);
         return new ResponseDto("SUCCESS");
@@ -53,9 +58,16 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public ResponseDto updateOrder(Long memberId, Long orderId, OrderUpdateRequestDto requestDto) {
+
         checkValidMember(memberId);
         Order order = checkValidOrder(orderId);
         checkValidGoods(order.getGoods().getId());
+
+
+        if (!Objects.equals(order.getMember().getId(), memberId)) {
+            return new ResponseDto("FAIL", "권한이 없습니다..");
+        }
+
         Goods goods = goodsRepository.findByGoodsId(requestDto.getGoods_id());
         order.update(goods, requestDto.getRequest(), requestDto.getPayment());
 

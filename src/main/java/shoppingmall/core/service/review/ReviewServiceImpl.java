@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.Goods.GoodsRepository;
+import shoppingmall.core.domain.member.Member;
+import shoppingmall.core.domain.member.MemberRepository;
 import shoppingmall.core.domain.review.Review;
 import shoppingmall.core.domain.review.ReviewRepository;
+import shoppingmall.core.service.member.MemberService;
 import shoppingmall.core.service.storage.StorageService;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.review.*;
@@ -15,6 +18,7 @@ import shoppingmall.core.web.dto.review.*;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -24,15 +28,19 @@ public class ReviewServiceImpl implements ReviewService {
     private final GoodsRepository goodsRepository;
     private final ReviewRepository reviewRepository;
     private final StorageService storageService;
+    private final MemberRepository memberRepository;
 
 
     @Transactional
     @Override
-    public ResponseDto createReview(Long goodsId, ReviewCreateRequestDto requestDto, MultipartFile file) throws Exception{
+    public ResponseDto createReview(Long goodsId, ReviewCreateRequestDto requestDto, MultipartFile file, Long memberId) throws Exception{
 
+        Member member = checkValidMemberId(memberId);
         Goods goods = checkValidGoodsId(goodsId);
+
         Review review = requestDto.toEntity();
         review.setGoods(goods);
+        review.setMember(member);
 
         Review savedReview = reviewRepository.save(review);
 
@@ -46,10 +54,15 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Transactional
     @Override
-    public ResponseDto updateReview(Long goodsId, Long reviewId, ReviewUpdateRequestDto requestDto, MultipartFile file) throws Exception {
+    public ResponseDto updateReview(Long goodsId, Long reviewId, ReviewUpdateRequestDto requestDto, MultipartFile file, Long memberId) throws Exception {
+
+        Member member = checkValidMemberId(memberId);
         checkValidGoodsId(goodsId);
         Review review = checkValidReview(reviewId);
 
+        if (!Objects.equals(review.getMember().getId(), memberId) && !Objects.equals(member.getRole(), "M")) {
+            return new ResponseDto("FAIL", "권한이 없습니다..");
+        }
         review.updateReview(requestDto.getContent());
 
         if(review.getImageUrl() != null) {
@@ -68,9 +81,15 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Transactional
     @Override
-    public ResponseDto deleteReview(Long goodsId, Long reviewId) throws Exception{
+    public ResponseDto deleteReview(Long goodsId, Long reviewId, Long memberId) throws Exception{
+
+        Member member = checkValidMemberId(memberId);
         checkValidGoodsId(goodsId);
         Review review = checkValidReview(reviewId);
+
+        if (!Objects.equals(review.getMember().getId(), memberId) && !Objects.equals(member.getRole(), "M")) {
+            return new ResponseDto("FAIL", "권한이 없습니다..");
+        }
 
         if(review.getImageUrl() != null) {
             if (storageService.delete(review.getImageUrl())) {
@@ -123,6 +142,10 @@ public class ReviewServiceImpl implements ReviewService {
     private Review checkValidReview(Long reviewId) {
         return reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다."));
+    }
+
+    private Member checkValidMemberId(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(()-> new IllegalArgumentException(" 존재하지 않는 유저입니다. "));
     }
 
 }

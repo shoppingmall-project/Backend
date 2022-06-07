@@ -9,9 +9,9 @@ import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.review.ReviewCreateRequestDto;
 import shoppingmall.core.web.dto.review.ReviewUpdateRequestDto;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/goods/{goodsId}/review")
@@ -23,8 +23,9 @@ public class ReviewController {
     //댓글 생성
     @PostMapping()
     public ResponseDto createReview(@PathVariable Long goodsId, @ModelAttribute ReviewCreateRequestDto requestDto,
-                                     @RequestParam(value = "file", required = false) MultipartFile file) throws Exception{
-        return reviewService.createReview(goodsId, requestDto, file);
+                                     @RequestParam(value = "file", required = false) MultipartFile file, HttpSession session) throws Exception{
+        Long memberId = createSession(session);
+        return reviewService.createReview(goodsId, requestDto, file, memberId);
     }
 
     //댓글 리스트 조회
@@ -41,15 +42,25 @@ public class ReviewController {
 
     //댓글 삭제
     @DeleteMapping("/{reviewId}")
-    public ResponseDto deleteReview(@PathVariable Long goodsId, @PathVariable Long reviewId) throws Exception {
-        return reviewService.deleteReview(goodsId, reviewId);
+    public ResponseDto deleteReview(@PathVariable Long goodsId, @PathVariable Long reviewId, HttpSession session) throws Exception {
+        Long memberId = createSession(session);
+        return reviewService.deleteReview(goodsId, reviewId, memberId);
     }
 
     //댓글 수정
     @PutMapping("/{reviewId}")
     public ResponseDto updateReview(@PathVariable Long goodsId, @PathVariable Long reviewId,
-                                     @Valid @ModelAttribute ReviewUpdateRequestDto requestDto,
-                                     @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
-        return reviewService.updateReview(goodsId, reviewId, requestDto, file);
+                                    @Valid @ModelAttribute ReviewUpdateRequestDto requestDto,
+                                    @RequestParam(value = "file", required = false) MultipartFile file,
+                                    HttpSession session) throws Exception {
+        Long memberId = createSession(session);
+        return reviewService.updateReview(goodsId, reviewId, requestDto, file, memberId);
+    }
+
+    private Long createSession(HttpSession session) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
+        return (Long) session.getAttribute("memberId");
     }
 }

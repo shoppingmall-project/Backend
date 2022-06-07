@@ -6,13 +6,13 @@ import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.goods.GoodsUpdateRequestDto;
 
 public interface GoodsService {
-    ResponseDto createGoods(GoodsCreateRequestDto requestDto, MultipartFile file) throws Exception;
+    ResponseDto createGoods(GoodsCreateRequestDto requestDto, MultipartFile file, Long memberId) throws Exception;
 
-    ResponseDto deleteGoods(Long id) throws Exception;
+    ResponseDto deleteGoods(Long goodsId, Long memberId) throws Exception;
 
-    ResponseDto updateGoods(Long id, GoodsUpdateRequestDto requestDto, MultipartFile file) throws Exception;
+    ResponseDto updateGoods(Long goodsId, GoodsUpdateRequestDto requestDto, MultipartFile file, Long memberId) throws Exception;
 
     ResponseDto findGoodsList();
 
-    ResponseDto findGoodsById(Long id);
+    ResponseDto findGoodsById(Long goodsId);
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shoppingmall.core.domain.BaseTimeEntity;
 import shoppingmall.core.domain.Goods.Goods;
+import shoppingmall.core.domain.member.Member;
 
 import javax.persistence.*;
 
@@ -22,8 +23,9 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name = "goods_id")
     private Goods goods;
 
-    @Column(length = 30, nullable = false)
-    private String author;
+    @OneToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(length = 200, nullable = false)
     private String content;
@@ -32,12 +34,16 @@ public class Review extends BaseTimeEntity {
     private String imageUrl;
 
     @Builder
-    public Review(Long id, Goods goods, String author, String content, String imageUrl) {
+    public Review(Long id, Goods goods, Member member, String content, String imageUrl) {
         this.id = id;
         this.goods = goods;
-        this.author = author;
+        this.member = member;
         this.content = content;
         this.imageUrl = imageUrl;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 
     public void setGoods(Goods goods) {

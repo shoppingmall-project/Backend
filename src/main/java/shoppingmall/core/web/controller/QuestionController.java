@@ -20,27 +20,23 @@ public class QuestionController {
 
     @PostMapping()
     public ResponseDto createQuestion(@RequestBody QuestionCreateRequestDto requestDto, HttpSession session) {
-        if (session == null) {
-            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
-        }
-        Long memberId = (Long) session.getAttribute("memberId");
+        Long memberId = createSession(session);
         return questionService.createQuestion(requestDto, memberId);
     }
 
     @PutMapping("/{questionId}")
     public ResponseDto updateQuestion(@PathVariable Long questionId, @RequestBody QuestionUpdateRequestDto requestDto, HttpSession session) {
-        if (session == null) {
-            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
-        }
-        Long memberId = (Long) session.getAttribute("memberId");
+        Long memberId = createSession(session);
         return questionService.updateQuestion(questionId, requestDto, memberId);
     }
 
     @DeleteMapping("/{questionId}")
-    public ResponseDto deleteQuestion(@PathVariable Long questionId) {
-        return questionService.deleteQuestion(questionId);
+    public ResponseDto deleteQuestion(@PathVariable Long questionId, HttpSession session) {
+        Long memberId = createSession(session);
+        return questionService.deleteQuestion(questionId, memberId);
     }
 
+    // 비밀글 여부 여기서 나타내면 될지도
     @GetMapping("/{questionId}")
     public ResponseDto findQuestionById(@PathVariable Long questionId) {
         return questionService.findQuestionById(questionId);
@@ -49,5 +45,12 @@ public class QuestionController {
     @GetMapping()
     public ResponseDto findQuestionList() {
         return questionService.findQuestionList();
+    }
+
+    private Long createSession(HttpSession session) {
+        if (session == null) {
+            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
+        }
+        return (Long) session.getAttribute("memberId");
     }
 }

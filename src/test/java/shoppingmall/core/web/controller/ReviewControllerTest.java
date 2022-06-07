@@ -8,13 +8,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.Goods.GoodsRepository;
+import shoppingmall.core.domain.member.Member;
+import shoppingmall.core.domain.member.MemberRepository;
 import shoppingmall.core.domain.review.Review;
 import shoppingmall.core.domain.review.ReviewRepository;
 import shoppingmall.core.web.dto.review.ReviewUpdateRequestDto;
 
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,17 +43,40 @@ public class ReviewControllerTest {
     @Autowired
     GoodsRepository goodsRepository;
 
+    @Autowired
+    MemberRepository memberRepository;
+
+    protected MockHttpSession session;
+
     @AfterEach
     void cleanup() {
         goodsRepository.deleteAll();
         reviewRepository.deleteAll();
+        memberRepository.deleteAll();
+        session.clearAttributes();
     }
 
-    @Test
-    @DisplayName("리뷰 생성")
-    void createReview() throws Exception {
-        //given
-        Goods goods = goodsRepository.save(Goods.builder()
+    private void setSession(Member member) {
+        session = new MockHttpSession();
+        session.setAttribute("memberId", member.getId());
+    }
+
+    private Member getMember() {
+        return memberRepository.save(Member.builder()
+                .account("test")
+                .password("1234")
+                .gender("M")
+                .email("test@naver.com")
+                .name("test")
+                .role("Manager")
+                .address("주소주소")
+                .phoneNum("01025123123")
+                .build());
+    }
+
+    private Goods getGoods(Member member) {
+        return goodsRepository.save(Goods.builder()
+                .member(member)
                 .category("wine")
                 .name("test_wine")
                 .price(30000)
@@ -58,25 +85,20 @@ public class ReviewControllerTest {
                 .brand("ASD")
                 .country("Korea")
                 .build());
+    }
 
-        String author = "writer";
+    @Test
+    @DisplayName("리뷰 생성")
+    void createReview() throws Exception {
+        //given
+        Member member = getMember();
+        setSession(member);
+        Goods goods = getGoods(member);
         String content = "asdasdasd";
 
         //when
-//        ## JSON 형식일 때 데이터 보내는 방법
-//        String body = mapper.writeValueAsString(reviewCreateRequestDto.builder()
-//                .author(author)
-//                .content(content)
-//                .build());
-//
-//        mvc.perform(post("/board/" +goods.getId()+ "/review")
-//                        .content(body)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                )
-//                .andExpect(status().isOk());
-
         mvc.perform(post("/goods/" + goods.getId() + "/review")
-                        .param("author", author)
+                        .session(session)
                         .param("content", content))
                 .andExpect(status().isOk());
 
@@ -89,27 +111,19 @@ public class ReviewControllerTest {
     @DisplayName("리뷰 삭제")
     void deleteReview() throws Exception {
         //given
-        Goods goods = goodsRepository.save(Goods.builder()
-                .category("wine")
-                .name("test_wine")
-                .price(30000)
-                .stock(234)
-                .description("Test용")
-                .brand("ASD")
-                .country("Korea")
-                .build());
-
-        String author = "writer";
+        Member member = getMember();
+        setSession(member);
+        Goods goods = getGoods(member);
         String content = "asdasdasd";
-
         Review review = reviewRepository.save(Review.builder()
+                .member(member)
                 .goods(goods)
-                .author(author)
                 .content(content)
                 .build());
 
         //when
         mvc.perform(delete("/goods/" +goods.getId()+ "/review/" +review.getId())
+                        .session(session)
                 )
                 .andExpect(status().isOk());
 
@@ -123,20 +137,12 @@ public class ReviewControllerTest {
     @DisplayName("리뷰 수정")
     void updateReview() throws Exception {
         //given
-        Goods goods = goodsRepository.save(Goods.builder()
-                .category("wine")
-                .name("test_wine")
-                .price(30000)
-                .stock(234)
-                .description("Test용")
-                .brand("ASD")
-                .country("Korea")
-                .build());
-
-
+        Member member = getMember();
+        setSession(member);
+        Goods goods = getGoods(member);
         Review review = reviewRepository.save(Review.builder()
+                .member(member)
                 .goods(goods)
-                .author("writer")
                 .content("asdasdasd")
                 .build());
 
@@ -147,6 +153,7 @@ public class ReviewControllerTest {
         );
 
         mvc.perform(put("/goods/" + goods.getId() + "/review/" + review.getId())
+                        .session(session)
                         .param("content", "new_content"))
                 .andExpect(status().isOk());
 
@@ -159,25 +166,19 @@ public class ReviewControllerTest {
     @DisplayName("리뷰 리스트 조회")
     void findReviewList() throws Exception {
         //given
-        Goods goods = goodsRepository.save(Goods.builder()
-                .category("wine")
-                .name("test_wine")
-                .price(30000)
-                .stock(234)
-                .description("Test용")
-                .brand("ASD")
-                .country("Korea")
-                .build());
+        Member member = getMember();
+        setSession(member);
+        Goods goods = getGoods(member);
 
-        Review review1 = reviewRepository.save(Review.builder()
+        reviewRepository.save(Review.builder()
+                .member(member)
                 .goods(goods)
-                .author("author")
                 .content("content")
                 .build());
 
-        Review review2 = reviewRepository.save(Review.builder()
+        reviewRepository.save(Review.builder()
+                .member(member)
                 .goods(goods)
-                .author("author2")
                 .content("content2")
                 .build());
 
@@ -187,22 +188,15 @@ public class ReviewControllerTest {
     }
 
     @Test
-    @DisplayName("댓글 조회")
+    @DisplayName("리뷰 조회")
     void findReviewById() throws Exception {
         //given
-        Goods goods = goodsRepository.save(Goods.builder()
-                .category("wine")
-                .name("test_wine")
-                .price(30000)
-                .stock(234)
-                .description("Test용")
-                .brand("ASD")
-                .country("Korea")
-                .build());
-
+        Member member = getMember();
+        setSession(member);
+        Goods goods = getGoods(member);
         Review review = reviewRepository.save(Review.builder()
+                .member(member)
                 .goods(goods)
-                .author("author")
                 .content("content")
                 .build());
 
@@ -213,30 +207,23 @@ public class ReviewControllerTest {
     }
 
     @Test
-    @DisplayName("게시글 삭제시 댓글 삭제 여부")
+    @DisplayName("게시글 삭제시 리뷰 삭제 여부")
     void deleteReviewWhenDeletegoods() throws Exception {
         //given
-        Goods goods = goodsRepository.save(Goods.builder()
-                .category("wine")
-                .name("test_wine")
-                .price(30000)
-                .stock(234)
-                .description("Test용")
-                .brand("ASD")
-                .country("Korea")
-                .build());
-
-        String author = "writer";
+        Member member = getMember();
+        session = new MockHttpSession();
+        session.setAttribute("memberId", member.getId());
+        Goods goods = getGoods(member);
         String content = "asdasdasd";
-
-        Review review = reviewRepository.save(Review.builder()
+        reviewRepository.save(Review.builder()
+                .member(member)
                 .goods(goods)
-                .author(author)
                 .content(content)
                 .build());
 
         //when
         mvc.perform(delete("/goods/" +goods.getId())
+                        .session(session)
                 )
                 .andExpect(status().isOk());
 

@@ -58,12 +58,13 @@ public class OrderControllerTest {
         session.clearAttributes();
     }
 
-    @Test
-    @Transactional
-    @DisplayName("주문 추가")
-    void crateOrder() throws Exception {
-        //given
-        Member member = memberRepository.save(Member.builder()
+    private void setSession(Member member) {
+        session = new MockHttpSession();
+        session.setAttribute("memberId", member.getId());
+    }
+
+    private Member getMember() {
+        return memberRepository.save(Member.builder()
                 .account("test")
                 .password("1234")
                 .gender("M")
@@ -73,22 +74,29 @@ public class OrderControllerTest {
                 .address("주소주소")
                 .phoneNum("01025123123")
                 .build());
+    }
 
-
-        session = new MockHttpSession();
-
-        session.setAttribute("memberId", member.getId());
-
-        Goods goods = goodsRepository.save(Goods.builder()
+    private Goods getGoods(Member member) {
+        return goodsRepository.save(Goods.builder()
+                .member(member)
                 .category("wine")
                 .name("test_wine")
-                .price(50)
-                .stock(50)
+                .price(30000)
+                .stock(234)
                 .description("Test용")
                 .brand("ASD")
                 .country("Korea")
                 .build());
+    }
 
+    @Test
+    @Transactional
+    @DisplayName("주문 추가")
+    void crateOrder() throws Exception {
+        //given
+        Member member = getMember();
+        setSession(member);
+        Goods goods = getGoods(member);
 
         //when
         String body = mapper.writeValueAsString(OrderCreateRequestDto.builder()
@@ -113,31 +121,9 @@ public class OrderControllerTest {
     @DisplayName("주문 삭제")
     void deleteOrder() throws Exception {
         //given
-        Member member = memberRepository.save(Member.builder()
-                .account("test")
-                .password("1234")
-                .gender("M")
-                .email("test@naver.com")
-                .name("test")
-                .role("Manager")
-                .address("주소주소")
-                .phoneNum("01025123123")
-                .build());
-
-        session = new MockHttpSession();
-
-        session.setAttribute("memberId", member.getId());
-
-        Goods goods = goodsRepository.save(Goods.builder()
-                .category("wine")
-                .name("test_wine")
-                .price(50)
-                .stock(50)
-                .description("Test용")
-                .brand("ASD")
-                .country("Korea")
-                .build());
-
+        Member member = getMember();
+        setSession(member);
+        Goods goods = getGoods(member);
         Order order = orderRepository.save(Order.builder()
                 .member(member)
                 .goods(goods)
@@ -159,31 +145,9 @@ public class OrderControllerTest {
     @DisplayName("주문 수정")
     void updateOrder() throws Exception {
         //given
-        Member member = memberRepository.save(Member.builder()
-                .account("test")
-                .password("1234")
-                .gender("M")
-                .email("test@naver.com")
-                .name("test")
-                .role("Manager")
-                .address("주소주소")
-                .phoneNum("01025123123")
-                .build());
-
-        session = new MockHttpSession();
-
-        session.setAttribute("memberId", member.getId());
-
-        Goods goods = goodsRepository.save(Goods.builder()
-                .category("wine")
-                .name("test_wine")
-                .price(50)
-                .stock(50)
-                .description("Test용")
-                .brand("ASD")
-                .country("Korea")
-                .build());
-
+        Member member = getMember();
+        setSession(member);
+        Goods goods = getGoods(member);
         Order order = orderRepository.save(Order.builder()
                 .member(member)
                 .goods(goods)
@@ -213,30 +177,9 @@ public class OrderControllerTest {
     @DisplayName("주문 리스트 조회")
     void findAllOrder() throws Exception {
         //given
-        Member member = memberRepository.save(Member.builder()
-                .account("test")
-                .password("1234")
-                .gender("M")
-                .email("test@naver.com")
-                .name("test")
-                .role("Manager")
-                .address("주소주소")
-                .phoneNum("01025123123")
-                .build());
-
-        session = new MockHttpSession();
-
-        session.setAttribute("memberId", member.getId());
-
-        Goods goods = goodsRepository.save(Goods.builder()
-                .category("wine")
-                .name("test_wine")
-                .price(50)
-                .stock(50)
-                .description("Test용")
-                .brand("ASD")
-                .country("Korea")
-                .build());
+        Member member = getMember();
+        setSession(member);
+        Goods goods = getGoods(member);
 
         orderRepository.save(Order.builder()
                 .member(member)
@@ -251,9 +194,12 @@ public class OrderControllerTest {
                 .payment(2)
                 .build());
 
+        //when
         mvc.perform(get("/order")
                         .session(session))
                 .andExpect(status().isOk())
+
+        //then
                 .andExpect(jsonPath("$.data.length()", equalTo(2)));
 
     }
@@ -263,31 +209,9 @@ public class OrderControllerTest {
     @DisplayName("주문 조회")
     void findOrderById() throws Exception {
         //given
-        Member member = memberRepository.save(Member.builder()
-                .account("test")
-                .password("1234")
-                .gender("M")
-                .email("test@naver.com")
-                .name("test")
-                .role("Manager")
-                .address("주소주소")
-                .phoneNum("01025123123")
-                .build());
-
-        session = new MockHttpSession();
-
-        session.setAttribute("memberId", member.getId());
-
-        Goods goods = goodsRepository.save(Goods.builder()
-                .category("wine")
-                .name("test_wine")
-                .price(50)
-                .stock(50)
-                .description("Test용")
-                .brand("ASD")
-                .country("Korea")
-                .build());
-
+        Member member = getMember();
+        setSession(member);
+        Goods goods = getGoods(member);
         Order order = orderRepository.save(Order.builder()
                 .member(member)
                 .goods(goods)
@@ -295,10 +219,12 @@ public class OrderControllerTest {
                 .payment(2)
                 .build());
 
+        //when
         mvc.perform(get("/order/"+order.getId())
                         .session(session))
                 .andExpect(status().isOk());
 
+        //then
         Assertions.assertThat(orderRepository.findById(order.getId())).isNotEmpty();
 
     }

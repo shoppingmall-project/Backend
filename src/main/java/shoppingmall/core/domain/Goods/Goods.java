@@ -3,6 +3,7 @@ package shoppingmall.core.domain.Goods;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shoppingmall.core.domain.member.Member;
 
 import javax.persistence.*;
 
@@ -14,6 +15,10 @@ public class Goods {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "member_Id")
+    private Member member;
 
     @Column(length = 30, nullable = false)
     private String category;
@@ -40,8 +45,9 @@ public class Goods {
     private String imageUrl;
 
     @Builder
-    public Goods(Long id, String category, String name, int price, int stock, String description, String brand, String country, String imageUrl) {
+    public Goods(Long id, Member member, String category, String name, int price, int stock, String description, String brand, String country, String imageUrl) {
         this.id = id;
+        this.member = member;
         this.category = category;
         this.name = name;
         this.price = price;
@@ -60,6 +66,10 @@ public class Goods {
         this.description = description;
         this.brand = brand;
         this.country = country;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 
     public void updateUrl(String imageUrl) {

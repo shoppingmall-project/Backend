@@ -11,7 +11,7 @@ public interface QuestionService {
 
     ResponseDto updateQuestion(Long questionId, QuestionUpdateRequestDto requestDto, Long memberId);
 
-    ResponseDto deleteQuestion(Long questionId);
+    ResponseDto deleteQuestion(Long questionId, Long memberId);
 
     ResponseDto findQuestionById(Long questionId);
 

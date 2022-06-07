@@ -62,26 +62,27 @@ public class BasketControllerTest {
         session.clearAttributes();
     }
 
-    @Test
-    @DisplayName("장바구니 추가")
-    void crateBasket() throws Exception {
-        //given
-        Member member = memberRepository.save(Member.builder()
+    private void setSession(Member member) {
+        session = new MockHttpSession();
+        session.setAttribute("memberId", member.getId());
+    }
+
+    private Member getMember() {
+        return memberRepository.save(Member.builder()
                 .account("test")
                 .password("1234")
                 .gender("M")
                 .email("test@naver.com")
                 .name("test")
-                .role("Manager")
+                .role("M")
                 .address("주소주소")
                 .phoneNum("01025123123")
                 .build());
+    }
 
-        session = new MockHttpSession();
-
-        session.setAttribute("memberId", member.getId());
-
-        Goods goods = goodsRepository.save(Goods.builder()
+    private Goods getGoods(Member member) {
+        return goodsRepository.save(Goods.builder()
+                .member(member)
                 .category("wine")
                 .name("test_wine")
                 .price(30000)
@@ -90,17 +91,23 @@ public class BasketControllerTest {
                 .brand("ASD")
                 .country("Korea")
                 .build());
+    }
 
-        int count = 5;
+
+    @Test
+    @DisplayName("장바구니 추가")
+    void crateBasket() throws Exception {
+        //given
+        Member member = getMember();
+        setSession(member);
+        Goods goods = getGoods(member);
 
         //when
         String body = mapper.writeValueAsString(BasketCreateRequestDto.builder()
                 .goods_id(goods.getId())
-                .count(count)
+                .count(5)
                 .build());
 
-
-        //then
         mvc.perform(post("/basket")
                         .session(session)
                         .content(body)
@@ -108,6 +115,7 @@ public class BasketControllerTest {
                 )
                 .andExpect(status().isOk());
 
+        //then
         assertThat(basketRepository.findAll()).isNotEmpty();
     }
 
@@ -115,37 +123,14 @@ public class BasketControllerTest {
     @DisplayName("장바구니 삭제")
     void deleteBasket() throws Exception {
         //given
-        Member member = memberRepository.save(Member.builder()
-                .account("test")
-                .password("1234")
-                .gender("M")
-                .email("test@naver.com")
-                .name("test")
-                .role("Manager")
-                .address("주소주소")
-                .phoneNum("01025123123")
-                .build());
-
-        session = new MockHttpSession();
-
-        session.setAttribute("memberId", member.getId());
-
-        Goods goods = goodsRepository.save(Goods.builder()
-                .category("wine")
-                .name("test_wine")
-                .price(30000)
-                .stock(234)
-                .description("Test용")
-                .brand("ASD")
-                .country("Korea")
-                .build());
-
-        int count = 4;
+        Member member = getMember();
+        setSession(member);
+        Goods goods = getGoods(member);
 
         Basket basket = basketRepository.save(Basket.builder()
                 .member(member)
                 .goods(goods)
-                .count(count).build());
+                .count(4).build());
 
         //when
         mvc.perform(delete("/basket/"+basket.getId()))
@@ -160,31 +145,9 @@ public class BasketControllerTest {
     @DisplayName("장바구니 수정")
     void updateBasket() throws Exception {
         //given
-        Member member = memberRepository.save(Member.builder()
-                .account("test")
-                .password("1234")
-                .gender("M")
-                .email("test@naver.com")
-                .name("test")
-                .role("Manager")
-                .address("주소주소")
-                .phoneNum("01025123123")
-                .build());
-
-
-        session = new MockHttpSession();
-
-        session.setAttribute("memberId", member.getId());
-
-        Goods goods = goodsRepository.save(Goods.builder()
-                .category("wine")
-                .name("test_wine")
-                .price(30000)
-                .stock(234)
-                .description("Test용")
-                .brand("ASD")
-                .country("Korea")
-                .build());
+        Member member = getMember();
+        setSession(member);
+        Goods goods = getGoods(member);
 
         Basket basket = basketRepository.save(Basket.builder()
                 .member(member)
@@ -192,12 +155,9 @@ public class BasketControllerTest {
                 .count(10)
                 .build());
 
-        int count = 4;
-
-
         //when
         String body = mapper.writeValueAsString(BasketUpdateReqeustDto.builder()
-                .count(count)
+                .count(4)
                 .build());
 
         mvc.perform(put("/basket/"+basket.getId())
@@ -205,7 +165,7 @@ public class BasketControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        //when
+        //then
         assertThat(basketRepository.findAll()).isNotEmpty();
         assertThat(basket.getCount()).isEqualTo(4);
 
@@ -215,30 +175,9 @@ public class BasketControllerTest {
     @DisplayName("장바구니 리스트 조회")
     void findAllBasket() throws Exception {
         //given
-        Member member = memberRepository.save(Member.builder()
-                .account("test")
-                .password("1234")
-                .gender("M")
-                .email("test@naver.com")
-                .name("test")
-                .role("Manager")
-                .address("주소주소")
-                .phoneNum("01025123123")
-                .build());
-
-        session = new MockHttpSession();
-
-        session.setAttribute("memberId", member.getId());
-
-        Goods goods = goodsRepository.save(Goods.builder()
-                .category("wine")
-                .name("test_wine")
-                .price(30000)
-                .stock(234)
-                .description("Test")
-                .brand("ASD")
-                .country("Korea")
-                .build());
+        Member member = getMember();
+        setSession(member);
+        Goods goods = getGoods(member);
 
         basketRepository.save(Basket.builder()
                 .member(member)
@@ -252,9 +191,12 @@ public class BasketControllerTest {
                 .count(5)
                 .build());
 
+        //when
         mvc.perform(get("/basket")
                         .session(session))
                 .andExpect(status().isOk())
+
+        //then
                 .andExpect(jsonPath("$.data.length()", equalTo(2)));
 
     }
@@ -264,41 +206,20 @@ public class BasketControllerTest {
     @DisplayName("장바구니 조회")
     void findBasketById() throws Exception {
         //given
-        Member member = memberRepository.save(Member.builder()
-                .account("test")
-                .password("1234")
-                .gender("M")
-                .email("test@naver.com")
-                .name("test")
-                .role("Manager")
-                .address("주소주소")
-                .phoneNum("01025123123")
-                .build());
-
-
-        session = new MockHttpSession();
-
-        session.setAttribute("memberId", member.getId());
-        
-        Goods goods = goodsRepository.save(Goods.builder()
-                .category("wine")
-                .name("test_wine")
-                .price(30000)
-                .stock(234)
-                .description("Test용")
-                .brand("ASD")
-                .country("Korea")
-                .build());
-
+        Member member = getMember();
+        setSession(member);
+        Goods goods = getGoods(member);
         Basket basket = basketRepository.save(Basket.builder()
                 .member(member)
                 .goods(goods)
                 .count(1)
                 .build());
 
+        //when
         mvc.perform(get("/basket/"+basket.getId()))
                 .andExpect(status().isOk());
 
+        //then
         Assertions.assertThat(basketRepository.findById(basket.getId())).isNotEmpty();
 
     }
