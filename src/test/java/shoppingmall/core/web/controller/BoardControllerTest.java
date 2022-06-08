@@ -1,7 +1,11 @@
 package shoppingmall.core.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,19 +13,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import shoppingmall.core.domain.board.Board;
 import shoppingmall.core.domain.board.BoardRepository;
 import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.domain.member.MemberRepository;
+import shoppingmall.core.web.dto.LoginRequestDto;
 import shoppingmall.core.web.dto.board.BoardCreateRequestDto;
 import shoppingmall.core.web.dto.board.BoardUpdateRequestDto;
 
 import javax.transaction.Transactional;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -30,6 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
 public class BoardControllerTest {
@@ -47,7 +54,8 @@ public class BoardControllerTest {
     @Autowired
     MemberRepository memberRepository;
 
-    protected MockHttpSession session;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @BeforeEach
     public void session() {
@@ -57,18 +65,12 @@ public class BoardControllerTest {
     void cleanup() {
         memberRepository.deleteAll();
         boardRepository.deleteAll();
-        session.clearAttributes();
     }
 
-    private void setSession(Member member) {
-        session = new MockHttpSession();
-        session.setAttribute("memberId", member.getId());
-    }
-
-    private Member getMember() {
+    private Member getMember(){
         return memberRepository.save(Member.builder()
                 .account("test")
-                .password("1234")
+                .password(passwordEncoder.encode("1234"))
                 .gender("M")
                 .email("test@naver.com")
                 .name("test")
@@ -76,6 +78,30 @@ public class BoardControllerTest {
                 .address("주소주소")
                 .phoneNum("01025123123")
                 .build());
+
+    }
+    private String getAccessToken() throws Exception {
+        String username = "test";
+        String password = "1234";
+
+        String body = mapper.writeValueAsString(LoginRequestDto.builder()
+                .account(username)
+                .password(password)
+                .build()
+        );
+
+        ResultActions perform = this.mvc.perform(post("/auth/login")
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        var responseBody = perform.andReturn().getResponse().getContentAsString();
+        System.out.println("responseBody = " + responseBody);
+
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObj = (JSONObject)jsonParser.parse(responseBody);
+        JSONObject jsonArr = (JSONObject) jsonObj.get("data");
+        return (String) jsonArr.get("token");
     }
 
     @Test
@@ -85,7 +111,6 @@ public class BoardControllerTest {
         String title = "test";
         String content = "test 내용내용";
         Member member = getMember();
-        setSession(member);
 
         //when
         String body = mapper.writeValueAsString(BoardCreateRequestDto.builder()
@@ -96,7 +121,7 @@ public class BoardControllerTest {
 
         //then
         mvc.perform(post("/board")
-                        .session(session)
+                        .header("X-AUTH-TOKEN", getAccessToken())
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -113,7 +138,6 @@ public class BoardControllerTest {
         String title = "test";
         String content = "test 내용내용";
         Member member = getMember();
-        setSession(member);
 
         Board board = boardRepository.save(Board.builder()
                 .member(member)
@@ -123,7 +147,7 @@ public class BoardControllerTest {
 
         //when
         mvc.perform(delete("/board/" + board.getId())
-                        .session(session))
+                        .header("X-AUTH-TOKEN", getAccessToken()))
                 .andExpect(status().isOk());
 
         //then
@@ -137,7 +161,6 @@ public class BoardControllerTest {
     void updateBoard() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
 
         String title = "test";
         String content = "test 내용내용";
@@ -157,7 +180,7 @@ public class BoardControllerTest {
         );
 
         mvc.perform(put("/board/" + board.getId())
-                        .session(session)
+                        .header("X-AUTH-TOKEN", getAccessToken())
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -173,7 +196,6 @@ public class BoardControllerTest {
     void findAllBoard() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
 
         boardRepository.save(Board.builder()
                 .member(member)
@@ -188,8 +210,7 @@ public class BoardControllerTest {
                 .build());
 
         //when
-        mvc.perform(get("/board")
-                        .session(session))
+        mvc.perform(get("/board"))
                 .andExpect(status().isOk())
 
         //then
@@ -202,7 +223,6 @@ public class BoardControllerTest {
     void findBoardById() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
         Board board = boardRepository.save(Board.builder()
                 .member(member)
                 .title("test1")
@@ -210,8 +230,7 @@ public class BoardControllerTest {
                 .build());
 
         //when
-        mvc.perform(get("/board/"+board.getId())
-                        .session(session))
+        mvc.perform(get("/board/"+board.getId()))
                 .andExpect(status().isOk());
 
         //then

@@ -3,6 +3,8 @@ package shoppingmall.core.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,12 +13,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.Goods.GoodsRepository;
 import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.domain.member.MemberRepository;
 import shoppingmall.core.service.goods.GoodsService;
+import shoppingmall.core.web.dto.LoginRequestDto;
 import shoppingmall.core.web.dto.goods.GoodsCreateRequestDto;
 import shoppingmall.core.web.dto.goods.GoodsUpdateRequestDto;
 
@@ -32,6 +37,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class GoodsControllerTest {
 
     @Autowired
+    ObjectMapper mapper;
+
+    @Autowired
     MockMvc mvc;
 
     @Autowired
@@ -40,24 +48,19 @@ public class GoodsControllerTest {
     @Autowired
     MemberRepository memberRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @AfterEach
     void cleanup() {
         goodsRepository.deleteAll();
         memberRepository.deleteAll();
-        session.clearAttributes();
-    }
-
-    protected MockHttpSession session;
-
-    private void setSession(Member member) {
-        session = new MockHttpSession();
-        session.setAttribute("memberId", member.getId());
     }
 
     private Member getMember() {
         return memberRepository.save(Member.builder()
                 .account("test")
-                .password("1234")
+                .password(passwordEncoder.encode("1234"))
                 .gender("S")
                 .email("test@naver.com")
                 .name("test")
@@ -67,12 +70,35 @@ public class GoodsControllerTest {
                 .build());
     }
 
+    private String getAccessToken() throws Exception {
+        String username = "test";
+        String password = "1234";
+
+        String body = mapper.writeValueAsString(LoginRequestDto.builder()
+                .account(username)
+                .password(password)
+                .build()
+        );
+
+        ResultActions perform = this.mvc.perform(post("/auth/login")
+                        .content(body)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        var responseBody = perform.andReturn().getResponse().getContentAsString();
+        System.out.println("responseBody = " + responseBody);
+
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObj = (JSONObject)jsonParser.parse(responseBody);
+        JSONObject jsonArr = (JSONObject) jsonObj.get("data");
+        return (String) jsonArr.get("token");
+    }
+
     @Test
     @DisplayName("상품 추가")
     void crateGoods() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
 
         String category = "wine";
         String name = "test_wine";
@@ -85,7 +111,7 @@ public class GoodsControllerTest {
 
         //when
         mvc.perform(post("/goods/")
-                        .session(session)
+                        .header("X-AUTH-TOKEN", getAccessToken())
                         .param("category", category)
                         .param("name", name)
                         .param("price", String.valueOf(price))
@@ -104,7 +130,6 @@ public class GoodsControllerTest {
     void deleteGoods() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
 
         String category = "wine";
         String name = "test_wine";
@@ -127,7 +152,7 @@ public class GoodsControllerTest {
 
         //when
         mvc.perform(delete("/goods/" + goods.getId())
-                        .session(session))
+                        .header("X-AUTH-TOKEN", getAccessToken()))
                 .andExpect(status().isOk());
 
         //then
@@ -139,7 +164,6 @@ public class GoodsControllerTest {
     @DisplayName("상품 수정")
     void updateGoods() throws Exception {
         Member member = getMember();
-        setSession(member);
 
         //given
         String category = "wine";
@@ -163,7 +187,7 @@ public class GoodsControllerTest {
                 .build());
 
         mvc.perform(put("/goods/" + goods.getId())
-                        .session(session)
+                        .header("X-AUTH-TOKEN", getAccessToken())
                         .param("category", "wine")
                         .param("name", "new_wine")
                         .param("price", String.valueOf(price))
@@ -183,7 +207,6 @@ public class GoodsControllerTest {
     void findAllGoods() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
 
         goodsRepository.save(Goods.builder()
                 .member(member)
@@ -209,7 +232,7 @@ public class GoodsControllerTest {
 
         //when
         mvc.perform(get("/goods")
-                        .session(session))
+                        .header("X-AUTH-TOKEN", getAccessToken()))
                 .andExpect(status().isOk())
 
         //then
@@ -222,7 +245,6 @@ public class GoodsControllerTest {
     void findGoodsById() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
 
         Goods goods = goodsRepository.save(Goods.builder()
                 .member(member)
@@ -236,8 +258,7 @@ public class GoodsControllerTest {
                 .build());
 
         //when
-        mvc.perform(get("/goods/" + goods.getId())
-                        .session(session))
+        mvc.perform(get("/goods/" + goods.getId()))
                 .andExpect(status().isOk());
 
         //then

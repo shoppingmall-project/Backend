@@ -2,7 +2,9 @@ package shoppingmall.core.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.service.order.OrderService;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.order.OrderCreateRequestDto;
@@ -20,39 +22,27 @@ public class OrderController {
     OrderService orderService;
 
     @PostMapping()
-    public ResponseDto createOrder(@RequestBody OrderCreateRequestDto requestDto,  HttpSession session) {
-        Long memberId = createSession(session);
-        return orderService.createOrder(memberId, requestDto);
+    public ResponseDto createOrder(@RequestBody OrderCreateRequestDto requestDto,  @AuthenticationPrincipal Member member) {
+        return orderService.createOrder(member.getId(), requestDto);
     }
 
     @GetMapping()
-    public ResponseDto findOrderList(HttpSession session) {
-        Long memberId = createSession(session);
-        return orderService.findOrderList(memberId);
+    public ResponseDto findOrderList(@AuthenticationPrincipal Member member) {
+        return orderService.findOrderList(member.getId());
     }
 
     @GetMapping("/{orderId}")
-    public ResponseDto findOrderById(HttpSession session, @PathVariable Long orderId) {
-        Long memberId = createSession(session);
-        return orderService.findOrderById(memberId, orderId);
+    public ResponseDto findOrderById(@AuthenticationPrincipal Member member, @PathVariable Long orderId) {
+        return orderService.findOrderById(member.getId(), orderId);
     }
 
     @PutMapping("/{orderId}")
-    public ResponseDto updateOrder(HttpSession session, @PathVariable Long orderId, @RequestBody OrderUpdateRequestDto requestDto) {
-        Long memberId = createSession(session);
-        return orderService.updateOrder(memberId, orderId, requestDto);
+    public ResponseDto updateOrder(@AuthenticationPrincipal Member member, @PathVariable Long orderId, @RequestBody OrderUpdateRequestDto requestDto) {
+        return orderService.updateOrder(member.getId(), orderId, requestDto);
     }
 
     @DeleteMapping("/{orderId}")
-    public ResponseDto deleteOrder(HttpSession session, @PathVariable Long orderId) {
-        Long memberId = createSession(session);
-        return orderService.deleteOrder(memberId, orderId);
-    }
-
-    private Long createSession(HttpSession session) {
-        if (session == null) {
-            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
-        }
-        return (Long) session.getAttribute("memberId");
+    public ResponseDto deleteOrder(@AuthenticationPrincipal Member member, @PathVariable Long orderId) {
+        return orderService.deleteOrder(member.getId(), orderId);
     }
 }

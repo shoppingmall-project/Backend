@@ -2,8 +2,10 @@ package shoppingmall.core.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.service.review.ReviewService;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.review.ReviewCreateRequestDto;
@@ -24,9 +26,9 @@ public class ReviewController {
     //댓글 생성
     @PostMapping()
     public ResponseDto createReview(@PathVariable Long goodsId, @ModelAttribute ReviewCreateRequestDto requestDto,
-                                     @RequestParam(value = "file", required = false) MultipartFile file, HttpSession session) throws Exception{
-        Long memberId = createSession(session);
-        return reviewService.createReview(goodsId, requestDto, file, memberId);
+                                     @RequestParam(value = "file", required = false) MultipartFile file,
+                                    @AuthenticationPrincipal Member member) throws Exception{
+        return reviewService.createReview(goodsId, requestDto, file, member.getId());
     }
 
     //댓글 리스트 조회
@@ -43,9 +45,8 @@ public class ReviewController {
 
     //댓글 삭제
     @DeleteMapping("/{reviewId}")
-    public ResponseDto deleteReview(@PathVariable Long goodsId, @PathVariable Long reviewId, HttpSession session) throws Exception {
-        Long memberId = createSession(session);
-        return reviewService.deleteReview(goodsId, reviewId, memberId);
+    public ResponseDto deleteReview(@PathVariable Long goodsId, @PathVariable Long reviewId, @AuthenticationPrincipal Member member) throws Exception {
+        return reviewService.deleteReview(goodsId, reviewId, member.getId());
     }
 
     //댓글 수정
@@ -53,15 +54,7 @@ public class ReviewController {
     public ResponseDto updateReview(@PathVariable Long goodsId, @PathVariable Long reviewId,
                                     @Valid @ModelAttribute ReviewUpdateRequestDto requestDto,
                                     @RequestParam(value = "file", required = false) MultipartFile file,
-                                    HttpSession session) throws Exception {
-        Long memberId = createSession(session);
-        return reviewService.updateReview(goodsId, reviewId, requestDto, file, memberId);
-    }
-
-    private Long createSession(HttpSession session) {
-        if (session == null) {
-            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
-        }
-        return (Long) session.getAttribute("memberId");
+                                    @AuthenticationPrincipal Member member) throws Exception {
+        return reviewService.updateReview(goodsId, reviewId, requestDto, file, member.getId());
     }
 }

@@ -1,8 +1,10 @@
 package shoppingmall.core.web.dto;
 
-import lombok.Getter;
+import lombok.*;
 import shoppingmall.core.domain.member.Member;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class TokenDto {
 

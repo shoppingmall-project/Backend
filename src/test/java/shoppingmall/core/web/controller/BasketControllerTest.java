@@ -3,6 +3,8 @@ package shoppingmall.core.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aspectj.lang.annotation.Before;
 import org.assertj.core.api.Assertions;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +14,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.Goods.GoodsRepository;
 import shoppingmall.core.domain.member.Member;
@@ -20,6 +24,7 @@ import shoppingmall.core.domain.member.MemberRepository;
 import shoppingmall.core.domain.basket.Basket;
 import shoppingmall.core.domain.basket.BasketRepository;
 import shoppingmall.core.service.member.MemberService;
+import shoppingmall.core.web.dto.LoginRequestDto;
 import shoppingmall.core.web.dto.basket.BasketCreateRequestDto;
 import shoppingmall.core.web.dto.basket.BasketUpdateReqeustDto;
 
@@ -52,25 +57,19 @@ public class BasketControllerTest {
     @Autowired
     MemberRepository memberRepository;
 
-    protected MockHttpSession session;
-
+    @Autowired
+    PasswordEncoder passwordEncoder;
     @AfterEach
     void cleanup() {
         basketRepository.deleteAll();
         goodsRepository.deleteAll();
         memberRepository.deleteAll();
-        session.clearAttributes();
-    }
-
-    private void setSession(Member member) {
-        session = new MockHttpSession();
-        session.setAttribute("memberId", member.getId());
     }
 
     private Member getMember() {
         return memberRepository.save(Member.builder()
                 .account("test")
-                .password("1234")
+                .password(passwordEncoder.encode("1234"))
                 .gender("M")
                 .email("test@naver.com")
                 .name("test")
@@ -93,13 +92,37 @@ public class BasketControllerTest {
                 .build());
     }
 
+    private String getAccessToken() throws Exception {
+        String username = "test";
+        String password = "1234";
+
+        String body = mapper.writeValueAsString(LoginRequestDto.builder()
+                .account(username)
+                .password(password)
+                .build()
+        );
+
+        ResultActions perform = this.mvc.perform(post("/auth/login")
+                        .content(body)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        var responseBody = perform.andReturn().getResponse().getContentAsString();
+        System.out.println("responseBody = " + responseBody);
+
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObj = (JSONObject)jsonParser.parse(responseBody);
+        JSONObject jsonArr = (JSONObject) jsonObj.get("data");
+        System.out.println("jsonArr = " + jsonArr);
+        return (String) jsonArr.get("token");
+    }
 
     @Test
     @DisplayName("장바구니 추가")
     void crateBasket() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
+
         Goods goods = getGoods(member);
 
         //when
@@ -109,7 +132,7 @@ public class BasketControllerTest {
                 .build());
 
         mvc.perform(post("/basket")
-                        .session(session)
+                        .header("X-AUTH-TOKEN", getAccessToken())
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -124,7 +147,6 @@ public class BasketControllerTest {
     void deleteBasket() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
         Goods goods = getGoods(member);
 
         Basket basket = basketRepository.save(Basket.builder()
@@ -133,7 +155,8 @@ public class BasketControllerTest {
                 .count(4).build());
 
         //when
-        mvc.perform(delete("/basket/"+basket.getId()))
+        mvc.perform(delete("/basket/"+basket.getId())
+                        .header("X-AUTH-TOKEN", getAccessToken()))
                 .andExpect(status().isOk());
 
         //then
@@ -146,7 +169,6 @@ public class BasketControllerTest {
     void updateBasket() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
         Goods goods = getGoods(member);
 
         Basket basket = basketRepository.save(Basket.builder()
@@ -161,6 +183,7 @@ public class BasketControllerTest {
                 .build());
 
         mvc.perform(put("/basket/"+basket.getId())
+                        .header("X-AUTH-TOKEN", getAccessToken())
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -176,7 +199,6 @@ public class BasketControllerTest {
     void findAllBasket() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
         Goods goods = getGoods(member);
 
         basketRepository.save(Basket.builder()
@@ -193,7 +215,7 @@ public class BasketControllerTest {
 
         //when
         mvc.perform(get("/basket")
-                        .session(session))
+                        .header("X-AUTH-TOKEN", getAccessToken()))
                 .andExpect(status().isOk())
 
         //then
@@ -207,7 +229,6 @@ public class BasketControllerTest {
     void findBasketById() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
         Goods goods = getGoods(member);
         Basket basket = basketRepository.save(Basket.builder()
                 .member(member)
