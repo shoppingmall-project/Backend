@@ -2,13 +2,14 @@ package shoppingmall.core.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.service.QandA.answer.AnswerService;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.answer.AnswerCreateRequestDto;
 import shoppingmall.core.web.dto.answer.AnswerUpdateRequestDto;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @CrossOrigin(origins = "*")
@@ -20,21 +21,18 @@ public class AnswerController {
     AnswerService answerService;
 
     @PostMapping()
-    public ResponseDto createAnswer(@PathVariable Long questionId, @Valid @RequestBody AnswerCreateRequestDto requestDto, HttpSession session) throws Exception {
-        Long memberId = createSession(session);
-        return answerService.createAnswer(questionId, requestDto, memberId);
+    public ResponseDto createAnswer(@PathVariable Long questionId, @Valid @RequestBody AnswerCreateRequestDto requestDto, @AuthenticationPrincipal Member member) throws Exception {
+        return answerService.createAnswer(questionId, requestDto, member.getId());
     }
 
     @PutMapping("/{answerId}")
-    public ResponseDto updateAnswer(@PathVariable Long questionId, @PathVariable Long answerId, @Valid @RequestBody AnswerUpdateRequestDto requestDto, HttpSession session) {
-        Long memberId = createSession(session);
-        return answerService.updateAnswer(questionId, answerId, requestDto, memberId);
+    public ResponseDto updateAnswer(@PathVariable Long questionId, @PathVariable Long answerId, @Valid @RequestBody AnswerUpdateRequestDto requestDto, @AuthenticationPrincipal Member member) {
+        return answerService.updateAnswer(questionId, answerId, requestDto, member.getId());
     }
 
     @DeleteMapping("/{answerId}")
-    public ResponseDto deleteAnswer(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session) {
-        Long memberId = createSession(session);
-        return answerService.deleteAnswer(questionId, answerId, memberId);
+    public ResponseDto deleteAnswer(@PathVariable Long questionId, @PathVariable Long answerId, @AuthenticationPrincipal Member member) {
+        return answerService.deleteAnswer(questionId, answerId, member.getId());
     }
 
     @GetMapping("/{answerId}")
@@ -45,12 +43,5 @@ public class AnswerController {
     @GetMapping()
     public ResponseDto findAnswerList(@PathVariable Long questionId) {
         return answerService.findAnswerList(questionId);
-    }
-
-    private Long createSession(HttpSession session) {
-        if (session == null) {
-            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
-        }
-        return (Long) session.getAttribute("memberId");
     }
 }

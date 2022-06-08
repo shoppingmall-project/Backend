@@ -2,20 +2,26 @@ package shoppingmall.core.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import shoppingmall.core.domain.Goods.Goods;
 import shoppingmall.core.domain.Goods.GoodsRepository;
 import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.domain.member.MemberRepository;
 import shoppingmall.core.domain.review.Review;
 import shoppingmall.core.domain.review.ReviewRepository;
+import shoppingmall.core.web.dto.LoginRequestDto;
 import shoppingmall.core.web.dto.review.ReviewUpdateRequestDto;
 
 import javax.servlet.http.HttpSession;
@@ -46,25 +52,44 @@ public class ReviewControllerTest {
     @Autowired
     MemberRepository memberRepository;
 
-    protected MockHttpSession session;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @AfterEach
     void cleanup() {
         goodsRepository.deleteAll();
         reviewRepository.deleteAll();
         memberRepository.deleteAll();
-        session.clearAttributes();
     }
 
-    private void setSession(Member member) {
-        session = new MockHttpSession();
-        session.setAttribute("memberId", member.getId());
+    private String getAccessToken() throws Exception {
+        String username = "test";
+        String password = "1234";
+
+        String body = mapper.writeValueAsString(LoginRequestDto.builder()
+                .account(username)
+                .password(password)
+                .build()
+        );
+
+        ResultActions perform = this.mvc.perform(post("/auth/login")
+                        .content(body)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        var responseBody = perform.andReturn().getResponse().getContentAsString();
+        System.out.println("responseBody = " + responseBody);
+
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObj = (JSONObject)jsonParser.parse(responseBody);
+        JSONObject jsonArr = (JSONObject) jsonObj.get("data");
+        return (String) jsonArr.get("token");
     }
 
     private Member getMember() {
         return memberRepository.save(Member.builder()
                 .account("test")
-                .password("1234")
+                .password(passwordEncoder.encode("1234"))
                 .gender("M")
                 .email("test@naver.com")
                 .name("test")
@@ -92,13 +117,12 @@ public class ReviewControllerTest {
     void createReview() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
         Goods goods = getGoods(member);
         String content = "asdasdasd";
 
         //when
         mvc.perform(post("/goods/" + goods.getId() + "/review")
-                        .session(session)
+                        .header("X-AUTH-TOKEN", getAccessToken())
                         .param("content", content))
                 .andExpect(status().isOk());
 
@@ -112,7 +136,6 @@ public class ReviewControllerTest {
     void deleteReview() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
         Goods goods = getGoods(member);
         String content = "asdasdasd";
         Review review = reviewRepository.save(Review.builder()
@@ -123,8 +146,7 @@ public class ReviewControllerTest {
 
         //when
         mvc.perform(delete("/goods/" +goods.getId()+ "/review/" +review.getId())
-                        .session(session)
-                )
+                        .header("X-AUTH-TOKEN", getAccessToken()))
                 .andExpect(status().isOk());
 
         //then
@@ -138,7 +160,6 @@ public class ReviewControllerTest {
     void updateReview() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
         Goods goods = getGoods(member);
         Review review = reviewRepository.save(Review.builder()
                 .member(member)
@@ -153,7 +174,7 @@ public class ReviewControllerTest {
         );
 
         mvc.perform(put("/goods/" + goods.getId() + "/review/" + review.getId())
-                        .session(session)
+                        .header("X-AUTH-TOKEN", getAccessToken())
                         .param("content", "new_content"))
                 .andExpect(status().isOk());
 
@@ -167,7 +188,6 @@ public class ReviewControllerTest {
     void findReviewList() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
         Goods goods = getGoods(member);
 
         reviewRepository.save(Review.builder()
@@ -192,7 +212,6 @@ public class ReviewControllerTest {
     void findReviewById() throws Exception {
         //given
         Member member = getMember();
-        setSession(member);
         Goods goods = getGoods(member);
         Review review = reviewRepository.save(Review.builder()
                 .member(member)
@@ -211,8 +230,6 @@ public class ReviewControllerTest {
     void deleteReviewWhenDeletegoods() throws Exception {
         //given
         Member member = getMember();
-        session = new MockHttpSession();
-        session.setAttribute("memberId", member.getId());
         Goods goods = getGoods(member);
         String content = "asdasdasd";
         reviewRepository.save(Review.builder()
@@ -223,7 +240,7 @@ public class ReviewControllerTest {
 
         //when
         mvc.perform(delete("/goods/" +goods.getId())
-                        .session(session)
+                        .header("X-AUTH-TOKEN", getAccessToken())
                 )
                 .andExpect(status().isOk());
 

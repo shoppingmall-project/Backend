@@ -2,7 +2,9 @@ package shoppingmall.core.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import shoppingmall.core.domain.member.Member;
 import shoppingmall.core.service.basket.BasketService;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.basket.BasketCreateRequestDto;
@@ -21,16 +23,14 @@ public class BasketController {
 
     //장바구니 생성
     @PostMapping()
-    public ResponseDto createBasket(@RequestBody BasketCreateRequestDto requestDto, HttpSession session) {
-        Long memberId = createSession(session);
-        return basketService.createBasket(requestDto, memberId);
+    public ResponseDto createBasket(@RequestBody BasketCreateRequestDto requestDto, @AuthenticationPrincipal Member member) {
+        return basketService.createBasket(requestDto, member.getId());
     }
 
     //장바구니 리스트 조회
     @GetMapping()
-    public ResponseDto findBasketList(HttpSession session) {
-        Long memberId = createSession(session);
-        return basketService.findBasketList(memberId);
+    public ResponseDto findBasketList(@AuthenticationPrincipal Member member) {
+        return basketService.findBasketList(member.getId());
     }
 
     //장바구니 조회
@@ -51,10 +51,4 @@ public class BasketController {
         return basketService.deleteBasket(basketId);
     }
 
-    private Long createSession(HttpSession session) {
-        if (session == null) {
-            throw new IllegalArgumentException("로그인을 하지 않은 상태입니다.");
-        }
-        return (Long) session.getAttribute("memberId");
-    }
 }
