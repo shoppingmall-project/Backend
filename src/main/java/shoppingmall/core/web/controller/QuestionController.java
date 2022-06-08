@@ -5,12 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import shoppingmall.core.domain.member.Member;
-import shoppingmall.core.service.QandA.answer.question.QuestionService;
+import shoppingmall.core.service.QandA.question.QuestionService;
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.question.QuestionCreateRequestDto;
 import shoppingmall.core.web.dto.question.QuestionUpdateRequestDto;
-
-import javax.servlet.http.HttpSession;
 
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor

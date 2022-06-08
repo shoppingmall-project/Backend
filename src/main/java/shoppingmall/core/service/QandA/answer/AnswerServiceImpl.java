@@ -1,7 +1,6 @@
 package shoppingmall.core.service.QandA.answer;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import shoppingmall.core.domain.QandA.answer.Answer;
 import shoppingmall.core.domain.QandA.question.Question;

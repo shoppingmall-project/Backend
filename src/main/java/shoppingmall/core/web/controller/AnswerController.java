@@ -10,7 +10,6 @@ import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.answer.AnswerCreateRequestDto;
 import shoppingmall.core.web.dto.answer.AnswerUpdateRequestDto;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @CrossOrigin(origins = "*")

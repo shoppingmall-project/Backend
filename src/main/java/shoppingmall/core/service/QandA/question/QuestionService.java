@@ -1,4 +1,4 @@
-package shoppingmall.core.service.QandA.answer.question;
+package shoppingmall.core.service.QandA.question;
 
 import shoppingmall.core.web.dto.ResponseDto;
 import shoppingmall.core.web.dto.question.QuestionCreateRequestDto;

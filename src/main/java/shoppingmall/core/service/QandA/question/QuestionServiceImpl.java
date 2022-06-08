@@ -1,4 +1,4 @@
-package shoppingmall.core.service.QandA.answer.question;
+package shoppingmall.core.service.QandA.question;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
