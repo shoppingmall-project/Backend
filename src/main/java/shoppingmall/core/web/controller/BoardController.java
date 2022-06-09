@@ -46,4 +46,14 @@ public class BoardController {
     public ResponseDto findBoardById(@PathVariable Long boardId) throws Exception {
         return boardService.findBoardById(boardId);
     }
+
+    @GetMapping("/title/{title}")
+    public ResponseDto findBoardByTitle(@PathVariable String title) {
+        return boardService.findBoardByTitle(title);
+    }
+
+    @GetMapping("/writer/{writer}")
+    public ResponseDto findBoardByWriter(@PathVariable String writer) {
+        return boardService.findBoardByWriter(writer);
+    }
 }

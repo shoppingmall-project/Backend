@@ -15,4 +15,8 @@ public interface BoardService {
     ResponseDto findBoardById(Long boardId) throws Exception;
 
     ResponseDto findBoardList();
+
+    ResponseDto findBoardByTitle(String title);
+
+    ResponseDto findBoardByWriter(String writer);
 }

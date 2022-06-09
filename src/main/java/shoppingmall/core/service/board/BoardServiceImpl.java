@@ -71,6 +71,7 @@ public class BoardServiceImpl implements BoardService{
         return new ResponseDto("SUCCESS", responseDto);
     }
 
+
     @Override
     public ResponseDto findBoardList() {
         List<Board> boardList = boardRepository.findAll();
@@ -80,6 +81,34 @@ public class BoardServiceImpl implements BoardService{
             BoardFindResponseDto responseDto = BoardFindResponseDto.toResponseDto(board);
             responseDtoList.add(responseDto);
         }
+        return new ResponseDto("SUCCESS", responseDtoList);
+    }
+
+    @Override
+    public ResponseDto findBoardByTitle(String title) {
+        List<Board> boardList = boardRepository.findBoardByTitle(title);
+
+        List<BoardFindResponseDto> responseDtoList = new ArrayList<>();
+        for(Board board : boardList) {
+            BoardFindResponseDto responseDto = BoardFindResponseDto.toResponseDto(board);
+            responseDtoList.add(responseDto);
+        }
+
+        return new ResponseDto("SUCCESS", responseDtoList);
+    }
+
+    @Override
+    public ResponseDto findBoardByWriter(String writer) {
+        List<Board> boardList = boardRepository.findBoardByWriter(writer);
+
+        System.out.println("boardList = " + boardList);
+
+        List<BoardFindResponseDto> responseDtoList = new ArrayList<>();
+        for(Board board : boardList) {
+            BoardFindResponseDto responseDto = BoardFindResponseDto.toResponseDto(board);
+            responseDtoList.add(responseDto);
+        }
+
         return new ResponseDto("SUCCESS", responseDtoList);
     }
 
