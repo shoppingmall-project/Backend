@@ -69,7 +69,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Goods goods = goodsRepository.findByGoodsId(requestDto.getGoods_id());
-        order.update(goods, requestDto.getRequest(), requestDto.getPayment());
+        order.update(goods, requestDto.getRequest(), requestDto.getCount(), requestDto.getPayment());
 
         OrderUpdateResponseDto responseDto = new OrderUpdateResponseDto(order.getId());
 

@@ -151,6 +151,7 @@ public class OrderControllerTest {
                 .goods(goods)
                 .request("요청사항")
                 .payment(1)
+                .count(2)
                 .build());
 
         //when
@@ -173,6 +174,7 @@ public class OrderControllerTest {
                 .member(member)
                 .goods(goods)
                 .request("요청사항")
+                .count(2)
                 .payment(1)
                 .build());
 
@@ -180,6 +182,7 @@ public class OrderControllerTest {
         String body = mapper.writeValueAsString(OrderUpdateRequestDto.builder()
                 .request("수정사항")
                 .payment(2)
+                .count(3)
                 .build());
 
         mvc.perform(put("/order/"+order.getId())
@@ -190,6 +193,7 @@ public class OrderControllerTest {
 
         //when
         assertThat(orderRepository.findAll()).isNotEmpty();
+        assertThat(order.getCount()).isEqualTo(3);
         assertThat(order.getPayment()).isEqualTo(2);
         assertThat(order.getRequest()).isEqualTo("수정사항");
     }
@@ -206,12 +210,14 @@ public class OrderControllerTest {
                 .goods(goods)
                 .request("요청 사항")
                 .payment(1)
+                .count(2)
                 .build());
         orderRepository.save(Order.builder()
                 .member(member)
                 .goods(goods)
                 .request("요청 사항 2")
                 .payment(2)
+                .count(2)
                 .build());
 
         //when
@@ -235,6 +241,7 @@ public class OrderControllerTest {
                 .member(member)
                 .goods(goods)
                 .request("요청 사항")
+                .count(2)
                 .payment(2)
                 .build());
 
