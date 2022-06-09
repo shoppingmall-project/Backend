@@ -16,11 +16,13 @@ public class OrderFindResponseDto {
     private String memberAddress;
     private Long goodsId;
     private String goodsName;
+    private int goodsPrice;
     private String request;
+    private int count;
     private int payment; //1: 신용카드 2:네이버페이 3:카카오페이 ...
 
     @Builder
-    public OrderFindResponseDto(Long id, Long memberId, String memberName, String memberPhoneNum, String memberAddress, Long goodsId, String goodsName, String request, int payment) {
+    public OrderFindResponseDto(Long id, Long memberId, String memberName, String memberPhoneNum, String memberAddress, Long goodsId, String goodsName, String request, int goodsPrice, int count, int payment) {
 
         this.id = id;
         this.memberId = memberId;
@@ -29,7 +31,9 @@ public class OrderFindResponseDto {
         this.memberAddress = memberAddress;
         this.goodsId = goodsId;
         this.goodsName = goodsName;
+        this.goodsPrice = goodsPrice;
         this.request = request;
+        this.count = count;
         this.payment = payment;
     }
 
@@ -42,9 +46,10 @@ public class OrderFindResponseDto {
                 .memberAddress(entity.getMember().getAddress())
                 .goodsId(entity.getGoods().getId())
                 .goodsName(entity.getGoods().getName())
+                .goodsPrice(entity.getGoods().getPrice())
                 .request(entity.getRequest())
+                .count(entity.getCount())
                 .payment(entity.getPayment())
                 .build();
     }
-
 }

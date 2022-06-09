@@ -12,12 +12,16 @@ public class OrderUpdateRequestDto {
 
     private String request;
 
+    private int count;
+
     private int payment;
 
     @Builder
-    public OrderUpdateRequestDto(Long goods_id, String request, int payment) {
+    public OrderUpdateRequestDto(Long goods_id, String request, int count, int payment) {
+
         this.goods_id = goods_id;
         this.request = request;
+        this.count = count;
         this.payment = payment;
     }
 }

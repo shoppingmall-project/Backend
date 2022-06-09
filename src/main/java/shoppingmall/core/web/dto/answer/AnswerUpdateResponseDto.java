@@ -1,8 +1,10 @@
 package shoppingmall.core.web.dto.answer;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 @Builder
 public class AnswerUpdateResponseDto {

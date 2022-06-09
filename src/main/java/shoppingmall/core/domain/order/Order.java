@@ -29,16 +29,21 @@ public class Order {
     @Column(length = 30)
     private String request;
 
+    @Column(length = 30)
+    private int count;
+
     @Column(nullable = false)
     private int payment; //1: 신용카드 2:네이버페이 3:카카오페이 ...
 
 
+
     @Builder
-    public Order(Long id, Member member, Goods goods, String request, int payment) {
+    public Order(Long id, Member member, Goods goods, String request, int count, int payment) {
         this.id = id;
         this.member = member;
         this.goods = goods;
         this.request = request;
+        this.count = count;
         this.payment = payment;
     }
 
@@ -50,9 +55,10 @@ public class Order {
         this.goods = goods;
     }
 
-    public void update(Goods goods, String request, int payment) {
+    public void update(Goods goods, String request, int count, int payment) {
         this.goods = goods;
         this.request = request;
+        this.count = count;
         this.payment = payment;
     }
 }
