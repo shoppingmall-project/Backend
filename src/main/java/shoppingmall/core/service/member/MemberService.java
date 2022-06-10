@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 public interface MemberService {
     ResponseDto login(LoginRequestDto user, HttpServletRequest request);
 
-    ResponseDto logout(HttpServletRequest request);
-
     ResponseDto deleteMember(Long id);
 
     ResponseDto updateMember(Long id, MemberUpdateRequestDto requestDto);

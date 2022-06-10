@@ -62,12 +62,6 @@ public class MemberController {
     public ResponseDto login(@Valid @RequestBody LoginRequestDto user, HttpServletRequest request) {
         return memberService.login(user, request);
     }
-//      JWT TOKEN 에서는 서버쪽 로그아웃이 불가능함.
-//    @PostMapping("/logout")
-//    public ResponseDto logout(HttpServletRequest request) {
-//        return memberService.logout(request);
-//    }
-
     // 회원 리스트 조회
     @GetMapping()
     public ResponseDto findMemberList() {
@@ -79,21 +73,5 @@ public class MemberController {
     public ResponseDto findMemberById(@PathVariable Long memberId) {
         return memberService.findMemberById(memberId);
     }
-
-    // 사실 뭔지 잘 모르겠음. --------------------
-//    @GetMapping("/user")
-//    public ResponseDto userInfo(ServletRequest request) {
-//
-//        String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
-//        Member member = (Member) userDetailsService.loadUserByUsername(jwtTokenProvider.getUserPk(token));
-//        MemberResponseDto memberResponseDto = new MemberResponseDto(member);
-//        return new ResponseDto("SUCCESS", memberResponseDto);
-//    }
-//
-    @GetMapping("/auth/check")
-    public ResponseDto authcheck(ServletRequest request) {
-        return new ResponseDto("SUCCESS");
-    }
-    //------------------------------------
 }
 

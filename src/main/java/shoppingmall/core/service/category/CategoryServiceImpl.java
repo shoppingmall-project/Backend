@@ -1,6 +1,5 @@
 package shoppingmall.core.service.category;
 
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
