@@ -15,4 +15,6 @@ public interface GoodsService {
     ResponseDto findGoodsList();
 
     ResponseDto findGoodsById(Long goodsId);
+
+    ResponseDto findGoodsByCategory(String category);
 }

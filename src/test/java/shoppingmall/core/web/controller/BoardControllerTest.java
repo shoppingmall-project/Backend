@@ -237,4 +237,62 @@ public class BoardControllerTest {
         Assertions.assertThat(boardRepository.findById(board.getId())).isNotEmpty();
 
     }
+
+    @Test
+    @DisplayName("게시글 제목 검색")
+    void findBoardByTitle() throws Exception {
+        //given
+        Member member = getMember();
+
+        String title = "test1";
+
+        boardRepository.save(Board.builder()
+                .member(member)
+                .title("test1")
+                .content("내용")
+                .build());
+
+        boardRepository.save(Board.builder()
+                .member(member)
+                .title("test2")
+                .content("내용2")
+                .build());
+
+        //when
+        mvc.perform(get("/board/title/" + title))
+                .andExpect(status().isOk())
+
+                //then
+                .andExpect(jsonPath("$.data.length()", equalTo(1)));
+
+    }
+
+    @Test
+    @DisplayName("게시글 작성자 검색")
+    void findBoardByWriter() throws Exception {
+        //given
+        Member member = getMember();
+
+        String writer = "test";
+
+        boardRepository.save(Board.builder()
+                .member(member)
+                .title("test1")
+                .content("내용")
+                .build());
+
+        boardRepository.save(Board.builder()
+                .member(member)
+                .title("test2")
+                .content("내용2")
+                .build());
+
+        //when
+        mvc.perform(get("/board/writer/" + writer))
+                .andExpect(status().isOk())
+
+                //then
+                .andExpect(jsonPath("$.data.length()", equalTo(2)));
+
+    }
 }

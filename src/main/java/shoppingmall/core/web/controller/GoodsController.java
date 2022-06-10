@@ -35,6 +35,12 @@ public class GoodsController {
         return goodsService.findGoodsById(goodsId);
     }
 
+    //상품 카테고리로 조회
+    @GetMapping("/category/{category}")
+    public ResponseDto findGoodsByCategory(@PathVariable String category) {
+        return goodsService.findGoodsByCategory(category);
+    }
+    
     //상품 전체 조회
     @GetMapping()
     public ResponseDto findGoodsList() {
