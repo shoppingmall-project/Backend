@@ -101,8 +101,6 @@ public class BoardServiceImpl implements BoardService{
     public ResponseDto findBoardByWriter(String writer) {
         List<Board> boardList = boardRepository.findBoardByWriter(writer);
 
-        System.out.println("boardList = " + boardList);
-
         List<BoardFindResponseDto> responseDtoList = new ArrayList<>();
         for(Board board : boardList) {
             BoardFindResponseDto responseDto = BoardFindResponseDto.toResponseDto(board);

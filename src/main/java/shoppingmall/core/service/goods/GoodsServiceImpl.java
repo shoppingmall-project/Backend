@@ -114,6 +114,20 @@ public class GoodsServiceImpl implements GoodsService {
         return new ResponseDto("SUCCESS", responseDto);
     }
 
+    @Override
+    public ResponseDto findGoodsByCategory(String category) {
+        List<Goods> goodsList = goodsRepository.findByCategory(category);
+
+        List<GoodsFindResponseDto> responseDtoList = new ArrayList<>();
+
+        for(Goods goods : goodsList) {
+            GoodsFindResponseDto responseDto = GoodsFindResponseDto.toResponseDto(goods);
+
+            responseDtoList.add(responseDto);
+        }
+        return new ResponseDto("SUCCESS", responseDtoList);
+    }
+
     private Goods checkValidGoods(Long goodsId) {
         return goodsRepository.findById(goodsId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다"));

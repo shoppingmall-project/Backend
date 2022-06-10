@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class BoardFindResponseDto {
 
     private Long boardId;
+    private Long memberId;
     private String title;
     private String writer;
     private String content;
@@ -19,8 +20,9 @@ public class BoardFindResponseDto {
     private LocalDateTime createdDate;
 
     @Builder
-    public BoardFindResponseDto(Long boardId, String title, String writer, String content, int views, LocalDateTime createdDate) {
+    public BoardFindResponseDto(Long boardId, Long memberId, String title, String writer, String content, int views, LocalDateTime createdDate) {
         this.boardId = boardId;
+        this.memberId = memberId;
         this.title = title;
         this.writer = writer;
         this.content = content;
@@ -31,6 +33,7 @@ public class BoardFindResponseDto {
     public static BoardFindResponseDto toResponseDto(Board entity) {
         return BoardFindResponseDto.builder()
                 .boardId(entity.getId())
+                .memberId(entity.getMember().getId())
                 .title(entity.getTitle())
                 .writer(entity.getMember().getName())
                 .content(entity.getContent())

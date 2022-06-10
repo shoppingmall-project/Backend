@@ -46,16 +46,6 @@ public class MemberServiceImpl implements MemberService {
         return new ResponseDto("SUCCESS", tokenDto);
     }
 
-    @Override
-    public ResponseDto logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-
-        return new ResponseDto("SUCCESS");
-    }
-
     @Transactional
     @Override
     public ResponseDto deleteMember(Long id) {

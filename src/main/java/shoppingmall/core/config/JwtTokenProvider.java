@@ -26,7 +26,7 @@ public class JwtTokenProvider {
     private String secretKey = "shoppingmall";
 
     // 토큰 유효시간 7일
-    private long tokenValidTime = 24* 7 * 60 * 60 * 1000L;
+    private long tokenValidTime = 24 * 60 * 60 * 1000L;
 
     private final UserDetailsService userDetailsService;
 
