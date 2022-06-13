@@ -26,7 +26,6 @@ public class QuestionServiceImpl implements QuestionService {
     public ResponseDto createQuestion(QuestionCreateRequestDto requestDto, Long memberId) {
         Member member = checkValidMemberId(memberId);
         Question question = questionRepository.save(requestDto.toEntity());
-        question.setAnswered(Boolean.FALSE);
         question.setMember(member);
 
         QuestionCreateResponseDto responseDto = new QuestionCreateResponseDto(question.getId());

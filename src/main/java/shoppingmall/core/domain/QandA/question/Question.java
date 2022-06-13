@@ -27,19 +27,16 @@ public class Question extends BaseTimeEntity {
     @Column(length = 200, nullable = false)
     private String content;
 
-    @Column
-    private Boolean isAnswered;
 
     @Column
     private int answerNum;
 
     @Builder
-    public Question(Long id, Member member, String title, String content, Boolean isAnswered, int answerNum) {
+    public Question(Long id, Member member, String title, String content, int answerNum) {
         this.id = id;
         this.member = member;
         this.title = title;
         this.content = content;
-        this.isAnswered = isAnswered;
         this.answerNum = answerNum;
     }
 
@@ -51,10 +48,6 @@ public class Question extends BaseTimeEntity {
         this.title = title;
         this.content = content;
 
-    }
-
-    public void setAnswered(Boolean answered) {
-        isAnswered = answered;
     }
 
     public void setAnswerNum(int answerNum) {

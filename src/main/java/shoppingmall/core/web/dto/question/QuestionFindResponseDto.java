@@ -12,20 +12,20 @@ import java.time.LocalDateTime;
 public class QuestionFindResponseDto {
 
     private Long id;
+    private Long memberId;
     private String writer;
     private String title;
     private String content;
-    private Boolean isAnswered;
     private LocalDateTime createdDate;
     private int answerNum;
 
     @Builder
-    public QuestionFindResponseDto(Long id, String writer, String title, String content, Boolean isAnswered, LocalDateTime createdDate, int answerNum) {
+    public QuestionFindResponseDto(Long id, Long memberId, String writer, String title, String content, LocalDateTime createdDate, int answerNum) {
         this.id = id;
+        this.memberId = memberId;
         this.writer = writer;
         this.title = title;
         this.content = content;
-        this.isAnswered = isAnswered;
         this.createdDate = createdDate;
         this.answerNum = answerNum;
     }
@@ -33,10 +33,10 @@ public class QuestionFindResponseDto {
     public static QuestionFindResponseDto toResponseDto(Question entity) {
         return QuestionFindResponseDto.builder()
                 .id(entity.getId())
+                .memberId(entity.getMember().getId())
                 .writer(entity.getMember().getName())
                 .title(entity.getTitle())
                 .content(entity.getContent())
-                .isAnswered(entity.getIsAnswered())
                 .createdDate(entity.getCreatedDate())
                 .answerNum(entity.getAnswerNum())
                 .build();
