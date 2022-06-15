@@ -70,7 +70,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Transactional
     public ResponseDto updateGoods(Long goodsId, GoodsUpdateRequestDto requestDto, MultipartFile file, Long memberId) throws Exception {
         Member member = checkValidMember(memberId);
-        if (!Objects.equals(member.getRole(), "S")) {
+        if (!Objects.equals(member.getRole(), "M")) {
             return new ResponseDto("FAIL", "권한이 없습니다..");
         }
         Goods goods = checkValidGoods(goodsId);

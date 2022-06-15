@@ -61,7 +61,7 @@ public class GoodsControllerTest {
         return memberRepository.save(Member.builder()
                 .account("test")
                 .password(passwordEncoder.encode("1234"))
-                .gender("S")
+                .gender("M")
                 .email("test@naver.com")
                 .name("test")
                 .role("M")

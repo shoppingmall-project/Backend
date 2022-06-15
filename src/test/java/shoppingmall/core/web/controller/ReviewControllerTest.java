@@ -93,7 +93,7 @@ public class ReviewControllerTest {
                 .gender("M")
                 .email("test@naver.com")
                 .name("test")
-                .role("Manager")
+                .role("M")
                 .address("주소주소")
                 .phoneNum("01025123123")
                 .build());
