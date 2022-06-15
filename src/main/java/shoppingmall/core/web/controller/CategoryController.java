@@ -11,23 +11,22 @@ import shoppingmall.core.web.dto.ResponseDto;
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/category")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
     //카테고리 리스트 조회
-    @GetMapping()
+    @GetMapping("/category")
     public ResponseDto findAllCategory() {
         return categoryService.findAllCategory();
     }
 
-    @GetMapping()
+    @GetMapping("/brand")
     public ResponseDto findAllBrand() {
         return categoryService.findAllBrand();
     }
 
-    @GetMapping()
+    @GetMapping("/country")
     public ResponseDto findAllCountry() {
         return categoryService.findAllCountry();
     }
