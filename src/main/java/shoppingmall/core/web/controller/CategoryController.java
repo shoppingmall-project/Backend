@@ -22,4 +22,14 @@ public class CategoryController {
         return categoryService.findAllCategory();
     }
 
+    @GetMapping()
+    public ResponseDto findAllBrand() {
+        return categoryService.findAllBrand();
+    }
+
+    @GetMapping()
+    public ResponseDto findAllCountry() {
+        return categoryService.findAllCountry();
+    }
+
 }
