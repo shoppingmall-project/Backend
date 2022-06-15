@@ -34,11 +34,12 @@ public class ReviewFindResponseDto {
         return ReviewFindResponseDto.builder()
                 .goodsId(entity.getGoods().getId())
                 .commentId(entity.getId())
+                .memberId(entity.getMember().getId())
                 .writer(entity.getMember().getName())
                 .content(entity.getContent())
                 .imageUrl(entity.getImageUrl())
                 .createdDate(entity.getCreatedDate())
                 .build();
     }
-
+    
 }
