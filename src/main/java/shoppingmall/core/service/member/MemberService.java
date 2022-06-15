@@ -17,7 +17,7 @@ public interface MemberService {
 
     ResponseDto createMember(MemberCreateRequestDto requestDto) throws Exception;
 
-    ResponseDto findMemberList();
+    ResponseDto findMemberList(Long memberId);
 
     ResponseDto findMemberById(Long id);
 

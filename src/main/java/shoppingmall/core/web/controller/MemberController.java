@@ -64,8 +64,8 @@ public class MemberController {
     }
     // 회원 리스트 조회
     @GetMapping()
-    public ResponseDto findMemberList() {
-        return memberService.findMemberList();
+    public ResponseDto findMemberList(@AuthenticationPrincipal Member member) {
+        return memberService.findMemberList(member.getId());
     }
 
     // 회원 조회

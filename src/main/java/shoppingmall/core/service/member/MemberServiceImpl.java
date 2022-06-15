@@ -19,6 +19,8 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -37,12 +39,6 @@ public class MemberServiceImpl implements MemberService {
         }
 
         TokenDto tokenDto = new TokenDto(member, jwtTokenProvider.createToken(member.getUsername(), member.getRoles(), member.getId()));
-        HttpSession session = request.getSession();
-        session.setAttribute("memberId", member.getId());
-        session.getAttributeNames().asIterator()
-                .forEachRemaining(name -> log.info("session name={}, value={}",
-                        name, session.getAttribute(name)));
-
         return new ResponseDto("SUCCESS", tokenDto);
     }
 
@@ -91,7 +87,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public ResponseDto findMemberList() {
+    public ResponseDto findMemberList(Long memberId) {
+        Member member = checkValidMember(memberId);
+
+        if (!Objects.equals(member.getRole(), "M")) {
+            return new ResponseDto("FAIL", "권한이 없습니다..");
+        }
+
         List<Member> memberList = memberRepository.findAll();
 
         List<MemberFindResponseDto> responseDtoList = new ArrayList<>();
