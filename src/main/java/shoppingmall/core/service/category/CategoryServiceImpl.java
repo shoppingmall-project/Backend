@@ -27,4 +27,30 @@ public class CategoryServiceImpl implements CategoryService {
         return new ResponseDto("SUCCESS", jsonArray);
     }
 
+    @Override
+    public ResponseDto findAllBrand() {
+        List<String> brandList = goodsRepository.findGoodsBrand();
+        JSONArray jsonArray = new JSONArray();
+        for (int i = 0; i < brandList.size(); i++) {
+
+            JSONObject data = new JSONObject();
+            data.put("brand", brandList.get(i));
+            jsonArray.add(i, data);
+        }
+        return new ResponseDto("SUCCESS", jsonArray);
+    }
+
+    @Override
+    public ResponseDto findAllCountry() {
+        List<String> countryList = goodsRepository.findGoodsCountry();
+        JSONArray jsonArray = new JSONArray();
+        for (int i = 0; i < countryList.size(); i++) {
+
+            JSONObject data = new JSONObject();
+            data.put("country", countryList.get(i));
+            jsonArray.add(i, data);
+        }
+        return new ResponseDto("SUCCESS", jsonArray);
+    }
+
 }

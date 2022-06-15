@@ -13,6 +13,12 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
     @Query(value = "SELECT DISTINCT category FROM goods", nativeQuery = true)
     List<String> findGoodsCategory();
 
+    @Query(value = "SELECT DISTINCT brand FROM goods", nativeQuery = true)
+    List<String> findGoodsBrand();
+
+    @Query(value = "SELECT DISTINCT country FROM goods", nativeQuery = true)
+    List<String> findGoodsCountry();
+
     @Query(value = "SELECT * FROM goods WHERE category = ?", nativeQuery = true)
     List<Goods> findByCategory(String category);
 }

@@ -39,5 +39,4 @@ public class BasketFindResponseDto {
                 .totalPrice(entity.getCount() * entity.getGoods().getPrice())
                 .build();
     }
-    
 }

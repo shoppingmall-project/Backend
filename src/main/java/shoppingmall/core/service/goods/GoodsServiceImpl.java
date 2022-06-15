@@ -35,9 +35,9 @@ public class GoodsServiceImpl implements GoodsService {
         Goods goods = requestDto.toEntity();
         goods.setMember(member);
         goodsRepository.save(goods);
-//        if (!Objects.equals(member.getRole(), "S") && !Objects.equals(member.getRole(), "M") ) {
-//            return new ResponseDto("FAIL", "권한이 없습니다..");
-//        }
+        if (!Objects.equals(member.getRole(), "M")) {
+            return new ResponseDto("FAIL", "권한이 없습니다..");
+        }
 
         if(file != null) {
             saveFileAndUrl(file, goods);
@@ -54,9 +54,9 @@ public class GoodsServiceImpl implements GoodsService {
         checkValidGoods(goodsId);
         Goods goods = checkValidGoods(goodsId);
 
-//        if ((!Objects.equals(goods.getMember().getId(), memberId) && !Objects.equals(member.getRole(), "S")) && !Objects.equals(member.getRole(), "M")) {
-//            return new ResponseDto("FAIL", "권한이 없습니다..");
-//        }
+        if (!Objects.equals(member.getRole(), "M")) {
+            return new ResponseDto("FAIL", "권한이 없습니다..");
+        }
         if(goods.getImageUrl() != null) {
             if (storageService.delete(goods.getImageUrl())) {
                 goods.updateUrl(null);
@@ -70,9 +70,9 @@ public class GoodsServiceImpl implements GoodsService {
     @Transactional
     public ResponseDto updateGoods(Long goodsId, GoodsUpdateRequestDto requestDto, MultipartFile file, Long memberId) throws Exception {
         Member member = checkValidMember(memberId);
-//        if (!Objects.equals(member.getRole(), "S") && !Objects.equals(member.getRole(), "S")) {
-//            return new ResponseDto("FAIL", "권한이 없습니다..");
-//        }
+        if (!Objects.equals(member.getRole(), "S")) {
+            return new ResponseDto("FAIL", "권한이 없습니다..");
+        }
         Goods goods = checkValidGoods(goodsId);
         goods.updateGoods(requestDto.getCategory(), requestDto.getName(), requestDto.getPrice(), requestDto.getStock(),
                 requestDto.getDescription(), requestDto.getBrand(), requestDto.getCountry());

@@ -133,7 +133,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private void saveFileAndUrl(Long goodsId, MultipartFile file, Review review) throws Exception {
-        String path = "/goods_" + goodsId + "/comment_" + review.getId() + "/image";
+        String path = "/goods_" + goodsId + "/review_" + review.getId() + "/image";
         String uploadedFilePath = storageService.store(path, file);
 
         review.updateUrl(uploadedFilePath);

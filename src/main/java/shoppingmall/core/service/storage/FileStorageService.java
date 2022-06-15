@@ -40,11 +40,13 @@ public class FileStorageService implements StorageService {
             }
 
             Path dirPath = Paths.get(basePath + uploadPath);
+            System.out.println("dirPath = " + dirPath);
             if (!Files.exists(dirPath)) {
                 init(dirPath);
             }
 
             String filePath = dirPath + "/" + getUploadFileName(file.getOriginalFilename());
+            System.out.println("filePath = " + filePath);
             file.transferTo(new File(filePath));
 
             return filePath;
@@ -54,6 +56,7 @@ public class FileStorageService implements StorageService {
     }
 
     private String getUploadFileName(String fileFullName) {
+        System.out.println("fileFullName = " + fileFullName);
         return fileFullName.substring(0, fileFullName.lastIndexOf("."))
                 + "_" + System.currentTimeMillis()
                 + fileFullName.substring(fileFullName.lastIndexOf("."));
