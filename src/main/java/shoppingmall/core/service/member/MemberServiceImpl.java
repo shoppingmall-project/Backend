@@ -88,9 +88,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public ResponseDto findMemberList(Long memberId) {
-        Member member = checkValidMember(memberId);
+        Member login_member = checkValidMember(memberId);
 
-        if (!Objects.equals(member.getRole(), "M")) {
+        if (!Objects.equals(login_member.getRole(), "M")) {
             return new ResponseDto("FAIL", "권한이 없습니다..");
         }
 
